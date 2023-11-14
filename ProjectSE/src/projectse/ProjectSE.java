@@ -35,7 +35,7 @@ public class ProjectSE extends Application {
         
         Scene scene = new Scene(root, 300, 250);
         
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("World!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
