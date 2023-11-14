@@ -21,7 +21,7 @@ public class ProjectSE extends Application {
     @Override
     public void start(Stage primaryStage) {
         Button btn = new Button();
-        btn.setText("Say 'Hello Worl'");
+        btn.setText("Say");
         btn.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
