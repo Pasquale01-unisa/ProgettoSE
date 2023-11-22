@@ -80,6 +80,7 @@ public class MyProjectSEViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
       btnCommit.setDisable(true);
+      btnDelete.setDisable(true);
 
     }
 
