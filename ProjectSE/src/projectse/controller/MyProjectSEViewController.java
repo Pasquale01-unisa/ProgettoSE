@@ -17,6 +17,11 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.beans.binding.Bindings;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 
 /**
  * FXML Controller class
@@ -79,9 +84,14 @@ public class MyProjectSEViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      btnCommit.setDisable(true);
-      btnDelete.setDisable(true);
-
+        btnCommit.disableProperty().bind(
+            textRuleName.textProperty().isEmpty()
+            .or(textAction.textProperty().isEmpty())
+            .or(Bindings.createBooleanBinding(() ->
+                btnAction.getText().equals("Choose an Action"), btnAction.textProperty()))
+            .or(Bindings.createBooleanBinding(() ->
+                btnTrigger.getText().equals("Choose a Trigger"), btnTrigger.textProperty()))
+        );
     }
 
     
