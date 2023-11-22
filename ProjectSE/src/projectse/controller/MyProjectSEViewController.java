@@ -117,7 +117,7 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnTime(ActionEvent event) {
-            
+        btnTrigger.setText("Time"); // Cambia il testo del MenuButton 
     }
 
 
@@ -132,7 +132,12 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnMemo(ActionEvent event) {
-       
+        textAction.setDisable(false);
+        btnFile.setManaged(false);
+        btnFile.setVisible(false);
+        textAction.clear();
+        textAction.setPromptText("Inserisci promemoria"); // Imposta un placeholder o un suggerimento
+        btnAction.setText("Memo"); // Cambia il testo del MenuButton
     }
     
     
