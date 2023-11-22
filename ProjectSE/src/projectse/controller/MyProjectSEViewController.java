@@ -127,7 +127,11 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnAlarm(ActionEvent event) {
-        
+        textAction.setDisable(true);
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        textAction.clear();
+        btnAction.setText("Alarm");
     }
     
     @FXML
