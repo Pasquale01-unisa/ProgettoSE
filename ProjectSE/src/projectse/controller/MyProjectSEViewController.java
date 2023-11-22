@@ -20,8 +20,11 @@ import javafx.scene.control.TextField;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * FXML Controller class
@@ -92,6 +95,16 @@ public class MyProjectSEViewController implements Initializable {
             .or(Bindings.createBooleanBinding(() ->
                 btnTrigger.getText().equals("Choose a Trigger"), btnTrigger.textProperty()))
         );
+        btnFile.setManaged(false);
+        // Configura gli Spinner per le ore e i minuti
+        SpinnerValueFactory<Integer> hoursFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
+        SpinnerValueFactory<Integer> minutesFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
+        numberTriggerH.setValueFactory(hoursFactory);
+        numberTriggerM.setValueFactory(minutesFactory);
+
+        // Personalizza la visualizzazione dei valori negli Spinner
+        setupSpinnerWithCustomTextFormatter(numberTriggerH);
+        setupSpinnerWithCustomTextFormatter(numberTriggerM);
     }
 
     
@@ -178,6 +191,41 @@ public class MyProjectSEViewController implements Initializable {
         
     }
 
+    private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter() {
+            @Override
+            public String toString(Integer value) {
+                // Questo metodo formatta il valore da visualizzare nell'editor
+                return String.format("%02d", value);
+            }
+
+            @Override
+            public Integer fromString(String string) {
+                // Questo metodo converte da stringa a valore
+                try {
+                    return Integer.parseInt(string);
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            }
+        }, 0, // Default value
+        change -> {
+            // Questo filtro valida il testo inserito nell'editor
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d{0,2}")) {
+                return change;
+            }
+            return null;
+        });
+
+        spinner.getEditor().setTextFormatter(formatter);
+        spinner.getValueFactory().setValue(0); // Imposta il valore iniziale dello Spinner
+
+        // Aggiorna il testo dell'editor ogni volta che il valore dello spinner cambia
+        spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            formatter.setValue(newValue);
+        });
+    }
     
     
 }
