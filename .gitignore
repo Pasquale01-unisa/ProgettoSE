@@ -3,3 +3,7 @@
 *.jar
 *.properties
 
+.DS_Store
+*.mf
+/ProjectSE/build/
+/ProjectSE/dist/
