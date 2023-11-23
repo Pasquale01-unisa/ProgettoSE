@@ -13,8 +13,30 @@ public class TriggerTime implements Trigger{
     private String minutes;
 
     public TriggerTime(String hour, String minutes) {
-        this.hour = hour;
-        this.minutes = minutes;
+        if (isValidHour(hour) && isValidMinutes(minutes)) {
+            this.hour = hour;
+            this.minutes = minutes;
+        } else {
+            throw new IllegalArgumentException("Ora o minuti non validi");
+        }
+    }
+
+    private boolean isValidHour(String hour) {
+        try {
+            int h = Integer.parseInt(hour);
+            return h >= 0 && h <= 23;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isValidMinutes(String minutes) {
+        try {
+            int m = Integer.parseInt(minutes);
+            return m >= 0 && m <= 59;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
     
     @Override
