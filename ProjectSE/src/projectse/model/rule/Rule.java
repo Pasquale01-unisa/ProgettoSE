@@ -12,5 +12,4 @@ public interface Rule {
     void addRule(Rule rule);
     void deleteRule(Rule rule);
     void deleteAll();
-    Rule getRule(Rule rule);
 }

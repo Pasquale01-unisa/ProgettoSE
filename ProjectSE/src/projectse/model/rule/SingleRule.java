@@ -87,11 +87,6 @@ public class SingleRule implements Rule{
     public void deleteRule(Rule rule) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
-    
-    @Override
-    public Rule getRule(Rule rule) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public void deleteAll() {

@@ -9,5 +9,6 @@ package projectse.model.action;
  * @author pasqualegambino
  */
 public interface Action {
+    String getAction();
     void executeAction();
 }

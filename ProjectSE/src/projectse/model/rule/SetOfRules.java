@@ -31,14 +31,4 @@ public class SetOfRules implements Rule{
     public void deleteAll() {
         rules.removeAll();
     }
-    
-    @Override
-    public Rule getRule(Rule rule) {
-        for(Rule r: rules){
-            if(r == rule){
-                return r;
-            }
-        }
-        return null;
-    }
 }
