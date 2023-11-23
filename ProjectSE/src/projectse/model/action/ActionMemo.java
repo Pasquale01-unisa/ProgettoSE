@@ -10,6 +10,18 @@ package projectse.model.action;
  */
 public class ActionMemo implements Action{
     private String memo;
+
+    public ActionMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
     
     @Override
     public String getAction() {

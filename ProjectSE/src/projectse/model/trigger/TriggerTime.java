@@ -11,6 +11,11 @@ package projectse.model.trigger;
 public class TriggerTime implements Trigger{
     private String hour;
     private String minutes;
+
+    public TriggerTime(String hour, String minutes) {
+        this.hour = hour;
+        this.minutes = minutes;
+    }
     
     @Override
     public void checkTrigger() {
@@ -21,4 +26,22 @@ public class TriggerTime implements Trigger{
     public String getTrigger() {
         return "Time -> " + hour + ":" + minutes;
     }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(String minutes) {
+        this.minutes = minutes;
+    }
+    
+    
 }

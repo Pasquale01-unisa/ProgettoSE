@@ -12,7 +12,19 @@ import java.io.File;
  */
 public class ActionAlarm implements Action{
     private File file;
-    
+
+    public ActionAlarm(File file) {
+        this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
     @Override
     public void executeAction() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
