@@ -18,13 +18,20 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
+import projectse.model.action.Action;
+import projectse.model.rule.Rule;
+import projectse.model.rule.SingleRule;
+import projectse.model.trigger.Trigger;
 
 /**
  * FXML Controller class
@@ -34,17 +41,19 @@ import javafx.util.converter.IntegerStringConverter;
 public class MyProjectSEViewController implements Initializable {
 
     @FXML
-    private TableView<?> tableView; 
+    private TableView<SingleRule> tableView; 
     @FXML
-    private TableColumn<?, ?> columnCheck; 
+    private TableColumn<SingleRule, Boolean> columnCheck; 
     @FXML
-    private TableColumn<?, ?> columnName; 
+    private TableColumn<SingleRule, String> columnName; 
     @FXML
-    private TableColumn<?, ?> columnTrigger; 
+    private TableColumn<SingleRule, Trigger> columnTrigger; 
     @FXML
-    private TableColumn<?, ?> columnAction; 
+    private TableColumn<SingleRule, Action> columnAction;
     @FXML
-    private TableColumn<?, ?> columnState;
+    private TableColumn<SingleRule, String> columnState;
+    
+    private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
     
     @FXML
     private MenuItem btnTime;
@@ -87,6 +96,10 @@ public class MyProjectSEViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        columnTrigger.setCellValueFactory(new PropertyValueFactory<>("trigger"));
+        columnAction.setCellValueFactory(new PropertyValueFactory<>("action"));
+        columnState.setCellValueFactory(new PropertyValueFactory<>("state"));
         btnCommit.disableProperty().bind(
             textRuleName.textProperty().isEmpty()
             .or(textAction.textProperty().isEmpty())
@@ -105,6 +118,8 @@ public class MyProjectSEViewController implements Initializable {
         // Personalizza la visualizzazione dei valori negli Spinner
         setupSpinnerWithCustomTextFormatter(numberTriggerH);
         setupSpinnerWithCustomTextFormatter(numberTriggerM);
+        
+        
     }
 
     
