@@ -9,8 +9,8 @@ package projectse.model.rule;
  * @author pasqualegambino
  */
 public interface Rule {
-    void addRule();
-    void deleteRule();
-    //void deleteAll();
-    void getRule();
+    void addRule(Rule rule);
+    void deleteRule(Rule rule);
+    void deleteAll();
+    Rule getRule(Rule rule);
 }

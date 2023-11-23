@@ -79,17 +79,22 @@ public class SingleRule implements Rule{
     }
     
     @Override
-    public void addRule() {
+    public void addRule(Rule rule) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void deleteRule() {
+    public void deleteRule(Rule rule) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
+    
+    @Override
+    public Rule getRule(Rule rule) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
-    public void getRule() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void deleteAll() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
