@@ -32,7 +32,7 @@ public class ActionAlarm implements Action{
 
     @Override
     public String getAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Alarm -> " + file.toString();
     }
     
 }

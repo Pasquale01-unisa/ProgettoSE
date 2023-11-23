@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import projectse.model.action.ActionMemo;
+
 
 /**
  *
@@ -17,28 +19,38 @@ import static org.junit.Assert.*;
  */
 public class ActionMemoTest {
     
-    public ActionMemoTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+    private ActionMemo action;
+    String memoText;
+
     @Before
     public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+        action = new ActionMemo("Test Memo");
+        memoText = "Test Memo";
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    @Test
+    public void testGetMemo() {
+        String result = action.getMemo();
+        assertEquals(memoText, result);
+    }
+    
+    @Test
+    public void testSetMemo() {
+        String newMemo = "New Memo";
+        action.setMemo(newMemo);
+        assertEquals(newMemo, action.getMemo());
+    }
+
+    @Test
+    public void testGetAction() {
+        String result = action.getAction();
+        assertEquals("Memo -> " + memoText, result);
+    }
+
+    @Test
+    public void testExecuteAction() {
+        //Da fare non appena qualcuno implementa l'esecution dell'azione
+    }
 }
+
+

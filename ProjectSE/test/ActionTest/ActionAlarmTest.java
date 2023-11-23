@@ -4,41 +4,56 @@
  */
 package ActionTest;
 
+import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import projectse.model.action.ActionAlarm;
 
 /**
  *
  * @author sara
  */
 public class ActionAlarmTest {
-    
-    public ActionAlarmTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    File testFile, result;
+    ActionAlarm action;
     
     @Before
-    public void setUp() {
+    public void setUp(){
+        testFile = new File("test.txt");
+        action = new ActionAlarm(testFile);
     }
     
-    @After
-    public void tearDown() {
+    @Test
+    public void testActionAlarm(){
+        assertNotNull(action);
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    
+    @Test
+    public void testGetFile(){
+        result=action.getFile();
+        assertEquals(testFile, result);
+    }
+    
+    @Test
+    public void testSetFile() {
+        File newFile = new File("new.txt");
+        action.setFile(newFile);
+        result = action.getFile();
+        assertEquals(newFile, result);
+    }
+    
+    @Test
+    public void testExecuteAction() {
+        //Da implementare quando è stata fatta la funzione di esecuzione del suono
+    }
+    
+    @Test
+    public void testGetAction() {
+        String resultString = action.getAction();
+        assertEquals("Alarm -> " + testFile.toString() , resultString);
+    }
 }

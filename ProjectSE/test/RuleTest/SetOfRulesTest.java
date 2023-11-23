@@ -4,41 +4,63 @@
  */
 package RuleTest;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import projectse.model.action.ActionMemo;
+import projectse.model.rule.Rule;
+import projectse.model.rule.SetOfRules;
+import projectse.model.rule.SingleRule;
+import projectse.model.trigger.TriggerTime;
+
 
 /**
  *
  * @author sara
  */
 public class SetOfRulesTest {
-    
-    public SetOfRulesTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    ObservableList<Rule> rules;
+    SetOfRules setOfRules;
+    Rule rule;
     
     @Before
     public void setUp() {
+        rules = FXCollections.observableArrayList();
+        setOfRules = new SetOfRules(rules);  
+        rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active"); 
     }
     
-    @After
-    public void tearDown() {
+    @Test
+    public void testGetRule() {
+         rules.add(rule);
+         ObservableList<Rule> retrievedRules = setOfRules.getRules();
+         assertEquals(rules, retrievedRules);
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    
+    @Test
+    public void testAddRule() {
+        setOfRules.addRule(rule);
+        assertTrue(rules.contains(rule));
+    }
+    
+    @Test
+    public void testDeleteRule() {
+        setOfRules.addRule(rule);
+        setOfRules.deleteRule(rule);
+        assertFalse(rules.contains(rule));
+    }
+    
+    @Test
+    public void testDeleteAll() {
+        setOfRules.addRule(rule);
+        Rule rule1 = new SingleRule("Regola2", new TriggerTime("21", "00"), new ActionMemo("Update Trello!"), "Active"); 
+        setOfRules.addRule(rule1);
+        setOfRules.deleteAll();
+        assertTrue(setOfRules.getRules().isEmpty());
+    }
 }

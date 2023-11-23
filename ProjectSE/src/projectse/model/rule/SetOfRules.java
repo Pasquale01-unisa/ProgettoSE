@@ -16,6 +16,10 @@ public class SetOfRules implements Rule{
     public SetOfRules(ObservableList<Rule> rules) {
         this.rules = rules;
     }
+
+    public ObservableList<Rule> getRules() {
+        return rules;
+    }
     
     @Override
     public void addRule(Rule rule) {
@@ -29,6 +33,6 @@ public class SetOfRules implements Rule{
 
     @Override
     public void deleteAll() {
-        rules.removeAll();
+        rules.clear();
     }
 }
