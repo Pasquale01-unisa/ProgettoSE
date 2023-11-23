@@ -191,7 +191,28 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onBtnCommit(ActionEvent event) {
-        
+        Trigger trigger = null;
+        Action action = null;
+        if (btnTrigger.getText().equals("Time")){
+            trigger = new TriggerTime(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+        }
+
+        if (btnAction.getText().equals("Memo")){
+            action = new ActionMemo(textAction.getText());
+        }
+
+        SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active");
+        newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
+        ruleList.add(newRule);
+        for(Rule r: ruleList){
+            System.out.println(r.toString());
+        }
+        textRuleName.clear();
+        numberTriggerH.getValueFactory().setValue(00);
+        numberTriggerM.getValueFactory().setValue(00);
+        textAction.clear();
+        btnTrigger.setText("Choose a Trigger");
+        btnAction.setText("Choose an Action"); 
     }
 
 
