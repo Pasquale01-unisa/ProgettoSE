@@ -9,5 +9,5 @@ package projectse.model.trigger;
  * @author pasqualegambino
  */
 public interface Trigger {
-    
+    void checkTrigger();
 }

@@ -9,5 +9,5 @@ package projectse.model.action;
  * @author pasqualegambino
  */
 public interface Action {
-    
+    void executeAction();
 }
