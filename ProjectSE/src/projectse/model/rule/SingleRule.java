@@ -39,8 +39,8 @@ public class SingleRule implements Rule{
     }
 
     // Getter e Setter per trigger
-    public Trigger getTrigger() {
-        return trigger;
+    public String getTrigger() {
+        return trigger.getTrigger();
     }
 
     public void setTrigger(Trigger trigger) {
@@ -48,8 +48,8 @@ public class SingleRule implements Rule{
     }
 
     // Getter e Setter per action
-    public Action getAction() {
-        return action;
+    public String getAction() {
+        return action.getAction();
     }
 
     public void setAction(Action action) {
@@ -91,5 +91,5 @@ public class SingleRule implements Rule{
     @Override
     public void deleteAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }  
 }

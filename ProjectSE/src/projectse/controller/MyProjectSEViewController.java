@@ -29,9 +29,11 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
+import projectse.model.action.ActionMemo;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerTime;
 
 /**
  * FXML Controller class
@@ -47,9 +49,9 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private TableColumn<SingleRule, String> columnName; 
     @FXML
-    private TableColumn<SingleRule, Trigger> columnTrigger; 
+    private TableColumn<SingleRule, String> columnTrigger; 
     @FXML
-    private TableColumn<SingleRule, Action> columnAction;
+    private TableColumn<SingleRule, String> columnAction;
     @FXML
     private TableColumn<SingleRule, String> columnState;
     
@@ -118,6 +120,8 @@ public class MyProjectSEViewController implements Initializable {
         // Personalizza la visualizzazione dei valori negli Spinner
         setupSpinnerWithCustomTextFormatter(numberTriggerH);
         setupSpinnerWithCustomTextFormatter(numberTriggerM);
+        tableView.setItems(ruleList);
+
         
         
     }
