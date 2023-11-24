@@ -131,20 +131,20 @@ public class MyProjectSEViewController implements Initializable {
         // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
         // Assumendo che tu abbia un campo booleano (ad esempio, isSelected) in Rule
         columnCheck.setCellFactory(tc -> new CheckBoxTableCell<SingleRule, Boolean>() {
-        @Override
-        public void updateItem(Boolean item, boolean empty) {
+            @Override
+            public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
                 } else {
                     CheckBox checkBox = new CheckBox();
                     SingleRule rule = getTableView().getItems().get(getIndex());
-                    checkBox.setSelected(rule.getIsSelected());
-                    checkBox.setOnAction(e -> rule.setIsSelected(checkBox.isSelected()));
-                    setGraphic(checkBox);
+                    checkBox.selectedProperty().bindBidirectional(rule.isSelectedProperty());
+                    checkBox.setOnAction(e -> updateButtonState());
                 }
             }
         });
+
         
         rules.getRules().addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
             while (change.next()) {
@@ -170,13 +170,14 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onCheckBox(ActionEvent event) {
-        // Supponiamo che checkTotal sia il tuo CheckBox nell'intestazione
         boolean isSelected = checkTotal.isSelected();
         for (SingleRule rule : rules.getRules()) {
             rule.setIsSelected(isSelected);
         }
         tableView.refresh(); // Aggiorna la TableView per mostrare le modifiche
+        updateButtonState(); // Aggiorna lo stato dei pulsanti
     }
+
 
     @FXML
     private void onTextFieldName(ActionEvent event) {
