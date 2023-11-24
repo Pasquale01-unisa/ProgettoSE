@@ -4,6 +4,7 @@
  */
 package projectse.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -22,6 +23,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
@@ -31,8 +33,10 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
+import projectse.model.action.ActionAlarm;
 import projectse.model.action.ActionMemo;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
@@ -94,6 +98,8 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private CheckBox checkTotal;
+    
+    private File selectedFile = null;
 
 
     /**
@@ -242,6 +248,9 @@ public class MyProjectSEViewController implements Initializable {
         if (btnAction.getText().equals("Memo")){
             action = new ActionMemo(textAction.getText());
         }
+        else if (btnAction.getText().equals("Alarm")){
+            action = new ActionAlarm(selectedFile);
+        }
 
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active");
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
@@ -267,7 +276,17 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnFile(ActionEvent event) {
-        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleziona un File Audio");
+
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
+        fileChooser.getExtensionFilters().add(filter);
+
+        selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            textAction.setText(selectedFile.getName()); 
+        }
     }
 
     private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner) {
