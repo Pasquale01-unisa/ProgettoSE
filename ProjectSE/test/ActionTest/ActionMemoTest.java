@@ -47,10 +47,6 @@ public class ActionMemoTest {
         assertEquals("Memo -> " + memoText, result);
     }
 
-    @Test
-    public void testExecuteAction() {
-        //Da fare non appena qualcuno implementa l'esecution dell'azione
-    }
 }
 
 

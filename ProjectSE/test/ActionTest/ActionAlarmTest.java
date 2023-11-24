@@ -47,11 +47,6 @@ public class ActionAlarmTest {
     }
     
     @Test
-    public void testExecuteAction() {
-        //Da implementare quando è stata fatta la funzione di esecuzione del suono
-    }
-    
-    @Test
     public void testGetAction() {
         String resultString = action.getAction();
         assertEquals("Alarm -> " + testFile.toString() , resultString);
