@@ -115,7 +115,13 @@ public class MyProjectSEViewController implements Initializable {
         columnState.setCellValueFactory(new PropertyValueFactory<>("state"));
         columnCheck.setCellValueFactory(new PropertyValueFactory<>("isSelected"));
         tableView.getSelectionModel().selectedItemProperty().addListener(
-            (observable, oldValue, newValue) -> showDetails(newValue));
+            (observable, oldValue, newValue) -> {
+                if (newValue != null && !tableView.getSelectionModel().isEmpty()) {
+                    showDetails(newValue);
+                }
+            }
+        );
+
         btnCommit.disableProperty().bind(
             textRuleName.textProperty().isEmpty()
             .or(textAction.textProperty().isEmpty())
@@ -140,16 +146,21 @@ public class MyProjectSEViewController implements Initializable {
             @Override
             public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
+                if (!empty) {
                     CheckBox checkBox = new CheckBox();
                     SingleRule rule = getTableView().getItems().get(getIndex());
                     checkBox.selectedProperty().bindBidirectional(rule.isSelectedProperty());
-                    checkBox.setOnAction(e -> updateButtonState());
+                    checkBox.setOnAction(e -> {
+                        rule.setIsSelected(checkBox.isSelected());
+                        updateButtonState();
+                    });
+                    setGraphic(checkBox);
+                } else {
+                    setGraphic(null);
                 }
             }
         });
+
 
         
         rules.getRules().addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
