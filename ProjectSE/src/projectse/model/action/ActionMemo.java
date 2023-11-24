@@ -4,6 +4,8 @@
  */
 package projectse.model.action;
 
+import javafx.scene.control.Alert;
+
 /**
  *
  * @author sara
@@ -30,6 +32,10 @@ public class ActionMemo implements Action{
 
     @Override
     public void executeAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Promemoria");
+        alert.setHeaderText("È tempo del tuo promemoria!");
+        alert.setContentText(memo);
+        alert.showAndWait(); 
     }
 }
