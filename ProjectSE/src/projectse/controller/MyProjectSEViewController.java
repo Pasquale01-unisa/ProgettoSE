@@ -154,7 +154,8 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
         updateButtonState();
-        
+        RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
+        ruleCheckerService.start();
         tableView.setItems(rules.getRules());
 
         

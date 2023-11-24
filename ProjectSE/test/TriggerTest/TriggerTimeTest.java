@@ -1,8 +1,12 @@
 package TriggerTest;
 
+import java.time.LocalTime;
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import projectse.model.trigger.Trigger;
 import projectse.model.trigger.TriggerTime;
 
 public class TriggerTimeTest {
@@ -60,5 +64,23 @@ public class TriggerTimeTest {
         trigger.setHour("09");
         trigger.setMinutes("15");
         assertEquals("Time -> 09:15", trigger.getTrigger());
+    }
+    
+    @Test
+    public void testCheckTrigger() {
+        
+        LocalTime now = LocalTime.now();
+        Trigger trigger = new TriggerTime(formatTime(now.getHour()), formatTime(now.getMinute()));
+
+        
+        assertTrue("Il trigger dovrebbe essere attivo", trigger.checkTrigger());
+
+        
+        trigger = new TriggerTime(formatTime(now.getHour()), formatTime((now.getMinute() + 1) % 60));
+        assertFalse("Il trigger non dovrebbe essere attivo", trigger.checkTrigger());
+    }
+    
+    private String formatTime(int time) {
+        return String.format("%02d", time);
     }
 }
