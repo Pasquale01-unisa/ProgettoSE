@@ -40,8 +40,11 @@ public class TriggerTime implements Trigger{
     }
     
     @Override
-    public void checkTrigger() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean checkTrigger() {
+        LocalTime tempoAttuale = LocalTime.now();
+        String orario = this.getHour() + ":" + this.getMinutes();
+        LocalTime tempoTrigger = LocalTime.parse(orario, DateTimeFormatter.ofPattern("HH:mm"));
+        return tempoAttuale.getHour() == tempoTrigger.getHour() && tempoAttuale.getMinute() == tempoTrigger.getMinute();
     }
 
     @Override

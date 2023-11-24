@@ -10,5 +10,5 @@ package projectse.model.trigger;
  */
 public interface Trigger {
     String getTrigger();
-    void checkTrigger();
+    boolean checkTrigger();
 }
