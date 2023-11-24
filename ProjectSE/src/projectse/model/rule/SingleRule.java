@@ -39,6 +39,10 @@ public class SingleRule implements Rule{
         this.name = name;
     }
 
+    public Trigger getTriggerObject(){
+        return trigger;
+    }
+    
     // Getter e Setter per trigger
     public String getTrigger() {
         return trigger.getTrigger();
@@ -48,6 +52,10 @@ public class SingleRule implements Rule{
         this.trigger = trigger;
     }
 
+    public Action getActionObject(){
+        return action;
+    }
+    
     // Getter e Setter per action
     public String getAction() {
         return action.getAction();
@@ -79,14 +87,14 @@ public class SingleRule implements Rule{
         return isSelected;
     }
 
-    public boolean getIsShow() {
-         return isShow.get();
+    public boolean isIsShow() {
+        return isShow;
     }
 
     public void setIsShow(boolean isShow) {
-        this.isShow.set(isShow);
+        this.isShow = isShow;
     }
-    
+
     @Override
     public void addRule(SingleRule rule) {
         throw new UnsupportedOperationException("Not supported yet.");

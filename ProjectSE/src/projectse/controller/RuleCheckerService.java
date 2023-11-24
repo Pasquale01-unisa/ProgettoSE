@@ -2,6 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package projectse.controller;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,8 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.util.Duration;
+import projectse.controller.MyProjectSEViewController;
+import projectse.model.rule.SingleRule;
 
 public class RuleCheckerService extends ScheduledService<Void> {
     private ObservableList<SingleRule> ruleList;
@@ -37,11 +40,9 @@ public class RuleCheckerService extends ScheduledService<Void> {
 
     private void checkRule() {
         for(SingleRule r : ruleList){
-            if(!r.isShow() && r.getTrigger().checkTrigger()){
+            if(!r.isIsShow() && r.getTriggerObject().checkTrigger()){
                 System.out.println("Verificato");
             }
         }
     }
-
-    
 }
