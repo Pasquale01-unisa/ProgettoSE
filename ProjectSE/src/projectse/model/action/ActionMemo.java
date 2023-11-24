@@ -4,13 +4,14 @@
  */
 package projectse.model.action;
 
+import java.io.Serializable;
 import javafx.scene.control.Alert;
 
 /**
  *
  * @author sara
  */
-public class ActionMemo implements Action{
+public class ActionMemo implements Action, Serializable{
     private String memo;
 
     public ActionMemo(String memo) {

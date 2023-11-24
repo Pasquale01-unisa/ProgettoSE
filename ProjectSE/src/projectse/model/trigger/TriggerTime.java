@@ -4,6 +4,7 @@
  */
 package projectse.model.trigger;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author sara
  */
-public class TriggerTime implements Trigger {
+public class TriggerTime implements Trigger, Serializable {
     private String hour;
     private String minutes;
 

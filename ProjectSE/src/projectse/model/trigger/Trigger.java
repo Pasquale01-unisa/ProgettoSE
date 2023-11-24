@@ -4,6 +4,7 @@
  */
 package projectse.model.trigger;
 
+
 /**
  *
  * @author pasqualegambino

@@ -4,8 +4,12 @@
  */
 package projectse.model.rule;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import projectse.controller.FileManagement;
 import projectse.model.action.Action;
 import projectse.model.trigger.Trigger;
 
@@ -13,12 +17,13 @@ import projectse.model.trigger.Trigger;
  *
  * @author sara
  */
-public class SingleRule implements Rule{
+public class SingleRule implements Rule, Serializable{
     private Trigger trigger;
     private Action action;
     private String name;
     private String state;
-    private BooleanProperty isSelected;// Campo booleano per la gestione delle checkbox
+    private transient BooleanProperty isSelected;
+    private boolean isSelectedValue;
     private boolean isShow = false;
 
     // Costruttore
@@ -27,7 +32,8 @@ public class SingleRule implements Rule{
         this.trigger = trigger;
         this.action = action;
         this.state = state;
-        this.isSelected = new SimpleBooleanProperty(false); // Inizialmente non selezionato
+        this.isSelected = new SimpleBooleanProperty(false);
+        this.isSelectedValue = false;
     }
 
     // Getter e Setter per name
@@ -71,16 +77,17 @@ public class SingleRule implements Rule{
     }
 
     public void setState(String state) {
-        this.state = state;
+        this.state = state; 
     }
 
     // Getter e Setter per isSelected
-    public boolean getIsSelected() {
-         return isSelected.get();
+     public boolean getIsSelected() {
+        return isSelected.get();
     }
 
     public void setIsSelected(boolean isSelected) {
         this.isSelected.set(isSelected);
+        this.isSelectedValue = isSelected; // Mantieni sincronizzato il valore primitivo
     }
 
     public BooleanProperty isSelectedProperty() {
@@ -93,6 +100,11 @@ public class SingleRule implements Rule{
 
     public void setIsShow(boolean isShow) {
         this.isShow = isShow;
+    }
+    
+    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+        aInputStream.defaultReadObject();
+        isSelected = new SimpleBooleanProperty(isSelectedValue);
     }
 
     @Override

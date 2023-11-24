@@ -4,7 +4,21 @@
  */
 package projectse.model.rule;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import projectse.controller.FileManagement;
 
 /**
  *
@@ -15,6 +29,7 @@ public class SetOfRules implements Rule{
     
     public SetOfRules(ObservableList<SingleRule> rules) {
         this.rules = rules;
+        FileManagement.loadRulesFromFile(rules);
     }
 
     public ObservableList<SingleRule> getRules() {
@@ -24,15 +39,20 @@ public class SetOfRules implements Rule{
     @Override
     public void addRule(SingleRule rule) {
         rules.add(rule);
+        FileManagement.saveRulesToFile(rules); 
     }
 
     @Override
     public void deleteRule(SingleRule rule) {
         rules.remove(rule);
+        FileManagement.saveRulesToFile(rules);
     }
 
     @Override
     public void deleteAll() {
         rules.clear();
+        FileManagement.saveRulesToFile(rules);
     }
+    
+    
 }

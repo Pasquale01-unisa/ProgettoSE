@@ -10,15 +10,29 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 
-public class ActionAlarm implements Action {
+public class ActionAlarm implements Action, Serializable {
     private File file;
-    private MediaPlayer mediaPlayer;
+    private transient MediaPlayer mediaPlayer;
 
     public ActionAlarm(File file) {
         this.file = file;
-        Media media = new Media(file.toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
+        initializeMediaPlayer();
+    }
+
+    private void initializeMediaPlayer() {
+        if (file != null) {
+            Media media = new Media(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+        }
+    }
+    
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // Dopo la deserializzazione, reinizializza MediaPlayer
+        initializeMediaPlayer();
     }
 
     @Override
