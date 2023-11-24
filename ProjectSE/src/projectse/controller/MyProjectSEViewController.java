@@ -279,7 +279,7 @@ public class MyProjectSEViewController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleziona un File Audio");
 
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (*.mp3, *.wav, *.aac)", "*.mp3", "*.wav", "*.aac");
         fileChooser.getExtensionFilters().add(filter);
 
         selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
