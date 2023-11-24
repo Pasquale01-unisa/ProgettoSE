@@ -4,6 +4,9 @@
  */
 package projectse.model.trigger;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  *
  * @author sara
