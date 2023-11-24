@@ -348,5 +348,9 @@ public class MyProjectSEViewController implements Initializable {
         btnOnOff.setDisable(!anySelected);
     }
     
+    public void update(){
+        tableView.refresh();
+    }
+    
     
 }

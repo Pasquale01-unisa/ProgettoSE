@@ -41,7 +41,10 @@ public class RuleCheckerService extends ScheduledService<Void> {
     private void checkRule() {
         for(SingleRule r : ruleList){
             if(!r.isIsShow() && r.getTriggerObject().checkTrigger()){
-                System.out.println("Verificato");
+                r.setIsShow(true);
+                Platform.runLater(() -> {r.getActionObject().executeAction();});
+                r.setState("Deactivated");
+                Platform.runLater(() -> {controller.update();});
             }
         }
     }
