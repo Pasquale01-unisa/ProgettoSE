@@ -19,6 +19,7 @@ public class SingleRule implements Rule{
     private String name;
     private String state;
     private BooleanProperty isSelected;// Campo booleano per la gestione delle checkbox
+    private boolean isShow = false;
 
     // Costruttore
     public SingleRule(String name, Trigger trigger, Action action, String state) {
@@ -76,6 +77,14 @@ public class SingleRule implements Rule{
 
     public BooleanProperty isSelectedProperty() {
         return isSelected;
+    }
+
+    public boolean getIsShow() {
+         return isShow.get();
+    }
+
+    public void setIsShow(boolean isShow) {
+        this.isShow.set(isShow);
     }
     
     @Override

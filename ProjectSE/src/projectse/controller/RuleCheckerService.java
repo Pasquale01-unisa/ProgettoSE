@@ -14,13 +14,13 @@ import javafx.scene.control.Alert;
 import javafx.util.Duration;
 
 public class RuleCheckerService extends ScheduledService<Void> {
-    private ObservableList<Rule> listaRegole;
-    private ProvaController c;
+    private ObservableList<SingleRule> ruleList;
+    private MyProjectSEViewController controller;
 
     // Il costruttore accetta ora un PromemoriaCallback
-    public RuleCheckerService(ObservableList<Rule> listaRegole, ProvaController c) {
-        this.listaRegole = listaRegole;
-        this.c = c;
+    public RuleCheckerService(ObservableList<SingleRule> ruleList, MyProjectSEViewController controller) {
+        this.ruleList = ruleList;
+        this.controller = controller;
         setPeriod(Duration.seconds(10)); 
     }
 
@@ -29,18 +29,18 @@ public class RuleCheckerService extends ScheduledService<Void> {
         return new Task<Void>() {
             @Override
             protected Void call() {
-                controllaRegole();
+                checkRule();
                 return null;
             }
         };
     }
 
-    private void controllaRegole() {
-     
-    }
-
-    private boolean deveEssereAttivata() {
-      
+    private void checkRule() {
+        for(SingleRule r : ruleList){
+            if(!r.isShow() && r.getTrigger().checkTrigger()){
+                System.out.println("Verificato");
+            }
+        }
     }
 
     
