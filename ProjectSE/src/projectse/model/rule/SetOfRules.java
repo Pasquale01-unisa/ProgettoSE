@@ -11,23 +11,23 @@ import javafx.collections.ObservableList;
  * @author sara
  */
 public class SetOfRules implements Rule{
-    private ObservableList<Rule> rules;
+    private ObservableList<SingleRule> rules;
     
-    public SetOfRules(ObservableList<Rule> rules) {
+    public SetOfRules(ObservableList<SingleRule> rules) {
         this.rules = rules;
     }
 
-    public ObservableList<Rule> getRules() {
+    public ObservableList<SingleRule> getRules() {
         return rules;
     }
     
     @Override
-    public void addRule(Rule rule) {
+    public void addRule(SingleRule rule) {
         rules.add(rule);
     }
 
     @Override
-    public void deleteRule(Rule rule) {
+    public void deleteRule(SingleRule rule) {
         rules.remove(rule);
     }
 

@@ -79,12 +79,12 @@ public class SingleRule implements Rule{
     }
     
     @Override
-    public void addRule(Rule rule) {
+    public void addRule(SingleRule rule) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void deleteRule(Rule rule) {
+    public void deleteRule(SingleRule rule) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 

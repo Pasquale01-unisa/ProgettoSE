@@ -24,9 +24,9 @@ import projectse.model.trigger.TriggerTime;
  * @author sara
  */
 public class SetOfRulesTest {
-    ObservableList<Rule> rules;
+    ObservableList<SingleRule> rules;
     SetOfRules setOfRules;
-    Rule rule;
+    SingleRule rule;
     
     @Before
     public void setUp() {
@@ -38,7 +38,7 @@ public class SetOfRulesTest {
     @Test
     public void testGetRule() {
          rules.add(rule);
-         ObservableList<Rule> retrievedRules = setOfRules.getRules();
+         ObservableList<SingleRule> retrievedRules = setOfRules.getRules();
          assertEquals(rules, retrievedRules);
     }
     
@@ -58,7 +58,7 @@ public class SetOfRulesTest {
     @Test
     public void testDeleteAll() {
         setOfRules.addRule(rule);
-        Rule rule1 = new SingleRule("Regola2", new TriggerTime("21", "00"), new ActionMemo("Update Trello!"), "Active"); 
+        SingleRule rule1 = new SingleRule("Regola2", new TriggerTime("21", "00"), new ActionMemo("Update Trello!"), "Active"); 
         setOfRules.addRule(rule1);
         setOfRules.deleteAll();
         assertTrue(setOfRules.getRules().isEmpty());

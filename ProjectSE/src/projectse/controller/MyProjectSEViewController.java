@@ -6,6 +6,7 @@ package projectse.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,18 +20,22 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
 import projectse.model.action.ActionMemo;
 import projectse.model.rule.Rule;
+import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
 import projectse.model.trigger.TriggerTime;
@@ -56,7 +61,7 @@ public class MyProjectSEViewController implements Initializable {
     private TableColumn<SingleRule, String> columnState;
     
     private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
-    
+    private SetOfRules rules = new SetOfRules(ruleList);
     @FXML
     private MenuItem btnTime;
     
@@ -102,6 +107,9 @@ public class MyProjectSEViewController implements Initializable {
         columnTrigger.setCellValueFactory(new PropertyValueFactory<>("trigger"));
         columnAction.setCellValueFactory(new PropertyValueFactory<>("action"));
         columnState.setCellValueFactory(new PropertyValueFactory<>("state"));
+        columnCheck.setCellValueFactory(new PropertyValueFactory<>("isSelected"));
+        tableView.getSelectionModel().selectedItemProperty().addListener(
+            (observable, oldValue, newValue) -> showDetails(newValue));
         btnCommit.disableProperty().bind(
             textRuleName.textProperty().isEmpty()
             .or(textAction.textProperty().isEmpty())
@@ -120,7 +128,34 @@ public class MyProjectSEViewController implements Initializable {
         // Personalizza la visualizzazione dei valori negli Spinner
         setupSpinnerWithCustomTextFormatter(numberTriggerH);
         setupSpinnerWithCustomTextFormatter(numberTriggerM);
-        tableView.setItems(ruleList);
+        // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
+        // Assumendo che tu abbia un campo booleano (ad esempio, isSelected) in Rule
+        columnCheck.setCellFactory(tc -> new CheckBoxTableCell<SingleRule, Boolean>() {
+        @Override
+        public void updateItem(Boolean item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    CheckBox checkBox = new CheckBox();
+                    SingleRule rule = getTableView().getItems().get(getIndex());
+                    checkBox.setSelected(rule.getIsSelected());
+                    checkBox.setOnAction(e -> rule.setIsSelected(checkBox.isSelected()));
+                    setGraphic(checkBox);
+                }
+            }
+        });
+        
+        rules.getRules().addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
+            while (change.next()) {
+                if (change.wasAdded() || change.wasRemoved()) {
+                    updateButtonState();
+                }
+            }
+        });
+        updateButtonState();
+        
+        tableView.setItems(rules.getRules());
 
         
         
@@ -135,7 +170,12 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onCheckBox(ActionEvent event) {
-        
+        // Supponiamo che checkTotal sia il tuo CheckBox nell'intestazione
+        boolean isSelected = checkTotal.isSelected();
+        for (SingleRule rule : rules.getRules()) {
+            rule.setIsSelected(isSelected);
+        }
+        tableView.refresh(); // Aggiorna la TableView per mostrare le modifiche
     }
 
     @FXML
@@ -203,7 +243,7 @@ public class MyProjectSEViewController implements Initializable {
 
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active");
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
-        ruleList.add(newRule);
+        rules.addRule(newRule);
         textRuleName.clear();
         numberTriggerH.getValueFactory().setValue(00);
         numberTriggerM.getValueFactory().setValue(00);
@@ -262,6 +302,48 @@ public class MyProjectSEViewController implements Initializable {
         spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
             formatter.setValue(newValue);
         });
+    }
+    
+    private void showDetails(SingleRule selectedRule) {
+        if (selectedRule == null) {
+            // Nessuna riga selezionata
+            return;
+        }
+
+        // Crea un Alert per mostrare i dettagli
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Dettagli Regola");
+        alert.setHeaderText("Informazioni sulla Regola Selezionata");
+
+        // Costruisci il messaggio con i dettagli della riga
+        StringBuilder details = new StringBuilder();
+        details.append("Nome: ").append(selectedRule.getName()).append("\n");
+        details.append("Trigger: ").append(selectedRule.getTrigger()).append("\n");
+        details.append("Azione: ").append(selectedRule.getAction()).append("\n");
+        details.append("State: ").append((selectedRule.getState()));
+
+        alert.setContentText(details.toString());
+
+        // Mostra l'Alert
+        alert.showAndWait();
+
+        // Deseleziona la riga nella TableView nel thread dell'interfaccia utente
+        Platform.runLater(() -> {
+            tableView.getSelectionModel().clearSelection();
+            
+        });
+    }
+    
+    private void updateButtonState() {
+        boolean anySelected = false;
+        for (SingleRule rule : rules.getRules()) {
+            if (rule.getIsSelected()) {
+                anySelected = true;
+                break;
+            }
+        }
+        btnDelete.setDisable(!anySelected);
+        btnOnOff.setDisable(!anySelected);
     }
     
     
