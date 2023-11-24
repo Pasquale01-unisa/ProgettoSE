@@ -11,16 +11,28 @@ import java.time.format.DateTimeFormatter;
  *
  * @author sara
  */
-public class TriggerTime implements Trigger{
+public class TriggerTime implements Trigger {
     private String hour;
     private String minutes;
 
     public TriggerTime(String hour, String minutes) {
-        if (isValidHour(hour) && isValidMinutes(minutes)) {
-            this.hour = hour;
-            this.minutes = minutes;
+        setHour(hour);
+        setMinutes(minutes);
+    }
+
+    public void setHour(String hour) {
+        if (isValidHour(hour)) {
+            this.hour = String.format("%02d", Integer.parseInt(hour));
         } else {
-            throw new IllegalArgumentException("Ora o minuti non validi");
+            throw new IllegalArgumentException("Ora non valida");
+        }
+    }
+
+    public void setMinutes(String minutes) {
+        if (isValidMinutes(minutes)) {
+            this.minutes = String.format("%02d", Integer.parseInt(minutes));
+        } else {
+            throw new IllegalArgumentException("Minuti non validi");
         }
     }
 
@@ -59,17 +71,8 @@ public class TriggerTime implements Trigger{
         return hour;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
-    }
 
     public String getMinutes() {
         return minutes;
-    }
-
-    public void setMinutes(String minutes) {
-        this.minutes = minutes;
-    }
-    
-    
+    }  
 }
