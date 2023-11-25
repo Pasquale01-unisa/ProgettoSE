@@ -138,8 +138,9 @@ public class MyProjectSEViewController implements Initializable {
         numberTriggerM.setValueFactory(minutesFactory);
 
         // Personalizza la visualizzazione dei valori negli Spinner
-        setupSpinnerWithCustomTextFormatter(numberTriggerH);
-        setupSpinnerWithCustomTextFormatter(numberTriggerM);
+        setupSpinnerWithCustomTextFormatter(numberTriggerH, true); // Per ore
+        setupSpinnerWithCustomTextFormatter(numberTriggerM, false); // Per minuti
+
         // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
         // Assumendo che tu abbia un campo booleano (ad esempio, isSelected) in Rule
         columnCheck.setCellFactory(tc -> new CheckBoxTableCell<SingleRule, Boolean>() {
@@ -304,41 +305,49 @@ public class MyProjectSEViewController implements Initializable {
         }
     }
 
-    private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner) {
-        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter() {
-            @Override
-            public String toString(Integer value) {
-                // Questo metodo formatta il valore da visualizzare nell'editor
-                return String.format("%02d", value);
+    private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner, boolean isHour) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinner.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) {
+                return change; // Permette il campo vuoto
             }
 
-            @Override
-            public Integer fromString(String string) {
-                // Questo metodo converte da stringa a valore
-                try {
-                    return Integer.parseInt(string);
-                } catch (NumberFormatException e) {
-                    return 0;
+            try {
+                int newValue = Integer.parseInt(newText);
+                if ((isHour && newValue >= 0 && newValue <= 23) || (!isHour && newValue >= 0 && newValue <= 59)) {
+                    return change;
                 }
+            } catch (NumberFormatException e) {
+                // Non fa nulla se non è un numero valido
             }
-        }, 0, // Default value
-        change -> {
-            // Questo filtro valida il testo inserito nell'editor
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d{0,2}")) {
-                return change;
-            }
-            return null;
+
+            return null; // Ignora le modifiche non valide
         });
 
         spinner.getEditor().setTextFormatter(formatter);
-        spinner.getValueFactory().setValue(0); // Imposta il valore iniziale dello Spinner
+        spinner.setEditable(true); // Rendi lo Spinner modificabile
 
-        // Aggiorna il testo dell'editor ogni volta che il valore dello spinner cambia
-        spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
-            formatter.setValue(newValue);
+        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                String text = String.format("%02d", newValue); // Formatta come stringa a due cifre
+                if (!text.equals(spinner.getEditor().getText())) {
+                    spinner.getEditor().setText(text);
+                }
+                spinner.getValueFactory().setValue(newValue);
+            }
+        });
+        spinner.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // Quando lo spinner perde il focus
+                Integer currentValue = spinner.getValue();
+                if (currentValue != null) {
+                    String text = String.format("%02d", currentValue);
+                    spinner.getEditor().setText(text);
+                }
+            }
         });
     }
+
+
     
     private void showDetails(SingleRule selectedRule) {
         if (selectedRule == null) {

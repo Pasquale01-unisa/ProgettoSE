@@ -82,7 +82,7 @@ public class SingleRule implements Rule, Serializable{
     }
 
     // Getter e Setter per isSelected
-     public boolean getIsSelected() {
+    public boolean getIsSelected() {
         return isSelected.get();
     }
 
