@@ -5,6 +5,7 @@
 package ActionTest;
 
 import java.io.File;
+import javafx.embed.swing.JFXPanel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -21,9 +22,15 @@ public class ActionAlarmTest {
     File testFile, result;
     ActionAlarm action;
     
+    @BeforeClass
+    public static void setUpClass() {
+        // Inizializza l'ambiente JavaFX
+        new JFXPanel(); // Questa linea inizializza l'ambiente JavaFX
+    }
+    
     @Before
     public void setUp(){
-        testFile = new File("test.txt");
+        testFile = new File("song01.wav");
         action = new ActionAlarm(testFile);
     }
     
@@ -40,15 +47,45 @@ public class ActionAlarmTest {
     
     @Test
     public void testSetFile() {
-        File newFile = new File("new.txt");
+        File newFile = new File("song02.wav");
         action.setFile(newFile);
         result = action.getFile();
         assertEquals(newFile, result);
     }
     
+    private boolean isValidAudioFile(File file) {
+        String fileName = file.getName().toLowerCase();
+        return fileName.endsWith(".mp3") || fileName.endsWith(".wav") || fileName.endsWith(".aac");
+    }
+        
     @Test
     public void testGetAction() {
         String resultString = action.getAction();
         assertEquals("Alarm -> " + testFile.toString() , resultString);
     }
+    
+    @Test
+    public void testIsValidAudioFileWithMP3() {
+        File file = new File("test.mp3");
+        assertTrue("Il file dovrebbe essere un file audio valido", isValidAudioFile(file));
+    }
+
+    @Test
+    public void testIsValidAudioFileWithWAV() {
+        File file = new File("test.wav");
+        assertTrue("Il file dovrebbe essere un file audio valido", isValidAudioFile(file));
+    }
+
+    @Test
+    public void testIsValidAudioFileWithAAC() {
+        File file = new File("test.aac");
+        assertTrue("Il file dovrebbe essere un file audio valido", isValidAudioFile(file));
+    }
+
+    @Test
+    public void testIsInvalidAudioFile() {
+        File file = new File("test.txt");
+        assertFalse("Il file non dovrebbe essere un file audio valido", isValidAudioFile(file));
+    }
+
 }

@@ -7,6 +7,7 @@ package projectse.model.trigger;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  *
@@ -75,5 +76,5 @@ public class TriggerTime implements Trigger, Serializable {
 
     public String getMinutes() {
         return minutes;
-    }  
+    }   
 }

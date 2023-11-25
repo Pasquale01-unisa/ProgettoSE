@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import projectse.controller.FileManagement;
@@ -53,6 +54,4 @@ public class SetOfRules implements Rule{
         rules.clear();
         FileManagement.saveRulesToFile(rules);
     }
-    
-    
 }

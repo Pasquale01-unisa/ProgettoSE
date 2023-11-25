@@ -12,13 +12,14 @@ import javafx.scene.control.ButtonType;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ActionAlarm implements Action, Serializable {
     private File file;
     private transient MediaPlayer mediaPlayer;
 
     public ActionAlarm(File file) {
-        this.file = file;
+        setFile(file);
         initializeMediaPlayer();
     }
 
@@ -31,7 +32,6 @@ public class ActionAlarm implements Action, Serializable {
     
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        // Dopo la deserializzazione, reinizializza MediaPlayer
         initializeMediaPlayer();
     }
 
@@ -60,27 +60,34 @@ public class ActionAlarm implements Action, Serializable {
         }
     }
 
-    // Metodo per fermare la riproduzione, se necessario
     public void stopPlaying() {
         if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
             mediaPlayer.stop();
         }
     }
 
-    // Getter e Setter
     public File getFile() {
         return file;
     }
 
     public void setFile(File file) {
-        this.file = file;
-        Media media = new Media(file.toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
+        if (isValidAudioFile(file)) {
+            this.file = file;
+            Media media = new Media(file.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+        } else {
+            System.err.println("File non supportato. Sono supportati solo file MP3, WAV e AAC.");
+        }
+    }
+
+    private boolean isValidAudioFile(File file) {
+        String fileName = file.getName().toLowerCase();
+        return fileName.endsWith(".mp3") || fileName.endsWith(".wav") || fileName.endsWith(".aac");
     }
     
     @Override
     public String getAction() {
         return "Alarm -> " + file.toString();
     }
-
+    
 }
