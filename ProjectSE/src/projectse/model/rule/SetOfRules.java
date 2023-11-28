@@ -49,7 +49,5 @@ public class SetOfRules implements Rule{
     @Override
     public void deleteRule(SingleRule rule) {
         rules.remove(rule);
-        
     }
-
 }

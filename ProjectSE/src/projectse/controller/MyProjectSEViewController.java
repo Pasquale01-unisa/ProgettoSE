@@ -66,6 +66,8 @@ public class MyProjectSEViewController implements Initializable {
     
     private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
     private SetOfRules rules = new SetOfRules(ruleList);
+
+    
     @FXML
     private MenuItem btnTime;
     
@@ -267,8 +269,7 @@ public class MyProjectSEViewController implements Initializable {
         else if (btnAction.getText().equals("Alarm")){
             action = new ActionAlarm(selectedFile);
         }
-
-        SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active");
+        SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
         rules.addRule(newRule);
         textRuleName.clear();

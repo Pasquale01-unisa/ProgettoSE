@@ -32,9 +32,9 @@ public class FileManagementTest {
     public void setUp() {
         rules = FXCollections.observableArrayList();
         badRules = FXCollections.observableArrayList();
-        rules.add(new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active"));
-        rules.add(new SingleRule("Regola2", new TriggerTime("21", "01"), new ActionMemo("Update Trello"), "Active"));
-        badRules.add(new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active"));
+        rules.add(new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", rules));
+        rules.add(new SingleRule("Regola2", new TriggerTime("21", "01"), new ActionMemo("Update Trello"), "Active", rules));
+        badRules.add(new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", badRules));
     }
 
     @Test

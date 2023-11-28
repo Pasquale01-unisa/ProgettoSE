@@ -42,8 +42,7 @@ public class RuleCheckerService extends ScheduledService<Void> {
         for(SingleRule r : ruleList){
             if(!r.isIsShow() && r.getTriggerObject().checkTrigger()){
                 r.setIsShow(true);
-                r.setState("Deactivated");
-                FileManagement.saveRulesToFile(ruleList);   
+                r.setState("Deactivated");   
                 Platform.runLater(() -> {r.getActionObject().executeAction();});
                 Platform.runLater(() -> {controller.update();});
             }

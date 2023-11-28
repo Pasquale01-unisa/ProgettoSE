@@ -37,11 +37,12 @@ public class FileManagement {
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             List<SingleRule> loadedRules = (List<SingleRule>) ois.readObject();
-            rules.clear();
-            rules.addAll(loadedRules);
+            for (SingleRule rule : loadedRules) {
+                rule.setRulesList(rules); // Imposta la lista delle regole per ogni regola deserializzata
+                rules.add(rule); // Aggiungi la regola alla lista ObservableList
+            }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Errore durante la lettura del file: " + e.getMessage());
         }
     }
-    
 }

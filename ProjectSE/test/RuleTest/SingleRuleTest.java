@@ -4,6 +4,8 @@
  */
 package RuleTest;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -22,11 +24,12 @@ import projectse.model.trigger.TriggerTime;
 public class SingleRuleTest {
     SingleRule rule;
     SingleRule ruleException;
+    ObservableList<SingleRule> rules =  FXCollections.observableArrayList();
     
     @Before
     public void setUp(){
-        rule = new SingleRule("TestRule", new TriggerTime("00", "00"), new ActionMemo("TestAction"), "Active");
-        ruleException = new SingleRule("TestRule", new TriggerTime("00", "01"), new ActionMemo("TestAction"), "Deactivated");
+        rule = new SingleRule("TestRule", new TriggerTime("00", "00"), new ActionMemo("TestAction"), "Active", rules);
+        ruleException = new SingleRule("TestRule", new TriggerTime("00", "01"), new ActionMemo("TestAction"), "Deactivated", rules);
     }
     
     @Test 
@@ -78,6 +81,4 @@ public class SingleRuleTest {
     public void deleteRuleTest(){
         rule.deleteRule(ruleException);
     }
-    
-   
 }

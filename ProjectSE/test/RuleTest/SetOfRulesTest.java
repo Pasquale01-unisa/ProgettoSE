@@ -32,7 +32,7 @@ public class SetOfRulesTest {
     public void setUp() {
         rules = FXCollections.observableArrayList();
         setOfRules = new SetOfRules(rules);  
-        rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active"); 
+        rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", rules); 
     }
     
     @Test

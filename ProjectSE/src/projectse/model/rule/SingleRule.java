@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import projectse.controller.FileManagement;
 import projectse.model.action.Action;
 import projectse.model.trigger.Trigger;
@@ -22,19 +25,26 @@ public class SingleRule implements Rule, Serializable{
     private Trigger trigger;
     private Action action;
     private String name;
+    private transient StringProperty stateProperty;
     private String state;
     private transient BooleanProperty isSelected;
     private boolean isSelectedValue;
     private boolean isShow = false;
+    private transient ObservableList<SingleRule> rules;
 
     // Costruttore
-    public SingleRule(String name, Trigger trigger, Action action, String state) {
+    public SingleRule(String name, Trigger trigger, Action action, String state, ObservableList<SingleRule> rules){
         this.name = name;
         this.trigger = trigger;
         this.action = action;
         this.state = state;
+        this.stateProperty = new SimpleStringProperty(state);
         this.isSelected = new SimpleBooleanProperty(false);
         this.isSelectedValue = false;
+        stateProperty.addListener((observable, oldValue, newValue) -> {
+            this.state = newValue; // Aggiorna il campo serializzabile
+            FileManagement.saveRulesToFile(rules); 
+        });
     }
 
     // Getter e Setter per name
@@ -74,13 +84,21 @@ public class SingleRule implements Rule, Serializable{
 
     // Getter e Setter per state
     public String getState() {
-        return state;
+        return stateProperty.get();
     }
 
     public void setState(String state) {
-        this.state = state; 
+        this.stateProperty.set(state); 
     }
 
+    public StringProperty getStateProperty() {
+        return stateProperty;
+    }
+
+    public void setStateProperty(StringProperty stateProperty) {
+        this.stateProperty = stateProperty;
+    }
+    
     // Getter e Setter per isSelected
     public boolean getIsSelected() {
         return isSelected.get();
@@ -106,8 +124,9 @@ public class SingleRule implements Rule, Serializable{
     private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
         aInputStream.defaultReadObject();
         isSelected = new SimpleBooleanProperty(isSelectedValue);
+        this.stateProperty = new SimpleStringProperty(this.state);
     }
-
+    
     @Override
     public void addRule(SingleRule rule) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -117,6 +136,13 @@ public class SingleRule implements Rule, Serializable{
     public void deleteRule(SingleRule rule) {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
-
-     
+    
+    public void setRulesList(ObservableList<SingleRule> rules) {
+        this.rules = rules;
+        
+        stateProperty.addListener((observable, oldValue, newValue) -> {
+            this.state = newValue;
+            FileManagement.saveRulesToFile(rules); // Assicurati di avere accesso alla lista delle regole
+        });
+    }
 }
