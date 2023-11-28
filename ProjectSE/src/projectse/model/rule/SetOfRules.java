@@ -31,6 +31,9 @@ public class SetOfRules implements Rule{
     public SetOfRules(ObservableList<SingleRule> rules) {
         this.rules = rules;
         FileManagement.loadRulesFromFile(rules);
+        rules.addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
+            FileManagement.saveRulesToFile(rules);
+        });
     }
 
     public ObservableList<SingleRule> getRules() {
@@ -40,18 +43,13 @@ public class SetOfRules implements Rule{
     @Override
     public void addRule(SingleRule rule) {
         rules.add(rule);
-        FileManagement.saveRulesToFile(rules); 
+        
     }
 
     @Override
     public void deleteRule(SingleRule rule) {
         rules.remove(rule);
-        FileManagement.saveRulesToFile(rules);
+        
     }
 
-    @Override
-    public void deleteAll() {
-        rules.clear();
-        FileManagement.saveRulesToFile(rules);
-    }
 }

@@ -55,12 +55,5 @@ public class SetOfRulesTest {
         assertFalse(rules.contains(rule));
     }
     
-    @Test
-    public void testDeleteAll() {
-        setOfRules.addRule(rule);
-        SingleRule rule1 = new SingleRule("Regola2", new TriggerTime("21", "00"), new ActionMemo("Update Trello!"), "Active"); 
-        setOfRules.addRule(rule1);
-        setOfRules.deleteAll();
-        assertTrue(setOfRules.getRules().isEmpty());
-    }
+    
 }

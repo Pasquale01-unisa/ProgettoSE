@@ -118,8 +118,5 @@ public class SingleRule implements Rule, Serializable{
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
-    @Override
-    public void deleteAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }  
+     
 }

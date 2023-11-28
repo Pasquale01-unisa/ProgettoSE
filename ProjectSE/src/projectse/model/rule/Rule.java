@@ -11,5 +11,5 @@ package projectse.model.rule;
 public interface Rule {
     void addRule(SingleRule rule);
     void deleteRule(SingleRule rule);
-    void deleteAll();
+    
 }

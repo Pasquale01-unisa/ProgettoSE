@@ -79,8 +79,5 @@ public class SingleRuleTest {
         rule.deleteRule(ruleException);
     }
     
-    @Test(expected=UnsupportedOperationException.class)
-    public void deleteAllTest(){
-        rule.deleteAll();
-    }
+   
 }
