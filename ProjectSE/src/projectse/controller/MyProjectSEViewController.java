@@ -303,7 +303,7 @@ public class MyProjectSEViewController implements Initializable {
         rules.getRules().stream().filter(SingleRule::getIsSelected)
             .forEach(rule -> {
                 // Cambia lo stato da "Active" a "Inactive" e viceversa
-                rule.setState(rule.getState().equals("Active") ? "Inactive" : "Active");
+                rule.setState(rule.getState().equals("Active") ? "Deactivated" : "Active");
 
                 // Controlla se la regola è attiva e l'hai già vista
                 if (rule.getState().equals("Active") && rule.isIsShow()) {
