@@ -6,7 +6,9 @@ package projectse.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
@@ -174,8 +177,6 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
         updateButtonState();
-        btnDelete.setVisible(false);
-        btnOnOff.setVisible(false);
         btnAddTrigger.setDisable(true);
         btnAddAction.setDisable(true);
         RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
@@ -283,8 +284,19 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onBtnDelete(ActionEvent event) {
-       
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Conferma Eliminazione");
+        confirmAlert.setHeaderText("Sei sicuro di voler eliminare le regole selezionate?");
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            rules.getRules().stream().filter(SingleRule::getIsSelected)
+                .collect(Collectors.toList()).forEach(rules::deleteRule);
+
+            updateButtonState();
+        }
     }
+
 
     @FXML
     private void onBtnOnOff(ActionEvent event) {
