@@ -123,7 +123,7 @@ public class SingleRule implements Rule, Serializable{
     
     private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
         aInputStream.defaultReadObject();
-        isSelected = new SimpleBooleanProperty(isSelectedValue);
+        isSelected = new SimpleBooleanProperty(false);
         this.stateProperty = new SimpleStringProperty(this.state);
     }
     

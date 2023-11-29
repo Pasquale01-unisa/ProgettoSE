@@ -7,6 +7,7 @@ package projectse.controller;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -174,8 +175,6 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
         updateButtonState();
-        btnDelete.setVisible(false);
-        btnOnOff.setVisible(false);
         btnAddTrigger.setDisable(true);
         btnAddAction.setDisable(true);
         RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
@@ -288,7 +287,18 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onBtnOnOff(ActionEvent event) {
-        
+        rules.getRules().stream().filter(SingleRule::getIsSelected)
+            .forEach(rule -> {
+                // Cambia lo stato da "Active" a "Inactive" e viceversa
+                rule.setState(rule.getState().equals("Active") ? "Inactive" : "Active");
+
+                // Controlla se la regola è attiva e l'hai già vista
+                if (rule.getState().equals("Active") && rule.isIsShow()) {
+                    rule.setIsShow(false); // Rimetti isShow a false in modo che venga ricontrollata
+                }   
+        });
+        tableView.refresh();
+        updateButtonState();
     }
     
     @FXML
