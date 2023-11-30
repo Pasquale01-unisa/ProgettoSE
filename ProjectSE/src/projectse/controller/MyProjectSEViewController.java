@@ -25,6 +25,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -36,10 +37,12 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
 import projectse.model.action.ActionAlarm;
+import projectse.model.action.ActionAppendFile;
 import projectse.model.action.ActionMemo;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
@@ -95,11 +98,16 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private TextField textAction;
     @FXML
+    private TextField textActionStringToFile;
+    @FXML
+    private MenuItem btnAppentTextToFile;
+    @FXML
     private Button btnCommit;
     @FXML
     private Button btnDelete;
     @FXML
     private Button btnOnOff;
+   
     
     @FXML
     private CheckBox checkTotal;
@@ -126,7 +134,7 @@ public class MyProjectSEViewController implements Initializable {
                 }
             }
         );
-
+       
         btnCommit.disableProperty().bind(
             textRuleName.textProperty().isEmpty()
             .or(textAction.textProperty().isEmpty())
@@ -136,6 +144,7 @@ public class MyProjectSEViewController implements Initializable {
                 btnTrigger.getText().equals("Choose a Trigger"), btnTrigger.textProperty()))
         );
         btnFile.setManaged(false);
+        textActionStringToFile.setManaged(false);
         // Configura gli Spinner per le ore e i minuti
         SpinnerValueFactory<Integer> hoursFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
         SpinnerValueFactory<Integer> minutesFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
@@ -226,6 +235,8 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnAlarm(ActionEvent event) {
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
@@ -235,12 +246,25 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnMemo(ActionEvent event) {
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
         textAction.setDisable(false);
         btnFile.setManaged(false);
         btnFile.setVisible(false);
         textAction.clear();
         textAction.setPromptText("Inserisci promemoria"); // Imposta un placeholder o un suggerimento
         btnAction.setText("Memo"); // Cambia il testo del MenuButton
+    }
+    @FXML
+    private void onBtnAppentTextToFile(ActionEvent event) {
+        textAction.setDisable(true);
+        textActionStringToFile.setManaged(true);
+        textActionStringToFile.setVisible(true);
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        textAction.clear();
+        textActionStringToFile.setPromptText("Inserisci Testo");
+        btnAction.setText("Append text to file");
     }
     
     
@@ -269,6 +293,9 @@ public class MyProjectSEViewController implements Initializable {
         }
         else if (btnAction.getText().equals("Alarm")){
             action = new ActionAlarm(selectedFile);
+        }
+        else if (btnAction.getText().equals("Append text to file")){
+            action = new ActionAppendFile(textActionStringToFile.getText(),selectedFile);
         }
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
@@ -317,16 +344,31 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private void onBtnFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleziona un File Audio");
+        if(btnAction.getText().equals("Alarm")){
+            fileChooser.setTitle("Seleziona un File Audio");
 
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (*.mp3, *.wav, *.aac)", "*.mp3", "*.wav", "*.aac");
-        fileChooser.getExtensionFilters().add(filter);
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (*.mp3, *.wav, *.aac)", "*.mp3", "*.wav", "*.aac");
+            fileChooser.getExtensionFilters().add(filter);
 
-        selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
+            selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
 
-        if (selectedFile != null) {
-            textAction.setText(selectedFile.getName()); 
+            if (selectedFile != null) {
+                textAction.setText(selectedFile.getName()); 
+            }
+        }else{
+            fileChooser.setTitle("Seleziona un file sul quale scrivere una stringa");
+            
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(filter);
+            
+            selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
+
+            if (selectedFile != null) {
+                textAction.setText(selectedFile.getName()); 
+            }
+
         }
+        
     }
 
     private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner, boolean isHour) {
