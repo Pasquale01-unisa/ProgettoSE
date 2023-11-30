@@ -300,6 +300,7 @@ public class MyProjectSEViewController implements Initializable {
         numberTriggerH.getValueFactory().setValue(00);
         numberTriggerM.getValueFactory().setValue(00);
         textAction.clear();
+        textActionStringToFile.clear();
         btnTrigger.setText("Choose a Trigger");
         btnAction.setText("Choose an Action"); 
     }
