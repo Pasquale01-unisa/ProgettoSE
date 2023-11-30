@@ -43,6 +43,7 @@ import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
 import projectse.model.action.ActionAlarm;
 import projectse.model.action.ActionAppendFile;
+import projectse.model.action.ActionDeleteFile;
 import projectse.model.action.ActionMemo;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
@@ -76,7 +77,7 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private MenuItem btnTime;
     @FXML
-    private Button btnDeleteFile;
+    private MenuItem btnDeleteFile;
     @FXML
     private Button btnFile;
     @FXML
