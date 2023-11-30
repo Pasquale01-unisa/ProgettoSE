@@ -42,6 +42,7 @@
             <MenuItem fx:id="btnAlarm" mnemonicParsing="false" onAction="#onBtnAlarm" text="Alarm" />
             <MenuItem fx:id="btnMemo" mnemonicParsing="false" onAction="#onBtnMemo" text="Memo" />
             <MenuItem fx:id="btnAppentTextToFile" mnemonicParsing="false" onAction="#onBtnAppentTextToFile" text="Append Text To File" />
+            <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
          </items>
       </MenuButton>
       <Button fx:id="btnAddAction" layoutX="697.0" layoutY="118.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />

@@ -56,7 +56,6 @@ import projectse.model.trigger.TriggerTime;
  * @author pasqualegambino
  */
 public class MyProjectSEViewController implements Initializable {
-
     @FXML
     private TableView<SingleRule> tableView; 
     @FXML
@@ -76,8 +75,8 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private MenuItem btnTime;
-    
-
+    @FXML
+    private Button btnDeleteFile;
     @FXML
     private Button btnFile;
     @FXML
@@ -90,7 +89,6 @@ public class MyProjectSEViewController implements Initializable {
     private Spinner numberTriggerH;
     @FXML
     private Spinner numberTriggerM;
-    
     @FXML
     private MenuButton btnAction;
     @FXML
@@ -107,8 +105,6 @@ public class MyProjectSEViewController implements Initializable {
     private Button btnDelete;
     @FXML
     private Button btnOnOff;
-   
-    
     @FXML
     private CheckBox checkTotal;
     
@@ -176,8 +172,6 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
 
-
-        
         rules.getRules().addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
             while (change.next()) {
                 if (change.wasAdded() || change.wasRemoved()) {
@@ -191,18 +185,12 @@ public class MyProjectSEViewController implements Initializable {
         RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
         ruleCheckerService.start();
         tableView.setItems(rules.getRules());
-
-        
-        
     }
 
-    
-    
     private void updateDeleteButtonState() {
         
     }
     
-
     @FXML
     private void onCheckBox(ActionEvent event) {
         boolean isSelected = checkTotal.isSelected();
@@ -212,7 +200,6 @@ public class MyProjectSEViewController implements Initializable {
         tableView.refresh(); // Aggiorna la TableView per mostrare le modifiche
         updateButtonState(); // Aggiorna lo stato dei pulsanti
     }
-
 
     @FXML
     private void onTextFieldName(ActionEvent event) {
@@ -227,8 +214,7 @@ public class MyProjectSEViewController implements Initializable {
     private void onBtnTime(ActionEvent event) {
         btnTrigger.setText("Time"); // Cambia il testo del MenuButton 
     }
-
-
+    
     @FXML
     private void onBtnAddTrigger(ActionEvent event) {
     }
@@ -266,10 +252,18 @@ public class MyProjectSEViewController implements Initializable {
         textActionStringToFile.setPromptText("Inserisci Testo");
         btnAction.setText("Append text to file");
     }
-    
-    
+       
     @FXML
     private void onBtnAction(ActionEvent event) {
+    }
+    
+    @FXML
+    private void onBtnDeleteFile(ActionEvent event) {
+        textAction.setDisable(true);
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        textAction.clear();
+        btnAction.setText("Delete file");
     }
 
     @FXML
@@ -290,13 +284,14 @@ public class MyProjectSEViewController implements Initializable {
 
         if (btnAction.getText().equals("Memo")){
             action = new ActionMemo(textAction.getText());
-        }
-        else if (btnAction.getText().equals("Alarm")){
+        } else if (btnAction.getText().equals("Alarm")){
             action = new ActionAlarm(selectedFile);
-        }
-        else if (btnAction.getText().equals("Append text to file")){
+        } else if (btnAction.getText().equals("Append text to file")){
             action = new ActionAppendFile(textActionStringToFile.getText(),selectedFile);
+        } else if(btnAction.getText().equals("Delete file")){
+            action = new ActionDeleteFile(selectedFile);
         }
+        
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
         rules.addRule(newRule);
@@ -307,7 +302,6 @@ public class MyProjectSEViewController implements Initializable {
         btnTrigger.setText("Choose a Trigger");
         btnAction.setText("Choose an Action"); 
     }
-
 
     @FXML
     private void onBtnDelete(ActionEvent event) {
@@ -324,18 +318,13 @@ public class MyProjectSEViewController implements Initializable {
         }
     }
 
-
     @FXML
     private void onBtnOnOff(ActionEvent event) {
         rules.getRules().stream().filter(SingleRule::getIsSelected)
             .forEach(rule -> {
+                rule.setIsShow(false); // Rimetti isShow a false in modo che venga ricontrollata
                 // Cambia lo stato da "Active" a "Inactive" e viceversa
-                rule.setState(rule.getState().equals("Active") ? "Deactivated" : "Active");
-
-                // Controlla se la regola è attiva e l'hai già vista
-                if (rule.getState().equals("Active") && rule.isIsShow()) {
-                    rule.setIsShow(false); // Rimetti isShow a false in modo che venga ricontrollata
-                }   
+                rule.setState(rule.getState().equals("Active") ? "Deactivated" : "Active"); 
         });
         tableView.refresh();
         updateButtonState();
@@ -344,31 +333,22 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private void onBtnFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        if(btnAction.getText().equals("Alarm")){
-            fileChooser.setTitle("Seleziona un File Audio");
+        fileChooser.setTitle("Choose a File");
 
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (*.mp3, *.wav, *.aac)", "*.mp3", "*.wav", "*.aac");
+        // Controlla se il testo del pulsante btnAction è "Alarm"
+        if ("Alarm".equals(btnAction.getText())) {
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
             fileChooser.getExtensionFilters().add(filter);
-
-            selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
-
-            if (selectedFile != null) {
-                textAction.setText(selectedFile.getName()); 
-            }
-        }else{
-            fileChooser.setTitle("Seleziona un file sul quale scrivere una stringa");
-            
+        } else if("Append text to file".equals(btnAction.getText())){
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(filter);
-            
-            selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
-
-            if (selectedFile != null) {
-                textAction.setText(selectedFile.getName()); 
-            }
-
         }
-        
+
+        selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            textAction.setText(selectedFile.getName()); 
+        }
     }
 
     private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner, boolean isHour) {
@@ -377,7 +357,6 @@ public class MyProjectSEViewController implements Initializable {
             if (newText.isEmpty()) {
                 return change; // Permette il campo vuoto
             }
-
             try {
                 int newValue = Integer.parseInt(newText);
                 if ((isHour && newValue >= 0 && newValue <= 23) || (!isHour && newValue >= 0 && newValue <= 59)) {
@@ -386,7 +365,6 @@ public class MyProjectSEViewController implements Initializable {
             } catch (NumberFormatException e) {
                 // Non fa nulla se non è un numero valido
             }
-
             return null; // Ignora le modifiche non valide
         });
 
@@ -412,8 +390,6 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
     }
-
-
     
     private void showDetails(SingleRule selectedRule) {
         if (selectedRule == null) {
