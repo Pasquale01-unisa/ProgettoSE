@@ -7,3 +7,4 @@
 *.mf
 /ProjectSE/build/
 /ProjectSE/dist/
+/JavaFXApplication8/nbproject/private/
