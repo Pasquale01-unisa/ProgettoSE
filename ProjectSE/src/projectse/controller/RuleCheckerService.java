@@ -40,7 +40,7 @@ public class RuleCheckerService extends ScheduledService<Void> {
 
     private void checkRule() {
         for(SingleRule r : ruleList){
-            if(!r.isIsShow() && r.getTriggerObject().checkTrigger()){
+            if(!r.isIsShow() && r.getTriggerObject().checkTrigger() && r.getState().equals("Active")){
                 r.setIsShow(true);
                 r.setState("Deactivated");   
                 Platform.runLater(() -> {r.getActionObject().executeAction();});
