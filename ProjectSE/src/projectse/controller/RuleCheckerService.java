@@ -45,6 +45,7 @@ public class RuleCheckerService extends ScheduledService<Void> {
             if(r.isSleeping() && LocalDateTime.now().isAfter(r.getRepetition())){
                 r.setIsShow(false);
                 r.setSleeping(false);
+                r.setRepeat(false);
                 r.setState("Active");
                 controller.update();
             }
