@@ -6,6 +6,8 @@ package projectse.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -29,7 +31,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
@@ -37,6 +42,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
@@ -107,9 +113,14 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private Button btnOnOff;
     @FXML
+    private Button btnRepetition;
+    @FXML
     private CheckBox checkTotal;
     
     private File selectedFile = null;
+    //--------
+    private Duration sleepingTime;
+    private boolean repeat = false;
 
 
     /**
@@ -294,6 +305,13 @@ public class MyProjectSEViewController implements Initializable {
         }
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
+         newRule.setCreation(LocalDateTime.now());
+        if(repeat){
+            
+            newRule.setSleepingTime(sleepingTime);
+            newRule.setRepeat(true);
+            newRule.setRepetition(newRule.getCreation().plus(newRule.getSleepingTime()));
+        }
         newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
         rules.addRule(newRule);
         textRuleName.clear();
@@ -437,6 +455,63 @@ public class MyProjectSEViewController implements Initializable {
     
     public void update(){
         tableView.refresh();
+    }
+    
+        @FXML
+    private void OnBtnRepetition(ActionEvent event) {
+        // Crea il dialogo
+        Dialog<Object> dialog = new Dialog<>();
+        dialog.setTitle("Set Sleeping Time");
+
+        // Imposta il tipo di bottone
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        // Crea i due campi di testo
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField textField1 = new TextField();
+        textField1.setPromptText("0");
+        TextField textField2 = new TextField();
+        textField2.setPromptText("0");
+        TextField textField3 = new TextField();
+        textField3.setPromptText("0");
+
+        grid.add(new Label("Days: "), 0, 0);
+        grid.add(textField1, 1, 0);
+        grid.add(new Label("Hours: "), 0, 1);
+        grid.add(textField2, 1, 1);
+        grid.add(new Label("Minutes: "), 0, 2);
+        grid.add(textField3, 1, 2);
+
+        // Abilita/Disabilita il bottone OK a seconda se i TextField sono vuoti o meno
+        Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
+        okButton.setDisable(true);
+
+        // Aggiungi un listener per il controllo dei campi di testo
+        textField1.textProperty().addListener((observable, oldValue, newValue) -> {
+            okButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus sul primo campo di testo all'apertura del dialog
+        Platform.runLater(textField1::requestFocus);
+
+        // Converti il risultato al click del bottone OK in una coppia di stringhe
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                sleepingTime = Duration.ofDays(Integer.parseInt(textField1.getText())).plusHours(Integer.parseInt(textField2.getText())).plusMinutes(Integer.parseInt(textField3.getText()));
+            }
+            return null;
+        });
+
+        // Mostra il dialog e attendi il risultato
+        Optional<Object> result = dialog.showAndWait();
+        repeat = true;
     }
     
     

@@ -7,6 +7,8 @@ package projectse.model.rule;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,6 +33,12 @@ public class SingleRule implements Rule, Serializable{
     private boolean isSelectedValue;
     private boolean isShow = false;
     private transient ObservableList<SingleRule> rules;
+    //---------------
+    private LocalDateTime creation;
+    private Duration sleepingTime;
+    private boolean repeat = false;
+    private boolean sleeping = false;
+    private LocalDateTime repetition;
 
     // Costruttore
     public SingleRule(String name, Trigger trigger, Action action, String state, ObservableList<SingleRule> rules){
@@ -46,7 +54,49 @@ public class SingleRule implements Rule, Serializable{
             FileManagement.saveRulesToFile(rules); 
         });
     }
+    //----
 
+    public LocalDateTime getRepetition() {
+        return repetition;
+    }
+
+    public void setRepetition(LocalDateTime repetition) {
+        this.repetition = repetition;
+    }
+  
+    public LocalDateTime getCreation() {
+        return creation;
+    }
+
+    public void setCreation(LocalDateTime creation) {
+        this.creation = creation;
+    }
+
+    public Duration getSleepingTime() {
+        return sleepingTime;
+    }
+
+    public void setSleepingTime(Duration sleepingTime) {
+        this.sleepingTime = sleepingTime;
+    }
+
+    public boolean isSleeping() {
+        return sleeping;
+    }
+
+    public void setSleeping(boolean sleeping) {
+        this.sleeping = sleeping;
+    }
+    
+    public boolean isRepeat() {
+        return repeat;
+    }
+    
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
+    }
+
+    //----
     // Getter e Setter per name
     public String getName() {
         return name;
@@ -145,4 +195,8 @@ public class SingleRule implements Rule, Serializable{
             FileManagement.saveRulesToFile(rules); // Assicurati di avere accesso alla lista delle regole
         });
     }
+
+    
+    
+    
 }

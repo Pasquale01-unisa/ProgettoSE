@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController">
    <children>
       <TableView fx:id="tableView" layoutX="11.0" layoutY="32.0" prefHeight="446.0" prefWidth="511.0">
         <columns>
@@ -73,5 +73,6 @@
       <Spinner fx:id="numberTriggerH" layoutX="541.0" layoutY="89.0" prefHeight="27.0" prefWidth="91.0" />
       <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="89.0" prefHeight="27.0" prefWidth="84.0" />
       <Label layoutX="638.0" layoutY="94.0" text=":" />
+      <Button fx:id="btnRepetition" layoutX="661.0" layoutY="489.0" mnemonicParsing="false" onAction="#OnBtnRepetition" text="Repetition" />
    </children>
 </AnchorPane>

@@ -39,7 +39,7 @@ public class FileManagement {
             List<SingleRule> loadedRules = (List<SingleRule>) ois.readObject();
             for (SingleRule rule : loadedRules) {
                 rule.setRulesList(rules); // Imposta la lista delle regole per ogni regola deserializzata
-                rules.add(rule); // Aggiungi la regola alla lista ObservableList
+                rules.add(rule); // Aggiungi la regola alla lista ObservableList;
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Errore durante la lettura del file: " + e.getMessage());

@@ -4,6 +4,7 @@
  */
 package projectse.controller;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -40,9 +41,21 @@ public class RuleCheckerService extends ScheduledService<Void> {
 
     private void checkRule() {
         for(SingleRule r : ruleList){
-            if(!r.isIsShow() && r.getTriggerObject().checkTrigger() && r.getState().equals("Active")){
+            
+            if(r.isSleeping() && LocalDateTime.now().isAfter(r.getRepetition())){
+                r.setIsShow(false);
+                r.setSleeping(false);
+                r.setState("Active");
+                controller.update();
+            }
+            
+            if(!r.isSleeping() && !r.isIsShow() && r.getTriggerObject().checkTrigger() && r.getState().equals("Active")){
                 r.setIsShow(true);
+                if(r.isRepeat()){
+                    r.setSleeping(true);
+                }
                 r.setState("Deactivated");   
+
                 Platform.runLater(() -> {r.getActionObject().executeAction();});
                 Platform.runLater(() -> {controller.update();});
             }

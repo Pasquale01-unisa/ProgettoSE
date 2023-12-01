@@ -4,6 +4,8 @@
  */
 package RuleTest;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import static junit.framework.Assert.assertEquals;
@@ -70,6 +72,76 @@ public class SingleRuleTest {
 
         rule.setIsSelected(true);
         assertTrue(rule.getIsSelected());
+    }
+    
+     @Test
+    public void testGetRepetition() {
+        LocalDateTime repetition = LocalDateTime.now();
+        rule.setRepetition(repetition);
+        assertEquals(repetition, rule.getRepetition());
+    }
+
+    @Test
+    public void testSetRepetition() {
+        LocalDateTime repetition = LocalDateTime.now();
+        rule.setRepetition(repetition);
+        assertEquals(repetition, rule.getRepetition());
+    }
+
+    @Test
+    public void testGetCreation() {
+        LocalDateTime creation = LocalDateTime.now();
+        rule.setCreation(creation);
+        assertEquals(creation, rule.getCreation());
+    }
+
+    @Test
+    public void testSetCreation() {
+        LocalDateTime creation = LocalDateTime.now();
+        rule.setCreation(creation);
+        assertEquals(creation, rule.getCreation());
+    }
+
+    @Test
+    public void testGetSleepingTime() {
+        Duration sleepingTime = Duration.ofHours(2);
+        rule.setSleepingTime(sleepingTime);
+        assertEquals(sleepingTime, rule.getSleepingTime());
+    }
+
+    @Test
+    public void testSetSleepingTime() {
+        Duration sleepingTime = Duration.ofHours(2);
+        rule.setSleepingTime(sleepingTime);
+        assertEquals(sleepingTime, rule.getSleepingTime());
+    }
+
+    @Test
+    public void testIsSleeping() {
+        assertFalse(rule.isSleeping());
+        rule.setSleeping(true);
+        assertTrue(rule.isSleeping());
+    }
+
+    @Test
+    public void testSetSleeping() {
+        assertFalse(rule.isSleeping());
+        rule.setSleeping(true);
+        assertTrue(rule.isSleeping());
+    }
+
+    @Test
+    public void testIsRepeat() {
+        assertFalse(rule.isRepeat());
+        rule.setRepeat(true);
+        assertTrue(rule.isRepeat());
+    }
+
+    @Test
+    public void testSetRepeat() {
+        assertFalse(rule.isRepeat());
+        rule.setRepeat(true);
+        assertTrue(rule.isRepeat());
     }
     
     @Test(expected=UnsupportedOperationException.class)
