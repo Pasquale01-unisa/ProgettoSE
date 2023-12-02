@@ -26,16 +26,18 @@ public class ActionMoveFile implements Action, Serializable {
 
     @Override
     public void executeAction() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert;
         Path fromPath = Paths.get(fromPathString);
         Path toPath = Paths.get(toDirectoryPathString, fromPath.getFileName().toString());
 
         try {
             Files.move(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
+            alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Spostamento File");
             alert.setHeaderText(null);
             alert.setContentText("File spostato con successo: " + fromPath.getFileName().toString());
         } catch (IOException e) {
+            alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Errore!");
             alert.setHeaderText(null);
             alert.setContentText("Si è verificato un errore durante lo spostamento del file: " + e.getMessage());
