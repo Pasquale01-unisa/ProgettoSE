@@ -120,6 +120,8 @@ public class MyProjectSEViewController implements Initializable {
     private MenuItem btnCopyFile;
     @FXML
     private Button btnChooseDirectory;
+    @FXML
+    private MenuItem btnMoveFile;
     
     private File selectedFile = null;
     //--------
@@ -312,6 +314,8 @@ public class MyProjectSEViewController implements Initializable {
             action = new ActionDeleteFile(selectedFile);
         } else if(btnAction.getText().equals("Copy file")){
             //action = new ActionCopyFile(selectedFile, selectedDirectory);
+        } else if(btnAction.getText().equals("Move file")){
+            //action = new ActionMoveFile(selectedFile, selectedDirectory);
         }
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
@@ -541,6 +545,25 @@ public class MyProjectSEViewController implements Initializable {
         textActionStringToFile.clear();
         
         btnAction.setText("Copy file");
+    }
+    
+    @FXML
+    private void onBtnMoveFile(ActionEvent event){
+        //Function to show the fields when we choose the copy file action
+        textAction.setDisable(true);
+        textActionStringToFile.setDisable(true);
+        textActionStringToFile.setManaged(true);
+        textActionStringToFile.setVisible(true);
+        
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        btnChooseDirectory.setManaged(true);
+        btnChooseDirectory.setVisible(true);
+        
+        textAction.clear();
+        textActionStringToFile.clear();
+        
+        btnAction.setText("Move file");
     }
     
     @FXML
