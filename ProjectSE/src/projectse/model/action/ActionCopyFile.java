@@ -17,8 +17,8 @@ import javafx.scene.control.Alert;
  * @author viki0
  */
 public class ActionCopyFile implements Action{
-    String sourceFile;
-    String destinationDirectory;
+    private String sourceFile;
+    private String destinationDirectory;
     
     public ActionCopyFile(String sourceFile,String destinationDirectory){
         this.destinationDirectory = destinationDirectory;
