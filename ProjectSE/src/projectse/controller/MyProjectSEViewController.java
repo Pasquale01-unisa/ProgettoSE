@@ -44,6 +44,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
@@ -79,7 +80,6 @@ public class MyProjectSEViewController implements Initializable {
     private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
     private SetOfRules rules = new SetOfRules(ruleList);
 
-    
     @FXML
     private MenuItem btnTime;
     @FXML
@@ -116,11 +116,16 @@ public class MyProjectSEViewController implements Initializable {
     private Button btnRepetition;
     @FXML
     private CheckBox checkTotal;
+    @FXML
+    private MenuItem btnCopyFile;
+    @FXML
+    private Button btnChooseDirectory;
     
     private File selectedFile = null;
     //--------
     private Duration sleepingTime;
     private boolean repeat = false;
+    private File selectedDirectory = null;
 
 
     /**
@@ -196,6 +201,9 @@ public class MyProjectSEViewController implements Initializable {
         btnAddAction.setDisable(true);
         RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
         ruleCheckerService.start();
+        
+        btnChooseDirectory.setManaged(false);
+        
         tableView.setItems(rules.getRules());
     }
 
@@ -302,6 +310,8 @@ public class MyProjectSEViewController implements Initializable {
             action = new ActionAppendFile(textActionStringToFile.getText(),selectedFile);
         } else if(btnAction.getText().equals("Delete file")){
             action = new ActionDeleteFile(selectedFile);
+        } else if(btnAction.getText().equals("Copy file")){
+            //action = new ActionCopyFile(selectedFile, selectedDirectory);
         }
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
@@ -457,7 +467,7 @@ public class MyProjectSEViewController implements Initializable {
         tableView.refresh();
     }
     
-        @FXML
+    @FXML
     private void OnBtnRepetition(ActionEvent event) {
         // Crea il dialogo
         Dialog<Object> dialog = new Dialog<>();
@@ -514,5 +524,35 @@ public class MyProjectSEViewController implements Initializable {
         repeat = true;
     }
     
+    @FXML
+    private void onBtnCopyFile(ActionEvent event){
+        //Function to show the fields when we choose the copy file action
+        textAction.setDisable(true);
+        textActionStringToFile.setDisable(true);
+        textActionStringToFile.setManaged(true);
+        textActionStringToFile.setVisible(true);
+        
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        btnChooseDirectory.setManaged(true);
+        btnChooseDirectory.setVisible(true);
+        
+        textAction.clear();
+        textActionStringToFile.clear();
+        
+        btnAction.setText("Copy file");
+    }
     
+    @FXML
+    private void onBtnChooseDirectory(ActionEvent event){
+        //function to choose a directory to move or copy a file
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose a Directory");
+
+        selectedDirectory = directoryChooser.showDialog(((Node)event.getSource()).getScene().getWindow());
+
+        if (selectedDirectory != null) {
+            textActionStringToFile.setText(selectedDirectory.getAbsolutePath());
+        } 
+    }
 }

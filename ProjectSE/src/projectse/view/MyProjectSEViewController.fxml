@@ -43,6 +43,7 @@
             <MenuItem fx:id="btnMemo" mnemonicParsing="false" onAction="#onBtnMemo" text="Memo" />
             <MenuItem fx:id="btnAppentTextToFile" mnemonicParsing="false" onAction="#onBtnAppentTextToFile" text="Append Text To File" />
             <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
+            <MenuItem fx:id="btnCopyFile" mnemonicParsing="false" onAction="#onBtnCopyFile" text="Copy File" />
          </items>
       </MenuButton>
       <Button fx:id="btnAddAction" layoutX="697.0" layoutY="118.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
@@ -52,7 +53,12 @@
       <Button fx:id="btnOnOff" layoutX="297.0" layoutY="488.0" mnemonicParsing="false" onAction="#onBtnOnOff" prefHeight="27.0" prefWidth="72.0" text="On/Off" textFill="#d00dc3" />
       <VBox layoutX="588.0" layoutY="221.0" prefHeight="69.0" prefWidth="100.0" spacing="10.0">
          <children>
-            <Button fx:id="btnFile" mnemonicParsing="false" onAction="#onBtnFile" prefHeight="27.0" prefWidth="144.0" text="Scegli file" textFill="#092beb" visible="false">
+            <Button fx:id="btnFile" mnemonicParsing="false" onAction="#onBtnFile" prefHeight="27.0" prefWidth="144.0" text="Choose file" textFill="#092beb" visible="false">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="btnChooseDirectory" mnemonicParsing="false" onAction="#onBtnChooseDirectory" prefHeight="27.0" prefWidth="144.0" text="Choose directory" textFill="#092beb" visible="false">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
