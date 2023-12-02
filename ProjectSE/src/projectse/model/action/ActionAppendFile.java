@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 public class ActionAppendFile implements Action, Serializable {
     private String stringToWriteInFile;
     private File fileToAppend;
+    private static boolean isTestMode = false; // Variabile per controllare la modalità di test
 
     public ActionAppendFile(String stringToWriteInFile, File fileToAppend) {
         this.stringToWriteInFile = stringToWriteInFile;
@@ -32,6 +33,15 @@ public class ActionAppendFile implements Action, Serializable {
 
     public File getFileToAppend() {
         return fileToAppend;
+    }
+    
+    // Getter e Setter per isTestMode
+    public static boolean isTestMode() {
+        return isTestMode;
+    }
+
+    public static void setTestMode(boolean isTestMode) {
+        ActionAppendFile.isTestMode = isTestMode;
     }
 
     public void setFileToAppend(File fileToAppend) {
@@ -50,20 +60,26 @@ public class ActionAppendFile implements Action, Serializable {
     public void executeAction() {
         Platform.runLater(() -> {
             if (fileToAppend == null || !fileToAppend.exists()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                if (!isTestMode) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("File non valido o non esiste");
                     alert.setHeaderText(null);
                     alert.setContentText("Il file :" + fileToAppend + " non e' valido o non esiste");
+                    alert.showAndWait();
+                }
+                return;
             }
             try (FileWriter fileWriter = new FileWriter(fileToAppend, true);
                  BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                  PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
                 printWriter.println(stringToWriteInFile);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Testo Inserito nel File");
-                alert.setHeaderText(null);
-                alert.setContentText("Testo inserito con successo nel file: " + fileToAppend);
-                alert.showAndWait();
+                if (!isTestMode) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Testo Inserito nel File");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Testo inserito con successo nel file: " + fileToAppend);
+                    alert.showAndWait();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ActionTest;
 import javafx.embed.swing.JFXPanel;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javafx.application.Platform;
 import projectse.model.action.ActionAppendFile;
 
 public class ActionAppendFileTest {
@@ -22,33 +20,43 @@ public class ActionAppendFileTest {
     private File tempFile;
     private final String testString = "Test String";
     private final CountDownLatch latch = new CountDownLatch(1);
-
     @Before
     public void setUp() throws IOException {
-        // Inizializza l'ambiente JavaFX
+        // Inizializza l'ambiente JavaFX (se ancora necessario)
         new JFXPanel();
 
+        // Disattiva gli Alert per i test
+        ActionAppendFile.setTestMode(true);
+        
         // Crea un file temporaneo
-        tempFile = File.createTempFile("testFile", ".txt");
+        tempFile = File.createTempFile("testFileAppend", ".txt");
+    }
+
+    @After
+    public void tearDown() {
+        // Riattiva gli Alert dopo i test
+        ActionAppendFile.setTestMode(false);
     }
 
     @Test
-    public void testExecuteAction_AppendToFile() throws InterruptedException, IOException {
+    public void testExecuteAction_AppendToFile() throws IOException, InterruptedException {
         // Assicurati che il file esista prima di eseguire l'azione
         Assert.assertTrue("Il file temporaneo deve esistere prima dell'esecuzione", tempFile.exists());
 
-        // Crea e esegui l'azione per appendere la stringa al file
-        ActionAppendFile actionAppendFile = new ActionAppendFile(testString, tempFile);
-        actionAppendFile.executeAction();
+        Platform.runLater(() -> {
+            ActionAppendFile actionAppendFile = new ActionAppendFile(testString, tempFile);
+            actionAppendFile.executeAction();
+            latch.countDown();
+        });
 
-        // Attendi un tempo breve per permettere a Platform.runLater() di eseguire l'azione
-        latch.await(3, TimeUnit.SECONDS); // Aspetta fino a un massimo di 3 secondi per l'esecuzione
+        // Attendi il completamento dell'azione
+        latch.await(10, TimeUnit.SECONDS);
+        Thread.sleep(2000); // Attendi per assicurarti che l'azione di scrittura sia completata
 
         // Leggi il contenuto del file
         List<String> fileContent = Files.readAllLines(Paths.get(tempFile.toURI()));
 
         // Verifica che il contenuto del file includa la stringa testata
-        Assert.assertTrue("Il file dovrebbe contenere la stringa di test",
-                          fileContent.contains(testString));
+        Assert.assertTrue("Il file dovrebbe contenere la stringa di test", fileContent.contains(testString));
     }
 }
