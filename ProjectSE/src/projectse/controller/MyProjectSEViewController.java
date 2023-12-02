@@ -51,6 +51,7 @@ import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
 import projectse.model.action.ActionAlarm;
 import projectse.model.action.ActionAppendFile;
+import projectse.model.action.ActionCopyFile;
 import projectse.model.action.ActionDeleteFile;
 import projectse.model.action.ActionMemo;
 import projectse.model.action.ActionMoveFile;
@@ -315,7 +316,7 @@ public class MyProjectSEViewController implements Initializable {
         } else if(btnAction.getText().equals("Delete file")){
             action = new ActionDeleteFile(selectedFile);
         } else if(btnAction.getText().equals("Copy file")){
-            //action = new ActionCopyFile(selectedFile, selectedDirectory);
+            action = new ActionCopyFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
         } else if(btnAction.getText().equals("Move file")){
             action = new ActionMoveFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
         }
