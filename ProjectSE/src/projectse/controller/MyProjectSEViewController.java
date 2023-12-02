@@ -6,6 +6,7 @@ package projectse.controller;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -52,6 +53,7 @@ import projectse.model.action.ActionAlarm;
 import projectse.model.action.ActionAppendFile;
 import projectse.model.action.ActionDeleteFile;
 import projectse.model.action.ActionMemo;
+import projectse.model.action.ActionMoveFile;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
@@ -315,7 +317,7 @@ public class MyProjectSEViewController implements Initializable {
         } else if(btnAction.getText().equals("Copy file")){
             //action = new ActionCopyFile(selectedFile, selectedDirectory);
         } else if(btnAction.getText().equals("Move file")){
-            //action = new ActionMoveFile(selectedFile, selectedDirectory);
+            action = new ActionMoveFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
         }
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
