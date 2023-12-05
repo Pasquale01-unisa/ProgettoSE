@@ -374,7 +374,7 @@ public class MyProjectSEViewController implements Initializable {
 
         // Controlla se il testo del pulsante btnAction è "Alarm"
         if ("Alarm".equals(btnAction.getText())) {
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", "*.mp3", "*.wav", "*.aac");
             fileChooser.getExtensionFilters().add(filter);
         } else if("Append text to file".equals(btnAction.getText())){
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
