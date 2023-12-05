@@ -10,8 +10,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
 
 public class ActionAppendFile implements Action, Serializable {
     private String stringToWriteInFile;
@@ -78,8 +81,14 @@ public class ActionAppendFile implements Action, Serializable {
                     alert.setTitle("Testo Inserito nel File");
                     alert.setHeaderText(null);
                     alert.setContentText("Testo inserito con successo nel file: " + fileToAppend);
+                    // Timeline per chiudere l'alert automaticamente dopo 2 secondi
+                    Timeline timeline = new Timeline(new KeyFrame(
+                        Duration.seconds(3),
+                        ae -> alert.close()));
+                    timeline.play();
+
                     alert.showAndWait();
-                }
+            }
             } catch (IOException e) {
                 e.printStackTrace();
             }
