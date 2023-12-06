@@ -45,6 +45,7 @@
             <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
             <MenuItem fx:id="btnCopyFile" mnemonicParsing="false" onAction="#onBtnCopyFile" text="Copy File" />
             <MenuItem fx:id="btnMoveFile" mnemonicParsing="false" onAction="#onBtnMoveFile" text="Move File" />
+            <MenuItem fx:id="btnOpenExternalProgram" mnemonicParsing="false" onAction="#onBtnOpenExternalProgram" text="Open External Program" />
          </items>
       </MenuButton>
       <Button fx:id="btnAddAction" layoutX="697.0" layoutY="118.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
@@ -81,5 +82,6 @@
       <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="89.0" prefHeight="27.0" prefWidth="84.0" />
       <Label layoutX="638.0" layoutY="94.0" text=":" />
       <Button fx:id="btnRepetition" layoutX="661.0" layoutY="489.0" mnemonicParsing="false" onAction="#OnBtnRepetition" text="Repetition" />
+      <Label fx:id="argLabel" layoutX="532.0" layoutY="333.0" prefHeight="55.0" prefWidth="210.0" text="*Insert arguments separated by ;  (arg0;arg1;...)" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>
