@@ -62,7 +62,9 @@ import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
+import projectse.model.trigger.TriggerTimeFactory;
 
 /**
  * FXML Controller class
@@ -323,12 +325,9 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private void onBtnCommit(ActionEvent event) {
         Trigger trigger = null;
         Action action = null;
-        if (btnTrigger.getText().equals("Time")){
-            trigger = new TriggerTime(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
-        }
 
-        ActionFactory af = createActionFactory(btnAction.getText());
-        action = af.createAction();
+        action =  createActionFactory(btnAction.getText()).createAction();
+        trigger = createTriggerFactory(btnTrigger.getText()).createTrigger();
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules);
         newRule.setCreation(LocalDateTime.now());
@@ -367,10 +366,19 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             case "Move file":
                 return new ActionMoveFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
             default:
-                return null;
+                throw new IllegalArgumentException("Action type not supported: " + userChoice);
         }
     }
 
+    private TriggerFactory createTriggerFactory(String userChoice){
+        switch (userChoice) {
+            case "Time":
+                return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            default:
+                throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
+        }
+    }
+    
     @FXML
     private void onBtnDelete(ActionEvent event) {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
