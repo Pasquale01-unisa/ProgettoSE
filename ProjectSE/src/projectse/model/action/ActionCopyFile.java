@@ -21,7 +21,7 @@ public class ActionCopyFile implements Action, Serializable{
     private String sourceFile;
     private String destinationDirectory;
     
-    public ActionCopyFile(String sourceFile,String destinationDirectory){
+    public ActionCopyFile(String sourceFile, String destinationDirectory){
         this.destinationDirectory = destinationDirectory;
         this.sourceFile = sourceFile;
     }
