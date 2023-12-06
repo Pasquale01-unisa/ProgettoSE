@@ -33,6 +33,6 @@ public class ActionMemo implements Action, Serializable{
 
     @Override
     public void executeAction() {
-        MyProjectSEViewController.showSuccessPopup("Promemoria", "È tempo del tuo promemoria!", true);
+        MyProjectSEViewController.showSuccessPopup("È tempo del tuo promemoria!", this.getMemo(), true);
     }
 }
