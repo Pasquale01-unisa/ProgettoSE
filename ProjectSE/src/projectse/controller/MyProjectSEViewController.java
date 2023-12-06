@@ -332,10 +332,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules);
         newRule.setCreation(LocalDateTime.now());
         if(repeat){
-            
             newRule.setSleepingTime(sleepingTime);
             newRule.setRepeat(true);
             newRule.setRepetition(newRule.getCreation().plus(newRule.getSleepingTime()));
+            repeat = false;
         }
         newRule.addObserver((o, arg) -> {
             // Questo metodo viene chiamato quando lo stato di selezione di newRule cambia
