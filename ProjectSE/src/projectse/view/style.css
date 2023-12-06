@@ -51,7 +51,10 @@
 
 .label {
     -fx-text-fill: red;
+    -fx-font-style: italic; /* Imposta il font in corsivo */
+    -fx-font-size: 10pt; /* Imposta una dimensione di font più piccola */
 }
+
 
 .spinner {
     -fx-background-color: white;
