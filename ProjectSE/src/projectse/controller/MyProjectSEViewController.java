@@ -59,7 +59,9 @@ import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
+import projectse.model.trigger.TriggerTimeFactory;
 
 /**
  * FXML Controller class
@@ -303,10 +305,12 @@ public class MyProjectSEViewController implements Initializable {
     private void onBtnCommit(ActionEvent event) {
         Trigger trigger = null;
         Action action = null;
-        if (btnTrigger.getText().equals("Time")){
+        /*if (btnTrigger.getText().equals("Time")){
             trigger = new TriggerTime(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
-        }
-
+        }*/
+        trigger = createTriggerFactory(btnTrigger.getText()).createTrigger();
+        
+       
         if (btnAction.getText().equals("Memo")){
             action = new ActionMemo(textAction.getText());
         } else if (btnAction.getText().equals("Alarm")){
@@ -339,7 +343,16 @@ public class MyProjectSEViewController implements Initializable {
         btnTrigger.setText("Choose a Trigger");
         btnAction.setText("Choose an Action"); 
     }
-
+    
+    private TriggerFactory createTriggerFactory(String userChoice){
+        switch (userChoice) {
+            case "Time":
+                return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            default:
+                throw new IllegalArgumentException("Tipo di action non supportato: " + userChoice);
+        }
+    }
+    
     @FXML
     private void onBtnDelete(ActionEvent event) {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
