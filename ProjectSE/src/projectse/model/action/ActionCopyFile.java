@@ -6,6 +6,7 @@ package projectse.model.action;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,11 +17,11 @@ import javafx.scene.control.Alert;
  *
  * @author viki0
  */
-public class ActionCopyFile implements Action{
+public class ActionCopyFile implements Action, Serializable{
     private String sourceFile;
     private String destinationDirectory;
     
-    public ActionCopyFile(String sourceFile,String destinationDirectory){
+    public ActionCopyFile(String sourceFile, String destinationDirectory){
         this.destinationDirectory = destinationDirectory;
         this.sourceFile = sourceFile;
     }

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -48,13 +49,21 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.converter.IntegerStringConverter;
-import projectse.model.action.Action;
+import projectse.model.action.*;
+/*import projectse.model.action.Action;
 import projectse.model.action.ActionAlarm;
+import projectse.model.action.ActionAlarmFactory;
 import projectse.model.action.ActionAppendFile;
+import projectse.model.action.ActionAppendFileFactory;
 import projectse.model.action.ActionCopyFile;
+import projectse.model.action.ActionCopyFileFactory;
 import projectse.model.action.ActionDeleteFile;
+import projectse.model.action.ActionDeleteFileFactory;
+import projectse.model.action.ActionFactory;
 import projectse.model.action.ActionMemo;
+import projectse.model.action.ActionMemoFactory;
 import projectse.model.action.ActionMoveFile;
+import projectse.model.action.ActionMoveFileFactory;*/
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
@@ -246,6 +255,7 @@ public class MyProjectSEViewController implements Initializable {
     
     @FXML
     private void onBtnAlarm(ActionEvent event) {
+        btnChooseDirectory.setVisible(false);
         textActionStringToFile.setManaged(false);
         textActionStringToFile.setVisible(false);
         textAction.setDisable(true);
@@ -262,6 +272,7 @@ public class MyProjectSEViewController implements Initializable {
         textAction.setDisable(false);
         btnFile.setManaged(false);
         btnFile.setVisible(false);
+        btnChooseDirectory.setVisible(false);
         textAction.clear();
         textAction.setPromptText("Inserisci promemoria"); // Imposta un placeholder o un suggerimento
         btnAction.setText("Memo"); // Cambia il testo del MenuButton
@@ -307,7 +318,10 @@ public class MyProjectSEViewController implements Initializable {
             trigger = new TriggerTime(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
         }
 
-        if (btnAction.getText().equals("Memo")){
+        ActionFactory af = createActionFactory(btnAction.getText());
+        action = af.createAction();
+        
+        /*if (btnAction.getText().equals("Memo")){
             action = new ActionMemo(textAction.getText());
         } else if (btnAction.getText().equals("Alarm")){
             action = new ActionAlarm(selectedFile);
@@ -315,11 +329,12 @@ public class MyProjectSEViewController implements Initializable {
             action = new ActionAppendFile(textActionStringToFile.getText(),selectedFile);
         } else if(btnAction.getText().equals("Delete file")){
             action = new ActionDeleteFile(selectedFile);
+        
         } else if(btnAction.getText().equals("Copy file")){
             action = new ActionCopyFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
         } else if(btnAction.getText().equals("Move file")){
             action = new ActionMoveFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
-        }
+        }*/
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
          newRule.setCreation(LocalDateTime.now());
@@ -338,6 +353,25 @@ public class MyProjectSEViewController implements Initializable {
         textActionStringToFile.clear();
         btnTrigger.setText("Choose a Trigger");
         btnAction.setText("Choose an Action"); 
+    }
+    
+    private ActionFactory createActionFactory(String userChoice){
+        switch(userChoice){
+            case "Memo":
+                return new ActionMemoFactory(textAction.getText());
+            case "Alarm":
+                return new ActionAlarmFactory(selectedFile);
+            case "Append text to file":
+                return new ActionAppendFileFactory(textActionStringToFile.getText(),selectedFile);
+            case "Delete file":
+                return new ActionDeleteFileFactory(selectedFile);
+            case "Copy file":
+                return new ActionCopyFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
+            case "Move file":
+                return new ActionMoveFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
+            default:
+                return null;
+        }
     }
 
     @FXML
@@ -374,7 +408,7 @@ public class MyProjectSEViewController implements Initializable {
 
         // Controlla se il testo del pulsante btnAction è "Alarm"
         if ("Alarm".equals(btnAction.getText())) {
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", "*.mp3", "*.wav", "*.aac");
             fileChooser.getExtensionFilters().add(filter);
         } else if("Append text to file".equals(btnAction.getText())){
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
