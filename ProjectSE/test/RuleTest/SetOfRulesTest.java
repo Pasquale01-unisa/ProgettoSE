@@ -3,57 +3,49 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit4TestClass.java to edit this template
  */
 package RuleTest;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.List;
 import projectse.model.action.ActionMemo;
-import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.TriggerTime;
 
 
-/**
- *
- * @author sara
- */
+
 public class SetOfRulesTest {
-    ObservableList<SingleRule> rules;
-    SetOfRules setOfRules;
-    SingleRule rule;
-    
+
+    private SetOfRules setOfRules;
+
     @Before
     public void setUp() {
-        rules = FXCollections.observableArrayList();
-        setOfRules = new SetOfRules(rules);  
-        rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", rules); 
+        setOfRules = new SetOfRules();
     }
-    
-    @Test
-    public void testGetRule() {
-         rules.add(rule);
-         ObservableList<SingleRule> retrievedRules = setOfRules.getRules();
-         assertEquals(rules, retrievedRules);
-    }
-    
+
     @Test
     public void testAddRule() {
+        SingleRule rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", setOfRules); 
         setOfRules.addRule(rule);
-        assertTrue(rules.contains(rule));
+
+        List<SingleRule> rules = setOfRules.getRules();
+        assertTrue("Rule should be added", rules.contains(rule));
     }
-    
+
     @Test
     public void testDeleteRule() {
+        SingleRule rule = new SingleRule("Regola1", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Active", setOfRules);
         setOfRules.addRule(rule);
         setOfRules.deleteRule(rule);
-        assertFalse(rules.contains(rule));
+
+        List<SingleRule> rules = setOfRules.getRules();
+        assertFalse("Rule should be deleted", rules.contains(rule));
     }
-    
-    
+
+    @Test
+    public void testInitialState() {
+        List<SingleRule> rules = setOfRules.getRules();
+        assertTrue("Initial rules list should be empty", rules.isEmpty());
+    }
 }
+

@@ -48,8 +48,8 @@ public class ActionMoveFileTest {
             actionMoveFile.executeAction();
             deleteLatch.countDown();
         });
-        deleteLatch.await(10, TimeUnit.SECONDS);
-        Thread.sleep(2000);
+        deleteLatch.await(1, TimeUnit.SECONDS);
+
 
         assertTrue("Il file non è stato spostato correttamente", Files.exists(tempDirectory.resolve(tempFile.getFileName())));
         assertFalse("Il file originale esiste ancora", Files.exists(tempFile));

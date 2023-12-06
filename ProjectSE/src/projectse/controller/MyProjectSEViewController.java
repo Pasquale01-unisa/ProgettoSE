@@ -4,14 +4,20 @@
  */
 package projectse.controller;
 
+import javafx.stage.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,6 +37,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -47,6 +54,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.Action;
 import projectse.model.action.ActionAlarm;
@@ -66,7 +74,7 @@ import projectse.model.trigger.TriggerTime;
  *
  * @author pasqualegambino
  */
-public class MyProjectSEViewController implements Initializable {
+public class MyProjectSEViewController implements Initializable, RuleUpdateCallback, Observer{
     @FXML
     private TableView<SingleRule> tableView; 
     @FXML
@@ -81,8 +89,10 @@ public class MyProjectSEViewController implements Initializable {
     private TableColumn<SingleRule, String> columnState;
     
     private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
-    private SetOfRules rules = new SetOfRules(ruleList);
-
+    
+    private SetOfRules rules = new SetOfRules();
+    
+    private RuleCheckerThread ruleCheckerThread;
     @FXML
     private MenuItem btnTime;
     @FXML
@@ -172,6 +182,7 @@ public class MyProjectSEViewController implements Initializable {
         // Personalizza la visualizzazione dei valori negli Spinner
         setupSpinnerWithCustomTextFormatter(numberTriggerH, true); // Per ore
         setupSpinnerWithCustomTextFormatter(numberTriggerM, false); // Per minuti
+        this.rules.addObserver(this); // Registra il controller come observer
 
         // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
         // Assumendo che tu abbia un campo booleano (ad esempio, isSelected) in Rule
@@ -182,9 +193,9 @@ public class MyProjectSEViewController implements Initializable {
                 if (!empty) {
                     CheckBox checkBox = new CheckBox();
                     SingleRule rule = getTableView().getItems().get(getIndex());
-                    checkBox.selectedProperty().bindBidirectional(rule.isSelectedProperty());
+                    checkBox.setSelected(rule.getIsSelectedValue());
                     checkBox.setOnAction(e -> {
-                        rule.setIsSelected(checkBox.isSelected());
+                        rule.setIsSelectedValue(checkBox.isSelected());
                         updateButtonState();
                     });
                     setGraphic(checkBox);
@@ -194,7 +205,8 @@ public class MyProjectSEViewController implements Initializable {
             }
         });
 
-        rules.getRules().addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
+
+        ruleList.addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
             while (change.next()) {
                 if (change.wasAdded() || change.wasRemoved()) {
                     updateButtonState();
@@ -204,12 +216,23 @@ public class MyProjectSEViewController implements Initializable {
         updateButtonState();
         btnAddTrigger.setDisable(true);
         btnAddAction.setDisable(true);
-        RuleCheckerService ruleCheckerService = new RuleCheckerService(rules.getRules(), this);
-        ruleCheckerService.start();
+        
+        ruleCheckerThread = new RuleCheckerThread(ruleList, this);
+        Thread thread = new Thread(ruleCheckerThread);
+        thread.start();
+        // Imposta un listener per la chiusura della finestra
         
         btnChooseDirectory.setManaged(false);
         
-        tableView.setItems(rules.getRules());
+        tableView.setItems(ruleList);
+        Platform.runLater(() -> {
+            // Qui puoi assegnare lo Stage a una variabile o utilizzarlo direttamente
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setOnCloseRequest(this::handleWindowClose);
+        });
+        
+        FileManagement.loadRulesFromFile(rules);
+        
     }
 
     private void updateDeleteButtonState() {
@@ -219,8 +242,8 @@ public class MyProjectSEViewController implements Initializable {
     @FXML
     private void onCheckBox(ActionEvent event) {
         boolean isSelected = checkTotal.isSelected();
-        for (SingleRule rule : rules.getRules()) {
-            rule.setIsSelected(isSelected);
+        for (SingleRule rule : ruleList) {
+            rule.setIsSelectedValue(isSelected);
         }
         tableView.refresh(); // Aggiorna la TableView per mostrare le modifiche
         updateButtonState(); // Aggiorna lo stato dei pulsanti
@@ -321,15 +344,18 @@ public class MyProjectSEViewController implements Initializable {
             action = new ActionMoveFile(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
         }
         
-        SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules.getRules());
-         newRule.setCreation(LocalDateTime.now());
+        SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules);
+        newRule.setCreation(LocalDateTime.now());
         if(repeat){
             
             newRule.setSleepingTime(sleepingTime);
             newRule.setRepeat(true);
             newRule.setRepetition(newRule.getCreation().plus(newRule.getSleepingTime()));
         }
-        newRule.isSelectedProperty().addListener((obs, oldVal, newVal) -> updateDeleteButtonState());
+        newRule.addObserver((o, arg) -> {
+            // Questo metodo viene chiamato quando lo stato di selezione di newRule cambia
+            updateDeleteButtonState();
+        });
         rules.addRule(newRule);
         textRuleName.clear();
         numberTriggerH.getValueFactory().setValue(00);
@@ -348,7 +374,7 @@ public class MyProjectSEViewController implements Initializable {
 
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            rules.getRules().stream().filter(SingleRule::getIsSelected)
+            ruleList.stream().filter(SingleRule::getIsSelectedValue)
                 .collect(Collectors.toList()).forEach(rules::deleteRule);
 
             updateButtonState();
@@ -357,7 +383,7 @@ public class MyProjectSEViewController implements Initializable {
 
     @FXML
     private void onBtnOnOff(ActionEvent event) {
-        rules.getRules().stream().filter(SingleRule::getIsSelected)
+        ruleList.stream().filter(SingleRule::getIsSelectedValue)
             .forEach(rule -> {
                 rule.setIsShow(false); // Rimetti isShow a false in modo che venga ricontrollata
                 // Cambia lo stato da "Active" a "Inactive" e viceversa
@@ -366,6 +392,7 @@ public class MyProjectSEViewController implements Initializable {
         tableView.refresh();
         updateButtonState();
     }
+
     
     @FXML
     private void onBtnFile(ActionEvent event) {
@@ -374,7 +401,7 @@ public class MyProjectSEViewController implements Initializable {
 
         // Controlla se il testo del pulsante btnAction è "Alarm"
         if ("Alarm".equals(btnAction.getText())) {
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", ".mp3", ".wav", ".aac");
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", "*.mp3", "*.wav", "*.aac");
             fileChooser.getExtensionFilters().add(filter);
         } else if("Append text to file".equals(btnAction.getText())){
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
@@ -461,17 +488,13 @@ public class MyProjectSEViewController implements Initializable {
     private void updateButtonState() {
         boolean anySelected = false;
         for (SingleRule rule : rules.getRules()) {
-            if (rule.getIsSelected()) {
+            if (rule.getIsSelectedValue()) {
                 anySelected = true;
                 break;
             }
         }
         btnDelete.setDisable(!anySelected);
         btnOnOff.setDisable(!anySelected);
-    }
-    
-    public void update(){
-        tableView.refresh();
     }
     
     @FXML
@@ -581,4 +604,77 @@ public class MyProjectSEViewController implements Initializable {
             textActionStringToFile.setText(selectedDirectory.getAbsolutePath());
         } 
     }
+
+    @Override
+    public void updateUI() {
+        // Implementazione per aggiornare l'UI
+        Platform.runLater(() -> {
+            tableView.refresh();
+        });
+    }
+
+    @Override
+    public void executeAction(SingleRule rule) {
+        Platform.runLater(() -> {
+            rule.getActionObject().executeAction();
+        });
+    }
+    
+
+    private void handleWindowClose(WindowEvent event) {
+        if (ruleCheckerThread != null) {
+            ruleCheckerThread.stop();
+        }
+    }
+    
+    public static void showErrorPopup(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Errore");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
+        Timeline timeline = new Timeline(new KeyFrame(
+            javafx.util.Duration.seconds(3),
+            ae -> alert.close()));
+        timeline.play();
+    }
+    
+    public static void showSuccessPopup(String title, String message, Boolean flag) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("SUCCESS");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
+        if(!flag){
+        Timeline timeline = new Timeline(new KeyFrame(
+            javafx.util.Duration.seconds(3),
+            ae -> alert.close()));
+        timeline.play();
+        }
+    }
+    
+    public static void showWarningPopup(String title, String message) {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
+        Timeline timeline = new Timeline(new KeyFrame(
+            javafx.util.Duration.seconds(3),
+            ae -> alert.close()));
+        timeline.play();
+    }
+    
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof SetOfRules) {
+            Platform.runLater(() -> {
+                ruleList.setAll(((SetOfRules) o).getRules());
+            });
+        }
+    }
+
 }

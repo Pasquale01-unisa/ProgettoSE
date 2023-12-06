@@ -50,8 +50,8 @@ public class ActionCopyFileTest {
             actionCopyFile.executeAction();
             deleteLatch.countDown();
         });
-        deleteLatch.await(10, TimeUnit.SECONDS);
-        Thread.sleep(2000);
+        deleteLatch.await(1, TimeUnit.SECONDS);
+        
 
         assertTrue("Il file non e' stato spostato correttamente", Files.exists(tempDirectory.resolve(tempFile.getFileName())));
     }

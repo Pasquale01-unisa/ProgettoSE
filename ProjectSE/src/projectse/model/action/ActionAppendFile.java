@@ -10,17 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.util.Duration;
+import projectse.controller.FileManagement;
+import projectse.controller.MyProjectSEViewController;
 
 public class ActionAppendFile implements Action, Serializable {
     private String stringToWriteInFile;
     private File fileToAppend;
     private static boolean isTestMode = false; // Variabile per controllare la modalità di test
-
+    
     public ActionAppendFile(String stringToWriteInFile, File fileToAppend) {
         this.stringToWriteInFile = stringToWriteInFile;
         setFileToAppend(fileToAppend);
@@ -61,14 +58,9 @@ public class ActionAppendFile implements Action, Serializable {
 
     @Override
     public void executeAction() {
-        Platform.runLater(() -> {
             if (fileToAppend == null || !fileToAppend.exists()) {
                 if (!isTestMode) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("File non valido o non esiste");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Il file :" + fileToAppend + " non e' valido o non esiste");
-                    alert.showAndWait();
+                   MyProjectSEViewController.showErrorPopup("File non valido o non esiste", "Il file :" + fileToAppend + " non e' valido o non esiste");
                 }
                 return;
             }
@@ -77,22 +69,11 @@ public class ActionAppendFile implements Action, Serializable {
                  PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
                 printWriter.println(stringToWriteInFile);
                 if (!isTestMode) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Testo Inserito nel File");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Testo inserito con successo nel file: " + fileToAppend);
-                    // Timeline per chiudere l'alert automaticamente dopo 2 secondi
-                    Timeline timeline = new Timeline(new KeyFrame(
-                        Duration.seconds(3),
-                        ae -> alert.close()));
-                    timeline.play();
-
-                    alert.showAndWait();
+                    MyProjectSEViewController.showSuccessPopup("Testo Inserito nel File", "Testo inserito con successo nel file: " + fileToAppend, false);
             }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
     }
     
     @Override
@@ -104,4 +85,6 @@ public class ActionAppendFile implements Action, Serializable {
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".txt");
     }
+    
+    
 }

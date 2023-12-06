@@ -4,50 +4,40 @@
  */
 package projectse.model.rule;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import java.util.Observable;
 import projectse.controller.FileManagement;
 
-/**
- *
- * @author sara
- */
-public class SetOfRules implements Rule{
-    private ObservableList<SingleRule> rules;
-    
-    public SetOfRules(ObservableList<SingleRule> rules) {
-        this.rules = rules;
-        FileManagement.loadRulesFromFile(rules);
-        rules.addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
-            FileManagement.saveRulesToFile(rules);
-        });
+
+
+
+public class SetOfRules extends Observable implements Rule, Serializable {
+    private List<SingleRule> rules; // Usa una normale ArrayList
+
+    public SetOfRules() {
+        this.rules = new ArrayList<>();
+        this.addObserver(FileManagement.getInstance());
     }
 
-    public ObservableList<SingleRule> getRules() {
+
+    public List<SingleRule> getRules() {
         return rules;
     }
-    
+
     @Override
     public void addRule(SingleRule rule) {
         rules.add(rule);
-        
+        setChanged(); // Indica che lo stato dell'oggetto è cambiato
+        notifyObservers(this.rules); // Notifica tutti gli observer
     }
 
     @Override
     public void deleteRule(SingleRule rule) {
         rules.remove(rule);
+        setChanged(); // Indica che lo stato dell'oggetto è cambiato
+        notifyObservers(this.rules); // Notifica tutti gli observer
     }
 }
