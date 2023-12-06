@@ -132,9 +132,12 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private Button btnChooseDirectory;
     @FXML
     private MenuItem btnMoveFile;
+    @FXML
+    private MenuItem btnOpenExternalProgram;
+    @FXML
+    private Label argLabel;
     
     private File selectedFile = null;
-    //--------
     private Duration sleepingTime;
     private boolean repeat = false;
     private File selectedDirectory = null;
@@ -202,7 +205,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             }
         });
 
-
         ruleList.addListener((ListChangeListener.Change<? extends SingleRule> change) -> {
             while (change.next()) {
                 if (change.wasAdded() || change.wasRemoved()) {
@@ -213,6 +215,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         updateButtonState();
         btnAddTrigger.setDisable(true);
         btnAddAction.setDisable(true);
+        argLabel.setVisible(false);
         
         ruleCheckerThread = new RuleCheckerThread(ruleList, this);
         Thread thread = new Thread(ruleCheckerThread);
@@ -272,6 +275,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
+        argLabel.setVisible(false);
         textAction.clear();
         btnAction.setText("Alarm");
     }
@@ -284,6 +288,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnFile.setManaged(false);
         btnFile.setVisible(false);
         btnChooseDirectory.setVisible(false);
+        argLabel.setVisible(false);
         textAction.clear();
         textAction.setPromptText("Inserisci promemoria"); // Imposta un placeholder o un suggerimento
         btnAction.setText("Memo"); // Cambia il testo del MenuButton
@@ -295,6 +300,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setVisible(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
+        argLabel.setVisible(false);
         textAction.clear();
         textActionStringToFile.setPromptText("Inserisci Testo");
         btnAction.setText("Append text to file");
@@ -309,6 +315,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
+        argLabel.setVisible(false);
         textAction.clear();
         btnAction.setText("Delete file");
     }
@@ -326,7 +333,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         Trigger trigger = null;
         Action action = null;
 
-        action =  createActionFactory(btnAction.getText()).createAction();
+        action = createActionFactory(btnAction.getText()).createAction();
         trigger = createTriggerFactory(btnTrigger.getText()).createTrigger();
         
         SingleRule newRule = new SingleRule(textRuleName.getText(), trigger, action, "Active", rules);
@@ -358,13 +365,15 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             case "Alarm":
                 return new ActionAlarmFactory(selectedFile);
             case "Append text to file":
-                return new ActionAppendFileFactory(textActionStringToFile.getText(),selectedFile);
+                return new ActionAppendFileFactory(textActionStringToFile.getText(), selectedFile);
             case "Delete file":
                 return new ActionDeleteFileFactory(selectedFile);
             case "Copy file":
                 return new ActionCopyFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
             case "Move file":
                 return new ActionMoveFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
+            case "Open External Program":
+                return new ActionOpenExternalProgramFactory(textActionStringToFile.getText(), selectedFile);
             default:
                 throw new IllegalArgumentException("Action type not supported: " + userChoice);
         }
@@ -417,7 +426,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", "*.mp3", "*.wav", "*.aac");
             fileChooser.getExtensionFilters().add(filter);
         } else if("Append text to file".equals(btnAction.getText())){
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (*.txt)", "*.txt");
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File di testo (.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(filter);
+        } else if("Open External Program".equals(btnAction.getText())){
+            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File eseguibili (.java)", "*.java");
             fileChooser.getExtensionFilters().add(filter);
         }
 
@@ -574,7 +586,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
-        
+        argLabel.setVisible(false);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
         btnChooseDirectory.setManaged(true);
@@ -593,7 +605,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
-        
+        argLabel.setVisible(false);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
         btnChooseDirectory.setManaged(true);
@@ -616,6 +628,20 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         if (selectedDirectory != null) {
             textActionStringToFile.setText(selectedDirectory.getAbsolutePath());
         } 
+    }
+    
+    @FXML
+    private void onBtnOpenExternalProgram(ActionEvent event){
+        textActionStringToFile.setManaged(true);
+        textActionStringToFile.setVisible(true);
+        textAction.setDisable(true);
+        btnFile.setManaged(true);
+        btnFile.setVisible(true);
+        btnChooseDirectory.setVisible(false);
+        argLabel.setVisible(true);
+        textAction.clear();
+        textActionStringToFile.setPromptText("Inserisci argomenti*"); // Imposta un placeholder o un suggerimento
+        btnAction.setText("Open External Program"); // Cambia il testo del MenuButton
     }
 
     @Override
@@ -645,40 +671,37 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         alert.setTitle("Errore");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
-    
+
     public static void showSuccessPopup(String title, String message, Boolean flag) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("SUCCESS");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         if(!flag){
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
         }
+        alert.showAndWait();
     }
-    
+
     public static void showWarningPopup(String title, String message) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Warning");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
     
     @Override
