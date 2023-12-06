@@ -62,6 +62,7 @@ import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerExistingFileFactory;
 import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
 import projectse.model.trigger.TriggerTimeFactory;
@@ -403,6 +404,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         switch (userChoice) {
             case "Time":
                 return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            case "File Check":
+                return new TriggerExistingFileFactory(textTriggerFileCheck.getText(), textTriggerDirectoryCheck.getText());
             default:
                 throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
         }
@@ -675,40 +678,37 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         alert.setTitle("Errore");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
-    
+
     public static void showSuccessPopup(String title, String message, Boolean flag) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("SUCCESS");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         if(!flag){
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
         }
+        alert.showAndWait();
     }
-    
+
     public static void showWarningPopup(String title, String message) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Warning");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
     
     @Override
