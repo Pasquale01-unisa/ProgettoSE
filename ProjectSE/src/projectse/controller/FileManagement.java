@@ -12,18 +12,26 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import javafx.collections.ObservableList;
+import java.util.Observable;
+import java.util.Observer;
+import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 
 /**
  *
  * @author pasqualegambino
  */
-public class FileManagement {
+public class FileManagement implements Observer {
+    private static FileManagement instance = new FileManagement(); // Dichiarazione corretta
     private static File file=new File("fileRule.txt");
     
-    public static void saveRulesToFile(ObservableList<SingleRule> rules) {
+    // Metodo statico per ottenere l'istanza
+    public static FileManagement getInstance() {
+        return instance;
+    }
+
+    
+    public static void saveRulesToFile(List<SingleRule> rules) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(new ArrayList<SingleRule>(rules)); // Salva l'intera lista
         } catch (IOException e) {
@@ -31,18 +39,27 @@ public class FileManagement {
         }
     }
 
-    // Metodo per caricare le regole dal file utilizzando la serializzazione
-    public static void loadRulesFromFile(ObservableList<SingleRule> rules) {
+    public static void loadRulesFromFile(SetOfRules setOfRules) {
         if (!file.exists()) return; // Se il file non esiste, non c'è nulla da caricare
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             List<SingleRule> loadedRules = (List<SingleRule>) ois.readObject();
             for (SingleRule rule : loadedRules) {
-                rule.setRulesList(rules); // Imposta la lista delle regole per ogni regola deserializzata
-                rules.add(rule); // Aggiungi la regola alla lista ObservableList;
+                rule.setObserver();
+                setOfRules.addRule(rule); // Usa il metodo addRule per aggiungere la regola
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Errore durante la lettura del file: " + e.getMessage());
         }
     }
+
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof List<?>) {
+            saveRulesToFile((List<SingleRule>) arg);
+        }
+    }
+
+    
 }

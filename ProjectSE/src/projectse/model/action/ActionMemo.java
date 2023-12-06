@@ -5,8 +5,7 @@
 package projectse.model.action;
 
 import java.io.Serializable;
-import java.util.Objects;
-import javafx.scene.control.Alert;
+import projectse.controller.MyProjectSEViewController;
 
 /**
  *
@@ -34,10 +33,6 @@ public class ActionMemo implements Action, Serializable{
 
     @Override
     public void executeAction() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Promemoria");
-        alert.setHeaderText("È tempo del tuo promemoria!");
-        alert.setContentText(memo);
-        alert.showAndWait(); 
+        MyProjectSEViewController.showSuccessPopup("Promemoria", "È tempo del tuo promemoria!", true);
     }
 }

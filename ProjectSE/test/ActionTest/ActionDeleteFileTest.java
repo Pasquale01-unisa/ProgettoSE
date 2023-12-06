@@ -14,7 +14,7 @@ import projectse.model.action.ActionDeleteFile;
 public class ActionDeleteFileTest {
 
     private File tempFile;
-    private final CountDownLatch latch = new CountDownLatch(1);
+
 
     @Before
     public void setUp() throws IOException {
@@ -40,10 +40,7 @@ public class ActionDeleteFileTest {
         });
 
         // Aspetta che l'alert sia stato gestito
-        deleteLatch.await(10, TimeUnit.SECONDS); // Aspetta fino a un massimo di 10 secondi per l'esecuzione
-
-        // Aggiungi un piccolo ritardo per assicurarti che il file sia stato eliminato dopo la chiusura dell'alert
-        Thread.sleep(2000); // Attendere 1000 millisecondi (1 secondo)
+        deleteLatch.await(1, TimeUnit.SECONDS); // Aspetta fino a un massimo di 10 secondi per l'esecuzione
 
         // Verifica che il file sia stato eliminato
         Assert.assertFalse("Il file dovrebbe essere stato eliminato", tempFile.exists());
@@ -66,10 +63,9 @@ public class ActionDeleteFileTest {
         });
 
         // Aspetta che l'alert sia stato gestito
-        deleteLatch.await(10, TimeUnit.SECONDS); // Aspetta fino a un massimo di 10 secondi per l'esecuzione
+        deleteLatch.await(1, TimeUnit.SECONDS); // Aspetta fino a un massimo di 10 secondi per l'esecuzione
 
-        // Aggiungi un piccolo ritardo per assicurarti che il file sia stato eliminato dopo la chiusura dell'alert
-        Thread.sleep(2000); // Attendere 1000 millisecondi (1 secondo)
+        
 
         // Verifica che il file sia stato eliminato
         Assert.assertFalse("Il file dovrebbe essere stato eliminato", tempFile.exists());

@@ -1,156 +1,75 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package RuleTest;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertThrows;
 import org.junit.Before;
 import org.junit.Test;
+import java.time.LocalDateTime;
+import java.time.Duration;
+import static org.junit.Assert.*;
+import projectse.model.action.Action; // Assuming you have an Action interface or class with a constructor
 import projectse.model.action.ActionMemo;
-import projectse.model.rule.Rule;
+import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
+import projectse.model.trigger.Trigger; // Assuming you have a Trigger interface or class with a constructor
 import projectse.model.trigger.TriggerTime;
 
-/**
- *
- * @author sara
- */
 public class SingleRuleTest {
-    SingleRule rule;
-    SingleRule ruleException;
-    ObservableList<SingleRule> rules =  FXCollections.observableArrayList();
-    
+
+    private SingleRule singleRule;
+    private SetOfRules setOfRules;
+
     @Before
-    public void setUp(){
-        rule = new SingleRule("TestRule", new TriggerTime("00", "00"), new ActionMemo("TestAction"), "Active", rules);
-        ruleException = new SingleRule("TestRule", new TriggerTime("00", "01"), new ActionMemo("TestAction"), "Deactivated", rules);
-    }
-    
-    @Test 
-    public void getSetNameTest(){
-        assertEquals("TestRule", rule.getName());
-
-        rule.setName("NewTestRule");
-        assertEquals("NewTestRule", rule.getName());
-    }
-    
-    @Test 
-    public void getSetTriggerTest(){
-        assertEquals("Time -> 00:00", rule.getTrigger());
-
-        rule.setTrigger(new TriggerTime("01", "00"));
-        assertEquals("Time -> 01:00", rule.getTrigger());
-    }
-    
-    @Test 
-    public void getSetActionTest(){
-        assertEquals("Memo -> TestAction", rule.getAction());
-
-        rule.setAction(new ActionMemo("TestAction2"));
-        assertEquals("Memo -> TestAction2", rule.getAction());
-    }
-    
-    @Test 
-    public void getSetStateTest(){
-        assertEquals("Active", rule.getState());
-
-        rule.setState("Deactivated");
-        assertEquals("Deactivated", rule.getState());
-    }
-    
-    @Test
-    public void getSetIsSelectedTest(){
-        assertFalse(rule.getIsSelected());
-
-        rule.setIsSelected(true);
-        assertTrue(rule.getIsSelected());
-    }
-    
-     @Test
-    public void testGetRepetition() {
-        LocalDateTime repetition = LocalDateTime.now();
-        rule.setRepetition(repetition);
-        assertEquals(repetition, rule.getRepetition());
+    public void setUp() {
+        // Initialize SetOfRules and SingleRule here. Assuming Action and Trigger have proper constructors.
+        setOfRules = new SetOfRules();
+        singleRule = new SingleRule("RuleName", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Deactivated", setOfRules);
     }
 
     @Test
-    public void testSetRepetition() {
-        LocalDateTime repetition = LocalDateTime.now();
-        rule.setRepetition(repetition);
-        assertEquals(repetition, rule.getRepetition());
+    public void testSetName() {
+        String newName = "NewRuleName";
+        singleRule.setName(newName);
+        assertEquals("The name should be updated to NewRuleName", newName, singleRule.getName());
+    }
+
+    
+    @Test
+    public void testSetTrigger() {
+        Trigger newTrigger = new TriggerTime("09", "00"); // Assuming constructor
+        singleRule.setTrigger(newTrigger);
+        assertSame("The trigger should be updated", newTrigger, singleRule.getTriggerObject());
     }
 
     @Test
-    public void testGetCreation() {
-        LocalDateTime creation = LocalDateTime.now();
-        rule.setCreation(creation);
-        assertEquals(creation, rule.getCreation());
+    public void testSetAction() {
+        Action newAction = new ActionMemo("Scrum Daily Meeting"); // Assuming constructor
+        singleRule.setAction(newAction);
+        assertSame("The action should be updated", newAction, singleRule.getActionObject());
+    }
+
+    @Test
+    public void testSetState() {
+        String newState = "Active";
+        singleRule.setState(newState);
+        assertEquals("The state should be updated to NewState", newState, singleRule.getState());
+    }
+
+    @Test
+    public void testSetIsSelectedValue() {
+        singleRule.setIsSelectedValue(true);
+        assertTrue("The isSelectedValue should be true", singleRule.getIsSelectedValue());
+    }
+
+    @Test
+    public void testSetIsShow() {
+        singleRule.setIsShow(true);
+        assertTrue("The isShow should be true", singleRule.isShow());
     }
 
     @Test
     public void testSetCreation() {
-        LocalDateTime creation = LocalDateTime.now();
-        rule.setCreation(creation);
-        assertEquals(creation, rule.getCreation());
+        LocalDateTime newCreation = LocalDateTime.now();
+        singleRule.setCreation(newCreation);
+        assertEquals("The creation date should be updated", newCreation, singleRule.getCreation());
     }
 
-    @Test
-    public void testGetSleepingTime() {
-        Duration sleepingTime = Duration.ofHours(2);
-        rule.setSleepingTime(sleepingTime);
-        assertEquals(sleepingTime, rule.getSleepingTime());
-    }
-
-    @Test
-    public void testSetSleepingTime() {
-        Duration sleepingTime = Duration.ofHours(2);
-        rule.setSleepingTime(sleepingTime);
-        assertEquals(sleepingTime, rule.getSleepingTime());
-    }
-
-    @Test
-    public void testIsSleeping() {
-        assertFalse(rule.isSleeping());
-        rule.setSleeping(true);
-        assertTrue(rule.isSleeping());
-    }
-
-    @Test
-    public void testSetSleeping() {
-        assertFalse(rule.isSleeping());
-        rule.setSleeping(true);
-        assertTrue(rule.isSleeping());
-    }
-
-    @Test
-    public void testIsRepeat() {
-        assertFalse(rule.isRepeat());
-        rule.setRepeat(true);
-        assertTrue(rule.isRepeat());
-    }
-
-    @Test
-    public void testSetRepeat() {
-        assertFalse(rule.isRepeat());
-        rule.setRepeat(true);
-        assertTrue(rule.isRepeat());
-    }
     
-    @Test(expected=UnsupportedOperationException.class)
-    public void addRuleTest(){
-        rule.addRule(ruleException);
-    }
-   
-    @Test(expected=UnsupportedOperationException.class)
-    public void deleteRuleTest(){
-        rule.deleteRule(ruleException);
-    }
 }

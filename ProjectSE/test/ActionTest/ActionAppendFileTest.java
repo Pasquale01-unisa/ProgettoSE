@@ -50,8 +50,9 @@ public class ActionAppendFileTest {
         });
 
         // Attendi il completamento dell'azione
-        latch.await(10, TimeUnit.SECONDS);
-        Thread.sleep(2000); // Attendi per assicurarti che l'azione di scrittura sia completata
+        latch.await(1, TimeUnit.SECONDS);
+       
+            
 
         // Leggi il contenuto del file
         List<String> fileContent = Files.readAllLines(Paths.get(tempFile.toURI()));

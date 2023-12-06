@@ -1,112 +1,196 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package projectse.model.rule;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
+import java.util.Observable;
 import projectse.controller.FileManagement;
 import projectse.model.action.Action;
 import projectse.model.trigger.Trigger;
 
-/**
- *
- * @author sara
- */
-public class SingleRule implements Rule, Serializable{
+public class SingleRule extends Observable implements Rule, Serializable {
     private Trigger trigger;
     private Action action;
     private String name;
-    private transient StringProperty stateProperty;
     private String state;
-    private transient BooleanProperty isSelected;
     private boolean isSelectedValue;
     private boolean isShow = false;
-    private transient ObservableList<SingleRule> rules;
-    //---------------
     private LocalDateTime creation;
     private Duration sleepingTime;
     private boolean repeat = false;
     private boolean sleeping = false;
     private LocalDateTime repetition;
-
-    // Costruttore
-    public SingleRule(String name, Trigger trigger, Action action, String state, ObservableList<SingleRule> rules){
+    private List<SingleRule> list;
+    
+    public SingleRule(String name, Trigger trigger, Action action, String state, SetOfRules list) {
         this.name = name;
         this.trigger = trigger;
         this.action = action;
         this.state = state;
-        this.stateProperty = new SimpleStringProperty(state);
-        this.isSelected = new SimpleBooleanProperty(false);
         this.isSelectedValue = false;
-        stateProperty.addListener((observable, oldValue, newValue) -> {
-            this.state = newValue; // Aggiorna il campo serializzabile
-            FileManagement.saveRulesToFile(rules); 
-        });
+        this.list = list.getRules();
+        this.addObserver(FileManagement.getInstance());
     }
-    //----
+    
+    
 
-    public LocalDateTime getRepetition() {
-        return repetition;
-    }
-
-    public void setRepetition(LocalDateTime repetition) {
-        this.repetition = repetition;
-    }
-  
-    public LocalDateTime getCreation() {
-        return creation;
+    // Metodo setter per 'name'
+    public void setName(String name) {
+        if (!Objects.equals(this.name, name)) {
+            this.name = name;
+            setChanged();
+            notifyObservers(this.list);
+        }
     }
 
+    // Metodo setter per 'trigger'
+    public void setTrigger(Trigger trigger) {
+        if (this.trigger != trigger) {
+            this.trigger = trigger;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'action'
+    public void setAction(Action action) {
+        if (this.action != action) {
+            this.action = action;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'state'
+    public void setState(String state) {
+        if (!Objects.equals(this.state, state)) {
+            this.state = state;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'isSelectedValue'
+    public void setIsSelectedValue(boolean isSelectedValue) {
+        if (this.isSelectedValue != isSelectedValue) {
+            this.isSelectedValue = isSelectedValue;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'isShow'
+    public void setIsShow(boolean isShow) {
+        if (this.isShow != isShow) {
+            this.isShow = isShow;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'creation'
     public void setCreation(LocalDateTime creation) {
-        this.creation = creation;
+        if (!Objects.equals(this.creation, creation)) {
+            this.creation = creation;
+            setChanged();
+            notifyObservers(this.list);
+        }
     }
 
-    public Duration getSleepingTime() {
-        return sleepingTime;
-    }
-
+    // Metodo setter per 'sleepingTime'
     public void setSleepingTime(Duration sleepingTime) {
-        this.sleepingTime = sleepingTime;
+        if (!Objects.equals(this.sleepingTime, sleepingTime)) {
+            this.sleepingTime = sleepingTime;
+            setChanged();
+            notifyObservers(this.list);
+        }
     }
 
-    public boolean isSleeping() {
-        return sleeping;
-    }
-
-    public void setSleeping(boolean sleeping) {
-        this.sleeping = sleeping;
-    }
-    
-    public boolean isRepeat() {
-        return repeat;
-    }
-    
+    // Metodo setter per 'repeat'
     public void setRepeat(boolean repeat) {
-        this.repeat = repeat;
+        if (this.repeat != repeat) {
+            this.repeat = repeat;
+            setChanged();
+            notifyObservers(this.list);
+        }
     }
 
-    //----
-    // Getter e Setter per name
+    // Metodo setter per 'sleeping'
+    public void setSleeping(boolean sleeping) {
+        if (this.sleeping != sleeping) {
+            this.sleeping = sleeping;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo setter per 'repetition'
+    public void setRepetition(LocalDateTime repetition) {
+        if (!Objects.equals(this.repetition, repetition)) {
+            this.repetition = repetition;
+            setChanged();
+            notifyObservers(this.list);
+        }
+    }
+
+    // Metodo getter per 'name'
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    // Metodo getter per 'state'
+    public String getState() {
+        return state;
     }
 
-    public Trigger getTriggerObject(){
+    // Metodo getter per 'isSelectedValue'
+    public boolean getIsSelectedValue() {
+        return isSelectedValue;
+    }
+
+    // Metodo getter per 'isShow'
+    public boolean isShow() {
+        return isShow;
+    }
+
+    // Metodo getter per 'creation'
+    public LocalDateTime getCreation() {
+        return creation;
+    }
+
+    // Metodo getter per 'sleepingTime'
+    public Duration getSleepingTime() {
+        return sleepingTime;
+    }
+
+    // Metodo getter per 'repeat'
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    // Metodo getter per 'sleeping'
+    public boolean isSleeping() {
+        return sleeping;
+    }
+
+    // Metodo getter per 'repetition'
+    public LocalDateTime getRepetition() {
+        return repetition;
+    }
+
+    @Override
+    public void addRule(SingleRule rule) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteRule(SingleRule rule) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+       public Trigger getTriggerObject(){
         return trigger;
     }
     
@@ -115,9 +199,7 @@ public class SingleRule implements Rule, Serializable{
         return trigger.getTrigger();
     }
 
-    public void setTrigger(Trigger trigger) {
-        this.trigger = trigger;
-    }
+    
 
     public Action getActionObject(){
         return action;
@@ -128,75 +210,9 @@ public class SingleRule implements Rule, Serializable{
         return action.getAction();
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setObserver() {
+        this.addObserver(FileManagement.getInstance());
     }
 
-    // Getter e Setter per state
-    public String getState() {
-        return stateProperty.get();
-    }
-
-    public void setState(String state) {
-        this.stateProperty.set(state); 
-    }
-
-    public StringProperty getStateProperty() {
-        return stateProperty;
-    }
-
-    public void setStateProperty(StringProperty stateProperty) {
-        this.stateProperty = stateProperty;
-    }
-    
-    // Getter e Setter per isSelected
-    public boolean getIsSelected() {
-        return isSelected.get();
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected.set(isSelected);
-        this.isSelectedValue = isSelected; // Mantieni sincronizzato il valore primitivo
-    }
-
-    public BooleanProperty isSelectedProperty() {
-        return isSelected;
-    }
-
-    public boolean isIsShow() {
-        return isShow;
-    }
-
-    public void setIsShow(boolean isShow) {
-        this.isShow = isShow;
-    }
-    
-    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
-        aInputStream.defaultReadObject();
-        isSelected = new SimpleBooleanProperty(false);
-        this.stateProperty = new SimpleStringProperty(this.state);
-    }
-    
-    @Override
-    public void addRule(SingleRule rule) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void deleteRule(SingleRule rule) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-    
-    public void setRulesList(ObservableList<SingleRule> rules) {
-        this.rules = rules;
-        
-        stateProperty.addListener((observable, oldValue, newValue) -> {
-            this.state = newValue;
-            FileManagement.saveRulesToFile(rules); // Assicurati di avere accesso alla lista delle regole
-        });
-    }
-
-    
-    
     
 }
