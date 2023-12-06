@@ -50,7 +50,7 @@
 }
 
 .label {
-    -fx-text-fill: #616161;
+    -fx-text-fill: red;
 }
 
 .spinner {
