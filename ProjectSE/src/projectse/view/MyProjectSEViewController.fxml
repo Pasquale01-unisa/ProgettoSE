@@ -29,15 +29,15 @@
             <TableColumn fx:id="columnState" prefWidth="111.95098876953125" text="State" />
         </columns>
       </TableView>
-      <TextField fx:id="textRuleName" alignment="CENTER" layoutX="532.0" layoutY="30.0" onAction="#onTextFieldName" prefHeight="27.0" prefWidth="212.0" promptText="Rule Name" />
-      <MenuButton fx:id="btnTrigger" alignment="CENTER" layoutX="532.0" layoutY="60.0" mnemonicParsing="false" onAction="#onBtnTrigger" prefHeight="27.0" prefWidth="159.0" text="Choose a Trigger" textFill="#0765a8">
+      <TextField fx:id="textRuleName" alignment="CENTER" layoutX="532.0" layoutY="40.0" onAction="#onTextFieldName" prefHeight="27.0" prefWidth="212.0" promptText="Rule Name" />
+      <MenuButton fx:id="btnTrigger" alignment="CENTER" layoutX="532.0" layoutY="77.0" mnemonicParsing="false" onAction="#onBtnTrigger" prefHeight="27.0" prefWidth="159.0" text="Choose a Trigger" textFill="#0765a8">
         <items>
           <MenuItem fx:id="btnTime" mnemonicParsing="false" onAction="#onBtnTime" text="Time" />
           <MenuItem mnemonicParsing="false" text="Date" />
         </items>
       </MenuButton>
-      <Button fx:id="btnAddTrigger" layoutX="697.0" layoutY="60.0" mnemonicParsing="false" onAction="#onBtnAddTrigger" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#a46d05" />
-      <MenuButton fx:id="btnAction" alignment="CENTER" layoutX="532.0" layoutY="118.0" mnemonicParsing="false" onAction="#onBtnAction" prefHeight="27.0" prefWidth="159.0" text="Choose an Action" textFill="#0176c9">
+      <Button fx:id="btnAddTrigger" layoutX="697.0" layoutY="77.0" mnemonicParsing="false" onAction="#onBtnAddTrigger" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#a46d05" />
+      <MenuButton fx:id="btnAction" alignment="CENTER" layoutX="532.0" layoutY="144.0" mnemonicParsing="false" onAction="#onBtnAction" prefHeight="27.0" prefWidth="159.0" text="Choose an Action" textFill="#0176c9">
          <items>
             <MenuItem fx:id="btnAlarm" mnemonicParsing="false" onAction="#onBtnAlarm" text="Alarm" />
             <MenuItem fx:id="btnMemo" mnemonicParsing="false" onAction="#onBtnMemo" text="Memo" />
@@ -45,14 +45,15 @@
             <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
             <MenuItem fx:id="btnCopyFile" mnemonicParsing="false" onAction="#onBtnCopyFile" text="Copy File" />
             <MenuItem fx:id="btnMoveFile" mnemonicParsing="false" onAction="#onBtnMoveFile" text="Move File" />
+            <MenuItem fx:id="btnOpenExternalProgram" mnemonicParsing="false" onAction="#onBtnOpenExternalProgram" text="Open External Program" />
          </items>
       </MenuButton>
-      <Button fx:id="btnAddAction" layoutX="697.0" layoutY="118.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
-      <TextField fx:id="textAction" alignment="CENTER" layoutX="532.0" layoutY="148.0" onAction="#onTextFieldAction" prefHeight="27.0" prefWidth="212.0" />
-      <TextField fx:id="textActionStringToFile" alignment="CENTER" layoutX="532.0" layoutY="181.0" prefHeight="27.0" prefWidth="212.0" />
+      <Button fx:id="btnAddAction" layoutX="697.0" layoutY="144.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
+      <TextField fx:id="textAction" alignment="CENTER" layoutX="532.0" layoutY="177.0" onAction="#onTextFieldAction" prefHeight="27.0" prefWidth="212.0" />
+      <TextField fx:id="textActionStringToFile" alignment="CENTER" layoutX="532.0" layoutY="209.0" prefHeight="27.0" prefWidth="212.0" />
       <Button fx:id="btnDelete" layoutX="187.0" layoutY="489.0" mnemonicParsing="false" onAction="#onBtnDelete" prefHeight="27.0" prefWidth="72.0" text="Delete" textFill="#f50e0e" />
       <Button fx:id="btnOnOff" layoutX="297.0" layoutY="488.0" mnemonicParsing="false" onAction="#onBtnOnOff" prefHeight="27.0" prefWidth="72.0" text="On/Off" textFill="#d00dc3" />
-      <VBox layoutX="588.0" layoutY="221.0" prefHeight="69.0" prefWidth="100.0" spacing="10.0">
+      <VBox layoutX="588.0" layoutY="256.0" prefHeight="69.0" prefWidth="100.0" spacing="10.0">
          <children>
             <Button fx:id="btnFile" mnemonicParsing="false" onAction="#onBtnFile" prefHeight="27.0" prefWidth="144.0" text="Choose file" textFill="#092beb" visible="false">
                <cursor>
@@ -77,9 +78,10 @@
             <Insets />
          </opaqueInsets>
       </VBox>
-      <Spinner fx:id="numberTriggerH" layoutX="541.0" layoutY="89.0" prefHeight="27.0" prefWidth="91.0" />
-      <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="89.0" prefHeight="27.0" prefWidth="84.0" />
-      <Label layoutX="638.0" layoutY="94.0" text=":" />
+      <Spinner fx:id="numberTriggerH" layoutX="541.0" layoutY="108.0" prefHeight="27.0" prefWidth="91.0" />
+      <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="108.0" prefHeight="27.0" prefWidth="84.0" />
+      <Label layoutX="638.0" layoutY="112.0" text=":" />
       <Button fx:id="btnRepetition" layoutX="661.0" layoutY="489.0" mnemonicParsing="false" onAction="#OnBtnRepetition" text="Repetition" />
+      <Label fx:id="argLabel" layoutX="532.0" layoutY="360.0" prefHeight="46.0" prefWidth="212.0" text="*Inserire gli argomenti separati da ; (arg0;arg1;...)" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>
