@@ -22,6 +22,8 @@ public class ActionOpenExternalProgram implements Action, Serializable{
     private String args;
     private String token[];
     private File file;
+    private int runExitCode;
+    private int compileExitCode;
 
     public ActionOpenExternalProgram(String args, File file) {
         this.args = args;
@@ -52,7 +54,7 @@ public class ActionOpenExternalProgram implements Action, Serializable{
     private void executeJavaFile() throws IOException, InterruptedException {
         // Compila il file Java
         Process compileProcess = new ProcessBuilder("javac", file.getAbsolutePath()).start();
-        int compileExitCode = compileProcess.waitFor();
+        compileExitCode = compileProcess.waitFor();
 
         if (compileExitCode == 0) {
             // Calcola il classpath e il nome della classe
@@ -74,11 +76,11 @@ public class ActionOpenExternalProgram implements Action, Serializable{
             String msg = printProcessOutput(runProcess);
             printProcessError(runProcess);
 
-            int runExitCode = runProcess.waitFor();
+            runExitCode = runProcess.waitFor();
             System.out.println("Processo Java terminato con codice di uscita: " + runExitCode);
             MyProjectSEViewController.showSuccessPopup("Processo Java terminato con codice di uscita: " + runExitCode, msg, false);
         } else {
-            System.out.println("Errore durante la compilazione del file Java");
+            System.out.println("Error during the compilation of the Java file");
         }
     }
 
@@ -99,5 +101,13 @@ public class ActionOpenExternalProgram implements Action, Serializable{
         while ((line = errorReader.readLine()) != null) {
             System.err.println(line);
         }
+    }
+    
+    public int getLastExitCode() {
+        return runExitCode;
+    }
+    
+    public int getCompileExitCode() {
+        return compileExitCode;
     }
 }
