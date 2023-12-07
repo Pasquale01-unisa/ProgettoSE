@@ -4,6 +4,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -12,11 +13,102 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="529.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController">
    <children>
+      <VBox layoutX="527.0" layoutY="32.0" prefHeight="300.0" prefWidth="223.0">
+         <children>
+            <TextField fx:id="textRuleName" alignment="CENTER" onAction="#onTextFieldName" prefHeight="27.0" prefWidth="223.0" promptText="Rule Name" />
+            <HBox prefHeight="31.0" prefWidth="223.0">
+               <children>
+                  <MenuButton fx:id="btnTrigger" alignment="CENTER" mnemonicParsing="false" onAction="#onBtnTrigger" prefHeight="27.0" prefWidth="159.0" text="Choose a Trigger" textFill="#0765a8">
+                     <items>
+                        <MenuItem fx:id="btnTime" mnemonicParsing="false" onAction="#onBtnTime" text="Time" />
+                        <MenuItem fx:id="btnDate" mnemonicParsing="false" onAction="#OnBtnDate" text="Date" />
+                        <MenuItem fx:id="btnFileCheck" mnemonicParsing="false" onAction="#onBtnFileCheck" text="File Check" />
+                     </items>
+                  </MenuButton>
+                  <Button fx:id="btnAddTrigger" mnemonicParsing="false" onAction="#onBtnAddTrigger" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#a46d05" />
+               </children>
+            </HBox>
+            <TextField fx:id="textTriggerFileCheck" alignment="CENTER" layoutX="532.0" layoutY="108.0" prefHeight="27.0" prefWidth="212.0" visible="false" />
+            <TextField fx:id="textTriggerDirectoryCheck" alignment="CENTER" layoutX="532.0" layoutY="147.0" prefHeight="27.0" prefWidth="212.0" visible="false" />
+            <Button fx:id="btnChooseDirectoryFileChecker" layoutX="560.0" layoutY="183.0" mnemonicParsing="false" onAction="#onBtnChooseDirectory" prefHeight="27.0" prefWidth="144.0" text="Choose directory" textFill="#092beb" visible="false">
+            <HBox fx:id="triggerTimeFields" prefHeight="23.0" prefWidth="223.0" visible="false">
+               <children>
+                  <Spinner fx:id="numberTriggerH" prefHeight="27.0" prefWidth="91.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Spinner>
+                  <Label text=":" fx:id="separatorSpinner">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Spinner fx:id="numberTriggerM" prefHeight="27.0" prefWidth="84.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                  </Spinner>
+               </children>
+            </HBox>
+            <MenuButton fx:id="menuButtonTriggerDate" alignment="TOP_LEFT" mnemonicParsing="false" prefHeight="18.0" prefWidth="138.0" text="Choose a DateType" visible="false">
+               <items>
+                  <MenuItem fx:id="btnDayOfWeek" mnemonicParsing="false" onAction="#OnBtnDayOfWeek" text="Day Of Week" />
+                  <MenuItem fx:id="btnDayOfMonth" mnemonicParsing="false" onAction="#OnBtnDayOfMonth" text="Day Of Month" />
+                  <MenuItem fx:id="btnGenericDate" mnemonicParsing="false" onAction="#OnBtnGenericDate" text="Generic Date" />
+               </items>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </MenuButton>
+            <DatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="189.0" visible="false" />
+            <HBox fx:id="boxDate" prefHeight="32.0" prefWidth="223.0">
+               <children>
+                  <MenuButton fx:id="btnWeekDays" mnemonicParsing="false" onAction="#OnBtnWeekDays" prefHeight="26.0" prefWidth="114.0" text="WeekDays" visible="false">
+                     <items>
+                        <MenuItem fx:id="btnMonday" mnemonicParsing="false" onAction="#OnBtnMonday" text="Monday" />
+                        <MenuItem fx:id="btnTuesday" mnemonicParsing="false" onAction="#OnBtnTuesday" text="Tuesday" />
+                        <MenuItem fx:id="btnWednesday" mnemonicParsing="false" onAction="#OnBtnWednesday" text="Wednesday" />
+                        <MenuItem fx:id="btnThursday" mnemonicParsing="false" onAction="#OnBtnThursday" text="Thursday" />
+                        <MenuItem fx:id="btnFriday" mnemonicParsing="false" onAction="#OnBtnFriday" text="Friday" />
+                        <MenuItem fx:id="btnSaturday" mnemonicParsing="false" onAction="#OnBtnSaturday" text="Saturday" />
+                        <MenuItem fx:id="btnSunday" mnemonicParsing="false" onAction="#OnBtnSunday" text="Sunday" />
+                     </items>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </MenuButton>
+                  <Spinner fx:id="spinnerDayOfMonth" prefHeight="26.0" prefWidth="90.0" visible="false" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="32.0" prefWidth="223.0">
+               <children>
+                  <MenuButton fx:id="btnAction" alignment="CENTER" mnemonicParsing="false" onAction="#onBtnAction" prefHeight="27.0" prefWidth="159.0" text="Choose an Action" textFill="#0176c9">
+                     <items>
+                        <MenuItem fx:id="btnAlarm" mnemonicParsing="false" onAction="#onBtnAlarm" text="Alarm" />
+                        <MenuItem fx:id="btnMemo" mnemonicParsing="false" onAction="#onBtnMemo" text="Memo" />
+                        <MenuItem fx:id="btnAppentTextToFile" mnemonicParsing="false" onAction="#onBtnAppentTextToFile" text="Append Text To File" />
+                        <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
+                        <MenuItem fx:id="btnCopyFile" mnemonicParsing="false" onAction="#onBtnCopyFile" text="Copy File" />
+                        <MenuItem fx:id="btnMoveFile" mnemonicParsing="false" onAction="#onBtnMoveFile" text="Move File" />
+                        <MenuItem fx:id="btnOpenExternalProgram" mnemonicParsing="false" onAction="#onBtnOpenExternalProgram" text="Open External Program" />
+                     </items>
+                  </MenuButton>
+                  <Button fx:id="btnAddAction" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
+               </children>
+            </HBox>
+            <TextField fx:id="textAction" alignment="CENTER" onAction="#onTextFieldAction" prefHeight="27.0" prefWidth="212.0" />
+            <TextField fx:id="textActionStringToFile" alignment="CENTER" prefHeight="27.0" prefWidth="212.0" />
+         </children>
+      </VBox>
       <TableView fx:id="tableView" layoutX="11.0" layoutY="32.0" prefHeight="446.0" prefWidth="511.0">
         <columns>
           <TableColumn fx:id="columnCheck" prefWidth="48.749521255493164">
@@ -30,37 +122,9 @@
             <TableColumn fx:id="columnState" prefWidth="111.95098876953125" text="State" />
         </columns>
       </TableView>
-      <TextField fx:id="textRuleName" alignment="CENTER" layoutX="532.0" layoutY="40.0" onAction="#onTextFieldName" prefHeight="27.0" prefWidth="212.0" promptText="Rule Name" />
-      <MenuButton fx:id="btnTrigger" alignment="CENTER" layoutX="532.0" layoutY="77.0" mnemonicParsing="false" onAction="#onBtnTrigger" prefHeight="27.0" prefWidth="159.0" text="Choose a Trigger" textFill="#0765a8">
-        <items>
-          <MenuItem fx:id="btnTime" mnemonicParsing="false" onAction="#onBtnTime" text="Time" />
-          <MenuItem fx:id="btnFileCheck" mnemonicParsing="false" onAction="#onBtnFileCheck" text="File Check" />
-        </items>
-      </MenuButton>
-      <TextField fx:id="textTriggerDirectoryCheck" alignment="CENTER" layoutX="532.0" layoutY="147.0" prefHeight="27.0" prefWidth="212.0" visible="false" />
-      <Button fx:id="btnChooseDirectoryFileChecker" layoutX="560.0" layoutY="183.0" mnemonicParsing="false" onAction="#onBtnChooseDirectory" prefHeight="27.0" prefWidth="144.0" text="Choose directory" textFill="#092beb" visible="false">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </Button>
-      <Button fx:id="btnAddTrigger" layoutX="697.0" layoutY="77.0" mnemonicParsing="false" onAction="#onBtnAddTrigger" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#a46d05" />
-      <MenuButton fx:id="btnAction" alignment="CENTER" layoutX="532.0" layoutY="228.0" mnemonicParsing="false" onAction="#onBtnAction" prefHeight="27.0" prefWidth="159.0" text="Choose an Action" textFill="#0176c9">
-         <items>
-            <MenuItem fx:id="btnAlarm" mnemonicParsing="false" onAction="#onBtnAlarm" text="Alarm" />
-            <MenuItem fx:id="btnMemo" mnemonicParsing="false" onAction="#onBtnMemo" text="Memo" />
-            <MenuItem fx:id="btnAppentTextToFile" mnemonicParsing="false" onAction="#onBtnAppentTextToFile" text="Append Text To File" />
-            <MenuItem fx:id="btnDeleteFile" mnemonicParsing="false" onAction="#onBtnDeleteFile" text="Delete File" />
-            <MenuItem fx:id="btnCopyFile" mnemonicParsing="false" onAction="#onBtnCopyFile" text="Copy File" />
-            <MenuItem fx:id="btnMoveFile" mnemonicParsing="false" onAction="#onBtnMoveFile" text="Move File" />
-            <MenuItem fx:id="btnOpenExternalProgram" mnemonicParsing="false" onAction="#onBtnOpenExternalProgram" text="Open External Program" />
-         </items>
-      </MenuButton>
-      <Button fx:id="btnAddAction" layoutX="697.0" layoutY="228.0" mnemonicParsing="false" onAction="#onBtnAddAction" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#ab7e0a" />
-      <TextField fx:id="textAction" alignment="CENTER" layoutX="532.0" layoutY="265.0" onAction="#onTextFieldAction" prefHeight="27.0" prefWidth="212.0" />
-      <TextField fx:id="textActionStringToFile" alignment="CENTER" layoutX="532.0" layoutY="298.0" prefHeight="27.0" prefWidth="212.0" />
       <Button fx:id="btnDelete" layoutX="187.0" layoutY="489.0" mnemonicParsing="false" onAction="#onBtnDelete" prefHeight="27.0" prefWidth="72.0" text="Delete" textFill="#f50e0e" />
       <Button fx:id="btnOnOff" layoutX="297.0" layoutY="488.0" mnemonicParsing="false" onAction="#onBtnOnOff" prefHeight="27.0" prefWidth="72.0" text="On/Off" textFill="#d00dc3" />
-      <VBox alignment="CENTER" layoutX="537.0" layoutY="337.0" prefHeight="145.0" prefWidth="204.0" spacing="10.0">
+      <VBox layoutX="589.0" layoutY="333.0" prefHeight="69.0" prefWidth="100.0" spacing="10.0">
          <children>
             <Button fx:id="btnFile" alignment="CENTER" mnemonicParsing="false" onAction="#onBtnFile" prefHeight="27.0" prefWidth="144.0" text="Choose file" textFill="#092beb" visible="false">
                <cursor>
@@ -90,10 +154,8 @@
             <Insets />
          </opaqueInsets>
       </VBox>
-      <Spinner fx:id="numberTriggerH" layoutX="541.0" layoutY="108.0" prefHeight="27.0" prefWidth="91.0" />
-      <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="108.0" prefHeight="27.0" prefWidth="84.0" />
-      <Label fx:id="separatorSpinner" layoutX="638.0" layoutY="112.0" text=":" />
+
       <Button fx:id="btnRepetition" layoutX="661.0" layoutY="489.0" mnemonicParsing="false" onAction="#OnBtnRepetition" text="Repetition" />
-      <TextField fx:id="textTriggerFileCheck" alignment="CENTER" layoutX="532.0" layoutY="108.0" prefHeight="27.0" prefWidth="212.0" visible="false" />
+
    </children>
 </AnchorPane>
