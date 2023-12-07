@@ -82,6 +82,6 @@
       <Spinner fx:id="numberTriggerM" layoutX="649.0" layoutY="108.0" prefHeight="27.0" prefWidth="84.0" />
       <Label layoutX="638.0" layoutY="112.0" text=":" />
       <Button fx:id="btnRepetition" layoutX="661.0" layoutY="489.0" mnemonicParsing="false" onAction="#OnBtnRepetition" text="Repetition" />
-      <Label fx:id="argLabel" layoutX="532.0" layoutY="360.0" prefHeight="46.0" prefWidth="212.0" text="*Inserire gli argomenti separati da ; (arg0;arg1;...)" textAlignment="CENTER" wrapText="true" />
+      <Label fx:id="argLabel" layoutX="532.0" layoutY="333.0" prefHeight="55.0" prefWidth="210.0" text="*Insert arguments separated by ;  (arg0;arg1;...)" textAlignment="CENTER" wrapText="true" />
    </children>
 </AnchorPane>
