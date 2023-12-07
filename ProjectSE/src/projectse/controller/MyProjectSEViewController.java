@@ -62,6 +62,7 @@ import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerExistingFileFactory;
 import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
 import projectse.model.trigger.TriggerTimeFactory;
@@ -136,6 +137,16 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private MenuItem btnOpenExternalProgram;
     @FXML
     private Label argLabel;
+    @FXML
+    private MenuItem btnFileCheck;
+    @FXML
+    private Label separatorSpinner;
+    @FXML
+    private TextField textTriggerDirectoryCheck;
+    @FXML
+    private TextField textTriggerFileCheck;
+    @FXML
+    private Button btnChooseDirectoryFileChecker;
     
     private File selectedFile = null;
     private Duration sleepingTime;
@@ -260,6 +271,12 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     
     @FXML
     private void onBtnTime(ActionEvent event) {
+        btnChooseDirectoryFileChecker.setVisible(false);
+        textTriggerDirectoryCheck.setVisible(false);
+        textTriggerFileCheck.setVisible(false);
+        numberTriggerH.setVisible(true);
+        numberTriggerM.setVisible(true);
+        separatorSpinner.setVisible(true);
         btnTrigger.setText("Time"); // Cambia il testo del MenuButton 
     }
     
@@ -305,7 +322,20 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setPromptText("Inserisci Testo");
         btnAction.setText("Append text to file");
     }
-       
+    
+    @FXML
+    private void onBtnFileCheck(ActionEvent event){
+        numberTriggerH.setVisible(false);
+        numberTriggerM.setVisible(false);
+        separatorSpinner.setVisible(false);
+        btnChooseDirectoryFileChecker.setVisible(true);
+        textTriggerFileCheck.setVisible(true);
+        textTriggerDirectoryCheck.setVisible(true);
+        textTriggerDirectoryCheck.setDisable(true);
+        btnTrigger.setText("File Check");
+        
+    }
+    
     @FXML
     private void onBtnAction(ActionEvent event) {
     }
@@ -383,6 +413,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         switch (userChoice) {
             case "Time":
                 return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            case "File Check":
+                return new TriggerExistingFileFactory(textTriggerFileCheck.getText(), textTriggerDirectoryCheck.getText());
             default:
                 throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
         }
@@ -624,8 +656,9 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         directoryChooser.setTitle("Choose a Directory");
 
         selectedDirectory = directoryChooser.showDialog(((Node)event.getSource()).getScene().getWindow());
-
-        if (selectedDirectory != null) {
+        if (selectedDirectory != null && btnTrigger.getText().equals("File Check")) {
+            textTriggerDirectoryCheck.setText(selectedDirectory.getAbsolutePath());
+        }else{
             textActionStringToFile.setText(selectedDirectory.getAbsolutePath());
         } 
     }
