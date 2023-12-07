@@ -25,7 +25,6 @@ public class TriggerExistingFile implements Trigger, Serializable{
     @Override
     public boolean checkTrigger(){
         File file = new File(directoryToCheck + "/" + fileToCheck);
-        System.out.println(file.getAbsolutePath());
         return file.exists();
     }
     
