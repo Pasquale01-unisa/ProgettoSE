@@ -29,8 +29,8 @@ public class ActionOpenExternalProgramTest {
         new JFXPanel();
         String args = "Sara;Abagnale";
         String badArgs = "";
-        file = new File("/Users/sara/NetBeansProjects/ProgettoSE/ProjectSE/Saluti.java");
-        badFile = new File("/Users/sara/NetBeansProjects/ProgettoSE/ProjectSE/Hello.java");
+        file = new File("Saluti.java");
+        badFile = new File("Hello.java");
         action = new ActionOpenExternalProgram(args, file);
         badAction = new ActionOpenExternalProgram(badArgs, badFile);
     }
