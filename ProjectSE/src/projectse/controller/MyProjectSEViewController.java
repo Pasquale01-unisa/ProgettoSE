@@ -8,7 +8,9 @@ import javafx.stage.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Observable;
 import java.util.Observer;
@@ -32,6 +34,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -42,6 +46,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -52,16 +58,19 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.*;
 import projectse.model.rule.Rule;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
+import projectse.model.trigger.TriggerDateFactory;
 import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
 import projectse.model.trigger.TriggerTimeFactory;
@@ -132,12 +141,55 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private Button btnChooseDirectory;
     @FXML
     private MenuItem btnMoveFile;
+    //-------
+    @FXML 
+    private HBox triggerTimeFields;
+    @FXML
+    private MenuButton menuButtonTriggerDate;
+    @FXML
+    private MenuItem btnDayOfWeek;
+    @FXML
+    private MenuItem btnDayOfMonth;
+    @FXML
+    private MenuItem btnGenericDate;
+    @FXML
+    private MenuItem btnDate;
+    @FXML 
+    private DatePicker datePicker;
+    @FXML
+    private MenuButton btnWeekDays;
+    @FXML
+    private MenuItem btnMonday;
+    @FXML
+    private MenuItem btnTuesday;
+    @FXML
+    private MenuItem btnWednesday;
+    @FXML
+    private MenuItem btnThursday;
+    @FXML
+    private MenuItem btnFriday;
+    @FXML
+    private MenuItem btnSaturday;
+    @FXML
+    private MenuItem btnSunday;
+    @FXML
+    private Spinner spinnerDayOfMonth;
+    @FXML
+    private HBox boxDate;
+    
+    //-------
     
     private File selectedFile = null;
     //--------
     private Duration sleepingTime;
     private boolean repeat = false;
     private File selectedDirectory = null;
+    //--------
+    private DayOfWeek dayOfWeek;
+    private Integer dayOfMonth;
+    private LocalDate specificDate;
+
+    
 
 
     /**
@@ -170,6 +222,17 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         );
         btnFile.setManaged(false);
         textActionStringToFile.setManaged(false);
+        textAction.setDisable(true);
+        menuButtonTriggerDate.setManaged(false);
+        triggerTimeFields.setManaged(false);
+        menuButtonTriggerDate.setManaged(false);
+        boxDate.setManaged(false);
+        datePicker.setManaged(false);
+        SpinnerValueFactory<Integer> dayOfMonthFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 31, 0);
+        spinnerDayOfMonth.setValueFactory(dayOfMonthFactory);
+        setDatePickerRange(datePicker);
+        
+        // Crea gli MenuItem e aggiungili al MenuButton
         // Configura gli Spinner per le ore e i minuti
         SpinnerValueFactory<Integer> hoursFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
         SpinnerValueFactory<Integer> minutesFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
@@ -179,6 +242,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         // Personalizza la visualizzazione dei valori negli Spinner
         setupSpinnerWithCustomTextFormatter(numberTriggerH, true); // Per ore
         setupSpinnerWithCustomTextFormatter(numberTriggerM, false); // Per minuti
+        setupSpinnerDateWithCustomTextFormatter(spinnerDayOfMonth);
         this.rules.addObserver(this); // Registra il controller come observer
 
         // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
@@ -248,6 +312,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onTextFieldName(ActionEvent event) {
+        
     }
 
     @FXML
@@ -255,9 +320,44 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
        
     }
     
+    private void setDatePickerRange(DatePicker datePicker) {
+        // Imposta la data minima come oggi
+        datePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        // Disabilita le date precedenti a oggi
+                        if (item.isBefore(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #eeeeee;"); // Puoi personalizzare il colore di sfondo delle date disabilitate
+                        }
+                    }
+                };
+            }
+        });
+    }
+    
     @FXML
     private void onBtnTime(ActionEvent event) {
         btnTrigger.setText("Time"); // Cambia il testo del MenuButton 
+        triggerTimeFields.setManaged(true);
+        triggerTimeFields.setVisible(true);
+        menuButtonTriggerDate.setManaged(false);
+        menuButtonTriggerDate.setVisible(false);
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+        btnWeekDays.setText("WeekDays");
+        
     }
     
     @FXML
@@ -278,6 +378,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     
     @FXML
     private void onBtnMemo(ActionEvent event) {
+        textAction.setDisable(false);
         textActionStringToFile.setManaged(false);
         textActionStringToFile.setVisible(false);
         textAction.setDisable(false);
@@ -369,14 +470,145 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
                 throw new IllegalArgumentException("Action type not supported: " + userChoice);
         }
     }
+    
+    private void setupSpinnerDateWithCustomTextFormatter(Spinner<Integer> spinnerDayOfMonths) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinnerDayOfMonths.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) {
+                return change; // Permette il campo vuoto
+            }
+            try {
+                int newValue = Integer.parseInt(newText);
+                if (newValue >= 1 && newValue <= 31) {
+                    return change;
+                }
+            } catch (NumberFormatException e) {
+                // Non fa nulla se non è un numero valido
+            }
+            return null; // Ignora le modifiche non valide
+        });
+
+        spinnerDayOfMonths.getEditor().setTextFormatter(formatter);
+        spinnerDayOfMonths.setEditable(true); // Rendi lo Spinner modificabile
+
+        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                String text = String.format("%02d", newValue); // Formatta come stringa a due cifre
+                if (!text.equals(spinnerDayOfMonths.getEditor().getText())) {
+                                    spinnerDayOfMonths.getEditor().setText(text);
+                }
+                spinnerDayOfMonths.getValueFactory().setValue(newValue);
+            }
+        });
+
+        spinnerDayOfMonths.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // Quando lo spinner perde il focus
+                Integer currentValue = spinnerDayOfMonths.getValue();
+                if (currentValue != null) {
+                    String text = String.format("%02d", currentValue);
+                    spinnerDayOfMonths.getEditor().setText(text);
+                }
+            }
+        });
+    }
 
     private TriggerFactory createTriggerFactory(String userChoice){
         switch (userChoice) {
             case "Time":
                 return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            case "Date":
+                return new TriggerDateFactory(btnWeekDays.getText().toUpperCase(),Integer.parseInt(spinnerDayOfMonth.getValue().toString()), datePicker.getValue(), menuButtonTriggerDate.getText());
             default:
                 throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
         }
+    }
+    @FXML
+    private void OnBtnDate(ActionEvent event) {
+        btnTrigger.setText("Date");
+        triggerTimeFields.setManaged(false);
+        triggerTimeFields.setVisible(false);
+        menuButtonTriggerDate.setManaged(true);
+        menuButtonTriggerDate.setVisible(true);
+    }
+    
+    @FXML
+    private void OnBtnWeekDays(ActionEvent event) {
+        System.out.println(btnWeekDays.getText());
+    }
+    
+    @FXML 
+    private void OnBtnDayOfWeek(ActionEvent event) {
+        menuButtonTriggerDate.setText("Day Of Week");
+        boxDate.setManaged(true);
+        boxDate.setVisible(true);
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        btnWeekDays.setManaged(true);
+        btnWeekDays.setVisible(true);
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+        
+    }
+    
+    @FXML 
+    private void OnBtnDayOfMonth(ActionEvent event) {
+        menuButtonTriggerDate.setText("Day Of Month");
+        boxDate.setManaged(true);
+        boxDate.setVisible(true);
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+        spinnerDayOfMonth.setManaged(true);
+        spinnerDayOfMonth.setVisible(true);
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+    }
+    
+    @FXML 
+    private void OnBtnGenericDate(ActionEvent event) {
+        menuButtonTriggerDate.setText("Generic Date");
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        datePicker.setManaged(true);
+        datePicker.setVisible(true);
+    }
+    
+    @FXML
+    private void OnBtnMonday(ActionEvent event){
+        btnWeekDays.setText("Monday");
+    }
+
+    @FXML
+    private void OnBtnTuesday(ActionEvent event){
+        btnWeekDays.setText("Tuesday");
+    }
+    
+    @FXML
+    private void OnBtnWednesday(ActionEvent event){
+        btnWeekDays.setText("Wednesday");
+    }
+    
+    @FXML
+    private void OnBtnThursday(ActionEvent event){
+        btnWeekDays.setText("Thursday");
+    }
+    
+    @FXML
+    private void OnBtnFriday(ActionEvent event){
+        btnWeekDays.setText("Friday");
+    }
+    
+    @FXML
+    private void OnBtnSaturday(ActionEvent event){
+         btnWeekDays.setText("Saturday");
+    }
+    
+    @FXML
+    private void OnBtnSunday(ActionEvent event){
+        btnWeekDays.setText("Sunday");
     }
     
     @FXML
@@ -610,6 +842,9 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         //function to choose a directory to move or copy a file
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose a Directory");
+        
+        textAction.setPromptText("");
+        textActionStringToFile.setPromptText("");
 
         selectedDirectory = directoryChooser.showDialog(((Node)event.getSource()).getScene().getWindow());
 
@@ -645,40 +880,37 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         alert.setTitle("Errore");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
-    
+
     public static void showSuccessPopup(String title, String message, Boolean flag) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("SUCCESS");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         if(!flag){
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
         }
+        alert.showAndWait();
     }
-    
+
     public static void showWarningPopup(String title, String message) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Warning");
         alert.setHeaderText(title);
         alert.setContentText(message);
-        alert.showAndWait();
-        // Timeline per chiudere l'alert automaticamente dopo 2 secondi
         Timeline timeline = new Timeline(new KeyFrame(
             javafx.util.Duration.seconds(3),
             ae -> alert.close()));
         timeline.play();
+        alert.showAndWait();
     }
     
     @Override
