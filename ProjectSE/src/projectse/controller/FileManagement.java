@@ -22,11 +22,18 @@ import projectse.model.rule.SingleRule;
  * @author pasqualegambino
  */
 public class FileManagement implements Observer {
-    private static FileManagement instance = new FileManagement(); // Dichiarazione corretta
-    private static File file=new File("fileRule.txt");
+    private static FileManagement instance;
+    private static File file;
+    
+    private FileManagement(){
+        file = new File("fileRule.txt");
+    }
     
     // Metodo statico per ottenere l'istanza
     public static FileManagement getInstance() {
+        if (instance == null) {
+            instance = new FileManagement();
+        }
         return instance;
     }
 

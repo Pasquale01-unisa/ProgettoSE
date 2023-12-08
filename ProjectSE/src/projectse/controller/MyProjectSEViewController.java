@@ -72,6 +72,7 @@ import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger;
 import projectse.model.trigger.TriggerExistingFileFactory;
 import projectse.model.trigger.TriggerDate;
+import projectse.model.trigger.TriggerDateFactory;
 import projectse.model.trigger.TriggerFactory;
 import projectse.model.trigger.TriggerTime;
 import projectse.model.trigger.TriggerTimeFactory;
@@ -191,6 +192,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private Spinner spinnerDayOfMonth;
     @FXML
     private HBox boxDate;
+    @FXML
+    private VBox boxFile;
+    @FXML
+    private VBox boxCommit;
 
     //-------
 
@@ -235,13 +240,40 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
                 btnTrigger.getText().equals("Choose a Trigger"), btnTrigger.textProperty()))
         );
         btnFile.setManaged(false);
-        textActionStringToFile.setManaged(false);
-        textAction.setDisable(true);
-        menuButtonTriggerDate.setManaged(false);
+        //TRIGGERTIME---
         triggerTimeFields.setManaged(false);
+        numberTriggerH.setManaged(false);
+        numberTriggerM.setManaged(false);
+        separatorSpinner.setManaged(false);
+        //---
+        //VIKTOR------
+        boxFile.setManaged(false);
+        textTriggerFileCheck.setManaged(false);
+        textTriggerDirectoryCheck.setManaged(false);
+        btnChooseDirectoryFileChecker.setManaged(false);
+        //------------
+        //TRIGGERDATE---
         menuButtonTriggerDate.setManaged(false);
-        boxDate.setManaged(false);
+            //DATE
         datePicker.setManaged(false);
+        //DATE WEEK MONTH
+        boxDate.setManaged(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        //-----
+        //ACTION
+        textActionStringToFile.setManaged(false); 
+        textAction.setManaged(false);
+        textAction.setDisable(true);
+        btnAddTrigger.setDisable(true);
+        btnAddAction.setDisable(true);
+        //------
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
+        btnChooseDirectory.setManaged(false);
+        
         SpinnerValueFactory<Integer> dayOfMonthFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 31, 0);
         spinnerDayOfMonth.setValueFactory(dayOfMonthFactory);
         setDatePickerRange(datePicker);
@@ -288,16 +320,11 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             }
         });
         updateButtonState();
-        btnAddTrigger.setDisable(true);
-        btnAddAction.setDisable(true);
-        argLabel.setVisible(false);
 
         ruleCheckerThread = new RuleCheckerThread(ruleList, this);
         Thread thread = new Thread(ruleCheckerThread);
         thread.start();
         // Imposta un listener per la chiusura della finestra
-
-        btnChooseDirectory.setManaged(false);
 
         tableView.setItems(ruleList);
         Platform.runLater(() -> {
@@ -357,25 +384,44 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnTime(ActionEvent event) {
-        btnChooseDirectoryFileChecker.setVisible(false);
-        textTriggerDirectoryCheck.setVisible(false);
-        textTriggerFileCheck.setVisible(false);
+        //TRIGGERTIME-----
+        triggerTimeFields.setManaged(true);
+        triggerTimeFields.setVisible(true);
+        numberTriggerH.setManaged(true);
+        numberTriggerM.setManaged(true);
+        separatorSpinner.setManaged(true);
         numberTriggerH.setVisible(true);
         numberTriggerM.setVisible(true);
         separatorSpinner.setVisible(true);
-        btnTrigger.setText("Time"); // Cambia il testo del MenuButton
-        triggerTimeFields.setManaged(true);
-        triggerTimeFields.setVisible(true);
+        //------------
+        //VIKTOR----
+        boxFile.setManaged(false);
+        boxFile.setVisible(false);
+        textTriggerFileCheck.setManaged(false);
+        textTriggerFileCheck.setVisible(false);
+        textTriggerDirectoryCheck.setManaged(false);
+        textTriggerDirectoryCheck.setVisible(false);
+        btnChooseDirectoryFileChecker.setManaged(false);
+        btnChooseDirectoryFileChecker.setVisible(false);
+        //--------
+        //TRIGGERDATE-----
         menuButtonTriggerDate.setManaged(false);
         menuButtonTriggerDate.setVisible(false);
-        boxDate.setManaged(false);
-        boxDate.setVisible(false);
-        btnWeekDays.setManaged(false);
-        btnWeekDays.setVisible(false);
-        spinnerDayOfMonth.setManaged(false);
-        spinnerDayOfMonth.setVisible(false);
+            //GENERIC DATE
         datePicker.setManaged(false);
         datePicker.setVisible(false);
+        //MONTH & WEEK
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        
+      
+        btnTrigger.setText("Time"); // Cambia il testo del MenuButton
         btnWeekDays.setText("WeekDays");
 
     }
@@ -386,12 +432,17 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnAlarm(ActionEvent event) {
-        btnChooseDirectory.setVisible(false);
-        textActionStringToFile.setManaged(false);
-        textActionStringToFile.setVisible(false);
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
+        btnChooseDirectory.setManaged(false);
+        btnChooseDirectory.setVisible(false);
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
         argLabel.setVisible(false);
         textAction.clear();
         btnAction.setText("Alarm");
@@ -399,10 +450,13 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnMemo(ActionEvent event) {
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textAction.setDisable(false);
         textActionStringToFile.setManaged(false);
         textActionStringToFile.setVisible(false);
-        textAction.setDisable(false);
         btnFile.setManaged(false);
         btnFile.setVisible(false);
         btnChooseDirectory.setVisible(false);
@@ -413,6 +467,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     }
     @FXML
     private void onBtnAppentTextToFile(ActionEvent event) {
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
         textAction.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
@@ -423,16 +479,116 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setPromptText("Inserisci Testo");
         btnAction.setText("Append text to file");
     }
+    
+    private void reset (){
+        textRuleName.clear();
+        //TRIGGERTIME-----
+        triggerTimeFields.setManaged(false);
+        triggerTimeFields.setVisible(false);
+        numberTriggerH.setManaged(false);
+        numberTriggerH.setVisible(false);
+        numberTriggerM.setManaged(false);
+        numberTriggerM.setVisible(false);
+        numberTriggerH.getValueFactory().setValue(00);
+        numberTriggerM.getValueFactory().setValue(00);
+        separatorSpinner.setManaged(false);
+        separatorSpinner.setVisible(false);
+
+        //--------
+        //TRIGGERDATE----
+        menuButtonTriggerDate.setManaged(false);
+        menuButtonTriggerDate.setVisible(false);
+        menuButtonTriggerDate.setText("Choose a DateType");
+            //GENERIC DATE
+        datePicker.setManaged(false);
+        datePicker.getEditor().clear();
+        datePicker.setVisible(false);
+        //MONTH & WEEK
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+        btnWeekDays.setText("WeekDays");
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        spinnerDayOfMonth.getValueFactory().setValue(01);
+        //VIKTOR-----
+        boxFile.setManaged(false);
+        boxFile.setVisible(false);
+        textTriggerFileCheck.setManaged(false);
+        textTriggerFileCheck.setVisible(false);
+        textTriggerFileCheck.clear();
+        textTriggerDirectoryCheck.setManaged(false);
+        textTriggerDirectoryCheck.setVisible(false);
+        textTriggerDirectoryCheck.setDisable(true);
+        textTriggerDirectoryCheck.clear();
+        btnChooseDirectoryFileChecker.setManaged(false);
+        btnChooseDirectoryFileChecker.setVisible(false);
+        
+        //ACTION
+        textAction.setManaged(false);
+        textAction.setVisible(false);
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
+        textAction.clear();
+        textActionStringToFile.clear();
+        btnFile.setManaged(false);
+        btnFile.setVisible(false);
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
+        
+
+        btnTrigger.setText("Choose a Trigger");
+        btnAction.setText("Choose an Action");
+    }
 
     @FXML
     private void onBtnFileCheck(ActionEvent event){
+        //TRIGGERTIME-----
+        triggerTimeFields.setManaged(false);
+        triggerTimeFields.setVisible(false);
+        numberTriggerH.setManaged(false);
         numberTriggerH.setVisible(false);
+        numberTriggerM.setManaged(false);
         numberTriggerM.setVisible(false);
+        separatorSpinner.setManaged(false);
         separatorSpinner.setVisible(false);
-        btnChooseDirectoryFileChecker.setVisible(true);
+        //--------
+        //ACTION
+        textAction.setManaged(false);
+        textAction.setVisible(false);
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
+        //
+        //TRIGGERDATE----
+        menuButtonTriggerDate.setManaged(false);
+        menuButtonTriggerDate.setVisible(false);
+            //GENERIC DATE
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+        //MONTH & WEEK
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        //VIKTOR-----
+        boxFile.setManaged(true);
+        boxFile.setVisible(true);
+        textTriggerFileCheck.setManaged(true);
         textTriggerFileCheck.setVisible(true);
+        textTriggerDirectoryCheck.setManaged(true);
         textTriggerDirectoryCheck.setVisible(true);
         textTriggerDirectoryCheck.setDisable(true);
+        btnChooseDirectoryFileChecker.setManaged(true);
+        btnChooseDirectoryFileChecker.setVisible(true);
+        //----
+        
         btnTrigger.setText("File Check");
 
     }
@@ -443,6 +599,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnDeleteFile(ActionEvent event) {
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
@@ -480,13 +640,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             updateDeleteButtonState();
         });
         rules.addRule(newRule);
-        textRuleName.clear();
-        numberTriggerH.getValueFactory().setValue(00);
-        numberTriggerM.getValueFactory().setValue(00);
-        textAction.clear();
-        textActionStringToFile.clear();
-        btnTrigger.setText("Choose a Trigger");
-        btnAction.setText("Choose an Action");
+        this.reset();
+        
     }
 
     private ActionFactory createActionFactory(String userChoice){
@@ -566,10 +721,45 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     @FXML
     private void OnBtnDate(ActionEvent event) {
         btnTrigger.setText("Date");
+        //TRIGGERTIME------
         triggerTimeFields.setManaged(false);
         triggerTimeFields.setVisible(false);
+        numberTriggerH.setManaged(false);
+        numberTriggerH.setVisible(false);
+        numberTriggerM.setManaged(false);
+        numberTriggerM.setVisible(false);
+        separatorSpinner.setManaged(false);
+        separatorSpinner.setVisible(false);
+        //---------------
+        //TRIGGERDATE----
         menuButtonTriggerDate.setManaged(true);
         menuButtonTriggerDate.setVisible(true);
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+        //MONTH & WEEK---
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+            //
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+            //
+            //---
+        //----
+        //VIKTOR----
+        boxFile.setManaged(false);
+        boxFile.setVisible(false);
+        textTriggerFileCheck.setManaged(false);
+        textTriggerFileCheck.setVisible(false);
+        textTriggerDirectoryCheck.setManaged(false);
+        textTriggerDirectoryCheck.setVisible(false);
+        textTriggerDirectoryCheck.setDisable(false);
+        btnChooseDirectoryFileChecker.setVisible(false);
+        btnChooseDirectoryFileChecker.setManaged(false);
+        //----------
     }
 
     @FXML
@@ -855,6 +1045,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnFile.setVisible(true);
         btnChooseDirectory.setManaged(true);
         btnChooseDirectory.setVisible(true);
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
 
         textAction.clear();
         textActionStringToFile.clear();
@@ -874,6 +1066,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnFile.setVisible(true);
         btnChooseDirectory.setManaged(true);
         btnChooseDirectory.setVisible(true);
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
 
         textAction.clear();
         textActionStringToFile.clear();
@@ -900,8 +1094,15 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnOpenExternalProgram(ActionEvent event){
+        argLabel.setManaged(true);
+        argLabel.setVisible(true);
+        boxCommit.setManaged(true);
+        boxCommit.setVisible(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
+        textActionStringToFile.setDisable(false);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textAction.setDisable(true);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
