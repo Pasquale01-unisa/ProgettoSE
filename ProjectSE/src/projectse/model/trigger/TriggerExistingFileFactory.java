@@ -6,11 +6,11 @@ package projectse.model.trigger;
 
 /**
  *
- * @author viki0
+ * @author group07
  */
 public class TriggerExistingFileFactory extends TriggerFactory {
-    String fileToCheck;
-    String directoryToCheck;
+    private String fileToCheck;
+    private String directoryToCheck;
 
     public TriggerExistingFileFactory(String fileToCheck, String directoryToCheck) {
         this.fileToCheck = fileToCheck;

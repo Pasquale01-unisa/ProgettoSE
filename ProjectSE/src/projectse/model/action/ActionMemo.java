@@ -9,7 +9,7 @@ import projectse.controller.MyProjectSEViewController;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionMemo implements Action, Serializable{
     private String memo;
@@ -33,6 +33,6 @@ public class ActionMemo implements Action, Serializable{
 
     @Override
     public void executeAction() {
-        MyProjectSEViewController.showSuccessPopup("È tempo del tuo promemoria!", this.getMemo(), true);
+        MyProjectSEViewController.showSuccessPopup("Time for your reminder!", this.getMemo(), true);
     }
 }

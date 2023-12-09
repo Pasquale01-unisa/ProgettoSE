@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
 public class TriggerDateFactory extends TriggerFactory{
     private DayOfWeek dayOfWeek;

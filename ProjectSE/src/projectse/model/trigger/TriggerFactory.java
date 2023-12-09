@@ -6,7 +6,7 @@ package projectse.model.trigger;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
 public abstract class TriggerFactory {
     public abstract Trigger createTrigger();

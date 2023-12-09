@@ -9,6 +9,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import projectse.controller.MyProjectSEViewController;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionMoveFile implements Action, Serializable {
     private String fromPathString;
     private String toDirectoryPathString; 
@@ -26,15 +30,14 @@ public class ActionMoveFile implements Action, Serializable {
 
     @Override
     public void executeAction() {
-            Path fromPath = Paths.get(fromPathString);
-            Path toPath = Paths.get(toDirectoryPathString, fromPath.getFileName().toString());
+        Path fromPath = Paths.get(fromPathString);
+        Path toPath = Paths.get(toDirectoryPathString, fromPath.getFileName().toString());
 
-            try {
-                Files.move(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
-                
-                MyProjectSEViewController.showSuccessPopup("Spostamento File", "File spostato con successo: " + fromPath.getFileName().toString(), false);
-            } catch (IOException e) {
-                MyProjectSEViewController.showErrorPopup("Errore!", "Si è verificato un errore durante lo spostamento del file: " + e.getMessage());
-            }
+        try {
+            Files.move(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
+            MyProjectSEViewController.showSuccessPopup("Moving File", "File successfully moved: " + fromPath.getFileName().toString(), false);
+        } catch (IOException e) {
+            MyProjectSEViewController.showErrorPopup("Error!", "An error occurred while moving the file: " + e.getMessage());
+        }
     }
 }

@@ -18,7 +18,6 @@ import projectse.model.action.ActionMemo;
  * @author sara
  */
 public class ActionMemoTest {
-    
     private ActionMemo action;
     String memoText;
 
@@ -46,7 +45,6 @@ public class ActionMemoTest {
         String result = action.getAction();
         assertEquals("Memo -> " + memoText, result);
     }
-
 }
 
 

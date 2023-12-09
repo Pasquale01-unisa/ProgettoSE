@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
 public class TriggerDate implements Trigger, Serializable{
     private DayOfWeek dayOfWeek;
@@ -42,6 +42,7 @@ public class TriggerDate implements Trigger, Serializable{
     @Override
     public boolean checkTrigger() {
         LocalDate currentDate = LocalDate.now();
+        //If the currentDate is different from the day/date the user specified the trigger is not executed
         switch (triggerType) {
             case "Day Of Week":
                 if (currentDate.getDayOfWeek() != dayOfWeek) {
@@ -61,11 +62,6 @@ public class TriggerDate implements Trigger, Serializable{
             default:
                 throw new IllegalStateException("Tipo di TriggerDate non supportato: " + triggerType);
         }
-
         return true;
     }
-
-
-
-    
 }

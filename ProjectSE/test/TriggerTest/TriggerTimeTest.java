@@ -10,7 +10,6 @@ import projectse.model.trigger.Trigger;
 import projectse.model.trigger.TriggerTime;
 
 public class TriggerTimeTest {
-
     private TriggerTime trigger;
 
     @Before

@@ -16,13 +16,13 @@ import javafx.application.Platform;
 import projectse.model.action.ActionAppendFile;
 
 public class ActionAppendFileTest {
-
     private File tempFile;
     private final String testString = "Test String";
     private final CountDownLatch latch = new CountDownLatch(1);
+    
     @Before
     public void setUp() throws IOException {
-        // Inizializza l'ambiente JavaFX (se ancora necessario)
+        // Inizializza l'ambiente JavaFX
         new JFXPanel();
 
         // Disattiva gli Alert per i test
@@ -40,7 +40,6 @@ public class ActionAppendFileTest {
 
     @Test
     public void testExecuteAction_AppendToFile() throws IOException, InterruptedException {
-        // Assicurati che il file esista prima di eseguire l'azione
         Assert.assertTrue("Il file temporaneo deve esistere prima dell'esecuzione", tempFile.exists());
 
         Platform.runLater(() -> {
@@ -49,15 +48,8 @@ public class ActionAppendFileTest {
             latch.countDown();
         });
 
-        // Attendi il completamento dell'azione
         latch.await(1, TimeUnit.SECONDS);
-       
-            
-
-        // Leggi il contenuto del file
         List<String> fileContent = Files.readAllLines(Paths.get(tempFile.toURI()));
-
-        // Verifica che il contenuto del file includa la stringa testata
         Assert.assertTrue("Il file dovrebbe contenere la stringa di test", fileContent.contains(testString));
     }
 }

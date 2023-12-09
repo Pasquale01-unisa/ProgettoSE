@@ -6,7 +6,7 @@ package projectse.model.action;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public abstract class ActionFactory {
     public abstract Action createAction();

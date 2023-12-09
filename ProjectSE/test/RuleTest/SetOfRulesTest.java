@@ -15,7 +15,6 @@ import projectse.model.trigger.TriggerTime;
 
 
 public class SetOfRulesTest {
-
     private SetOfRules setOfRules;
 
     @Before

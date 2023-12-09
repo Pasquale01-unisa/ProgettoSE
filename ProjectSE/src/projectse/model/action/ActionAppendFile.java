@@ -10,13 +10,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import projectse.controller.FileManagement;
 import projectse.controller.MyProjectSEViewController;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionAppendFile implements Action, Serializable {
     private String stringToWriteInFile;
     private File fileToAppend;
-    private static boolean isTestMode = false; // Variabile per controllare la modalità di test
+    private static boolean isTestMode = false; // Variable to check the test modality
     
     public ActionAppendFile(String stringToWriteInFile, File fileToAppend) {
         this.stringToWriteInFile = stringToWriteInFile;
@@ -35,7 +38,6 @@ public class ActionAppendFile implements Action, Serializable {
         return fileToAppend;
     }
     
-    // Getter e Setter per isTestMode
     public static boolean isTestMode() {
         return isTestMode;
     }
@@ -58,22 +60,24 @@ public class ActionAppendFile implements Action, Serializable {
 
     @Override
     public void executeAction() {
-            if (fileToAppend == null || !fileToAppend.exists()) {
-                if (!isTestMode) {
-                   MyProjectSEViewController.showErrorPopup("File non valido o non esiste", "Il file :" + fileToAppend + " non e' valido o non esiste");
-                }
-                return;
+        if (fileToAppend == null || !fileToAppend.exists()) {
+            //check for the class test
+            if (!isTestMode) {
+                MyProjectSEViewController.showErrorPopup("Invalid or nonexisting file", "File :" + fileToAppend + " invalid or nonexisting");
             }
-            try (FileWriter fileWriter = new FileWriter(fileToAppend, true);
-                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                 PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-                printWriter.println(stringToWriteInFile);
-                if (!isTestMode) {
-                    MyProjectSEViewController.showSuccessPopup("Testo Inserito nel File", "Testo inserito con successo nel file: " + fileToAppend, false);
+            return;
+        }
+        //write on file 
+        try (FileWriter fileWriter = new FileWriter(fileToAppend, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+            printWriter.println(stringToWriteInFile);
+            if (!isTestMode) {
+                MyProjectSEViewController.showSuccessPopup("Text Iserted in File", "Text successfully inserted into the file: " + fileToAppend, false);
             }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     @Override
@@ -85,6 +89,4 @@ public class ActionAppendFile implements Action, Serializable {
         String fileName = file.getName().toLowerCase();
         return fileName.endsWith(".txt");
     }
-    
-    
 }

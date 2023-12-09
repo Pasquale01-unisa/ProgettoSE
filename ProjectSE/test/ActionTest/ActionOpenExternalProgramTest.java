@@ -37,7 +37,6 @@ public class ActionOpenExternalProgramTest {
 
     @Test
     public void testGetAction() {
-        // Verifica che il metodo getAction restituisca la stringa attesa
         String expected = "Open External Program -> " + "Sara;Abagnale";
         assertEquals(expected, action.getAction());
     }
@@ -55,8 +54,7 @@ public class ActionOpenExternalProgramTest {
         
         deleteLatch.await(1, TimeUnit.SECONDS);
 
-        // Ora puoi utilizzare il metodo getter per ottenere il codice di uscita
-        int expectedExitCode = 0; // Ad esempio, 0 generalmente indica un'esecuzione senza errori
+        int expectedExitCode = 0; // 0 indica un'esecuzione senza errori
         int actualExitCode = action.getLastExitCode();
 
         assertEquals("The exit code should be 0", expectedExitCode, actualExitCode);

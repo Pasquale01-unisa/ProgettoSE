@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.Serializable;
 import projectse.controller.MyProjectSEViewController;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionDeleteFile implements Action, Serializable {
     private File file;
 
@@ -18,16 +22,16 @@ public class ActionDeleteFile implements Action, Serializable {
 
     @Override
     public void executeAction() {
-            if (file != null && file.exists()) {
-                boolean isDeleted = file.delete();
-                if (isDeleted) {
-                    MyProjectSEViewController.showSuccessPopup("Eliminazione File", "File eliminato con successo: " + file, false);
-                } else {
-                    MyProjectSEViewController.showErrorPopup("Errore", "Impossibile eliminare il file: " + file);
-                }
+        if (file != null && file.exists()) {
+            boolean isDeleted = file.delete();
+            if (isDeleted) {
+                MyProjectSEViewController.showSuccessPopup("Deleted File", "File successfully deleted: " + file, false);
             } else {
-                MyProjectSEViewController.showWarningPopup("File non trovato", "File non trovato o già eliminato: " + file);
+                MyProjectSEViewController.showErrorPopup("Error", "Unable to delete the file: " + file);
             }
+        } else {
+            MyProjectSEViewController.showWarningPopup("File not found", "File not found or already deleted: " + file);
+        }
     }
 }
 

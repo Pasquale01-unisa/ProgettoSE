@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionDeleteFileFactory extends ActionFactory{
     private File file;

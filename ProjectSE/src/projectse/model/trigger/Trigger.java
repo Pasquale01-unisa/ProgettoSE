@@ -7,9 +7,9 @@ package projectse.model.trigger;
 
 /**
  *
- * @author pasqualegambino
+ * @author group07
  */
 public interface Trigger {
-    String getTrigger();
-    boolean checkTrigger();
+    public String getTrigger();
+    public boolean checkTrigger();
 }

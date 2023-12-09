@@ -7,17 +7,14 @@ package projectse.controller;
 import javafx.stage.WindowEvent;
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,17 +22,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -54,7 +45,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -66,21 +56,13 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.IntegerStringConverter;
 import projectse.model.action.*;
-import projectse.model.rule.Rule;
-import projectse.model.rule.SetOfRules;
-import projectse.model.rule.SingleRule;
-import projectse.model.trigger.Trigger;
-import projectse.model.trigger.TriggerExistingFileFactory;
-import projectse.model.trigger.TriggerDate;
-import projectse.model.trigger.TriggerDateFactory;
-import projectse.model.trigger.TriggerFactory;
-import projectse.model.trigger.TriggerTime;
-import projectse.model.trigger.TriggerTimeFactory;
+import projectse.model.rule.*;
+import projectse.model.trigger.*;
 
 /**
  * FXML Controller class
  *
- * @author pasqualegambino
+ * @author group07
  */
 public class MyProjectSEViewController implements Initializable, RuleUpdateCallback, Observer{
     @FXML
@@ -95,12 +77,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private TableColumn<SingleRule, String> columnAction;
     @FXML
     private TableColumn<SingleRule, String> columnState;
-
-    private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
-
-    private SetOfRules rules = new SetOfRules();
-
-    private RuleCheckerThread ruleCheckerThread;
     @FXML
     private MenuItem btnTime;
     @FXML
@@ -157,7 +133,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private TextField textTriggerFileCheck;
     @FXML
     private Button btnChooseDirectoryFileChecker;
-    //-------
     @FXML
     private HBox triggerTimeFields;
     @FXML
@@ -197,19 +172,16 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     @FXML
     private VBox boxCommit;
 
-    //-------
-
+    private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
+    private SetOfRules rules = new SetOfRules();
+    private RuleCheckerThread ruleCheckerThread;
     private File selectedFile = null;
     private Duration sleepingTime;
     private boolean repeat = false;
     private File selectedDirectory = null;
-    //--------
     private DayOfWeek dayOfWeek;
     private Integer dayOfMonth;
     private LocalDate specificDate;
-
-
-
 
     /**
      * Initializes the controller class.
@@ -231,45 +203,56 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             }
         );
 
+        menuButtonTriggerDate.setText("Choose a DateType");
         btnCommit.disableProperty().bind(
             textRuleName.textProperty().isEmpty()
             .or(textAction.textProperty().isEmpty())
-            .or(Bindings.createBooleanBinding(() ->
-                btnAction.getText().equals("Choose an Action"), btnAction.textProperty()))
-            .or(Bindings.createBooleanBinding(() ->
-                btnTrigger.getText().equals("Choose a Trigger"), btnTrigger.textProperty()))
+            .or(btnTrigger.textProperty().isEqualTo("Choose a Trigger"))
+            .or(btnAction.textProperty().isEqualTo("Choose an Action"))
+            .or(btnTrigger.textProperty().isEqualTo("Date")
+                .and(menuButtonTriggerDate.textProperty().isEqualTo("Choose a DateType")
+                .or(
+                    menuButtonTriggerDate.textProperty().isEqualTo("Day Of Month")
+                    .and(spinnerDayOfMonth.valueProperty().isNull())
+                ).or(
+                    menuButtonTriggerDate.textProperty().isEqualTo("Day Of Week")
+                    .and(btnWeekDays.textProperty().isEqualTo("WeekDays"))
+                ).or(
+                    menuButtonTriggerDate.textProperty().isEqualTo("Generic Date")
+                    .and(datePicker.valueProperty().isNull())
+                )))
+            .or(btnTrigger.textProperty().isEqualTo("File Check")
+                .and(textTriggerFileCheck.textProperty().isEmpty()
+                    .or(textTriggerDirectoryCheck.textProperty().isEmpty())))
         );
+        
         btnFile.setManaged(false);
+        
         //TRIGGERTIME---
         triggerTimeFields.setManaged(false);
         numberTriggerH.setManaged(false);
         numberTriggerM.setManaged(false);
         separatorSpinner.setManaged(false);
-        //---
-        //VIKTOR------
+
         boxFile.setManaged(false);
         textTriggerFileCheck.setManaged(false);
         textTriggerDirectoryCheck.setManaged(false);
         btnChooseDirectoryFileChecker.setManaged(false);
-        //------------
+
         //TRIGGERDATE---
         menuButtonTriggerDate.setManaged(false);
-            //DATE
         datePicker.setManaged(false);
-        //DATE WEEK MONTH
         boxDate.setManaged(false);
-            //WEEK
         btnWeekDays.setManaged(false);
-            //MONTH
         spinnerDayOfMonth.setManaged(false);
-        //-----
+
         //ACTION
         textActionStringToFile.setManaged(false); 
         textAction.setManaged(false);
         textAction.setDisable(true);
         btnAddTrigger.setDisable(true);
         btnAddAction.setDisable(true);
-        //------
+
         argLabel.setManaged(false);
         argLabel.setVisible(false);
         btnChooseDirectory.setManaged(false);
@@ -278,18 +261,17 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         spinnerDayOfMonth.setValueFactory(dayOfMonthFactory);
         setDatePickerRange(datePicker);
 
-        // Crea gli MenuItem e aggiungili al MenuButton
-        // Configura gli Spinner per le ore e i minuti
+        // Set the Spinner for the hours and minutes
         SpinnerValueFactory<Integer> hoursFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
         SpinnerValueFactory<Integer> minutesFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
         numberTriggerH.setValueFactory(hoursFactory);
         numberTriggerM.setValueFactory(minutesFactory);
 
-        // Personalizza la visualizzazione dei valori negli Spinner
-        setupSpinnerWithCustomTextFormatter(numberTriggerH, true); // Per ore
-        setupSpinnerWithCustomTextFormatter(numberTriggerM, false); // Per minuti
-        setupSpinnerDateWithCustomTextFormatter(spinnerDayOfMonth);
-        this.rules.addObserver(this); // Registra il controller come observer
+        // Costimize the display of values in spinners
+        setupSpinnerWithCustomTextFormatter(numberTriggerH, true); // Hours
+        setupSpinnerWithCustomTextFormatter(numberTriggerM, false); // Minutes
+        setupSpinnerDateWithCustomTextFormatter(spinnerDayOfMonth); //DayOfMonth
+        this.rules.addObserver(this); // Set the controller as an observer
 
         // Configurare la colonna della checkbox per utilizzare una proprietà booleana della tua classe Rule
         // Assumendo che tu abbia un campo booleano (ad esempio, isSelected) in Rule
@@ -299,10 +281,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
                 super.updateItem(item, empty);
                 if (!empty) {
                     CheckBox checkBox = new CheckBox();
-                    SingleRule rule = getTableView().getItems().get(getIndex());
+                    SingleRule rule = getTableView().getItems().get(getIndex()); //Obtain the singleRule object associated to the current line of the table
                     checkBox.setSelected(rule.getIsSelectedValue());
                     checkBox.setOnAction(e -> {
-                        rule.setIsSelectedValue(checkBox.isSelected());
+                        rule.setIsSelectedValue(checkBox.isSelected()); //when the checkbox is selected the checkBox state change
                         updateButtonState();
                     });
                     setGraphic(checkBox);
@@ -324,21 +306,14 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         ruleCheckerThread = new RuleCheckerThread(ruleList, this);
         Thread thread = new Thread(ruleCheckerThread);
         thread.start();
-        // Imposta un listener per la chiusura della finestra
 
-        tableView.setItems(ruleList);
+        tableView.setItems(ruleList); // Connect the ObservableList to the table
         Platform.runLater(() -> {
-            // Qui puoi assegnare lo Stage a una variabile o utilizzarlo direttamente
             Stage stage = (Stage) tableView.getScene().getWindow();
             stage.setOnCloseRequest(this::handleWindowClose);
         });
 
-        FileManagement.loadRulesFromFile(rules);
-
-    }
-
-    private void updateDeleteButtonState() {
-
+        FileManagement.loadRulesFromFile(rules); // I take what i have on the file and put it into setOfRules
     }
 
     @FXML
@@ -347,44 +322,13 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         for (SingleRule rule : ruleList) {
             rule.setIsSelectedValue(isSelected);
         }
-        tableView.refresh(); // Aggiorna la TableView per mostrare le modifiche
-        updateButtonState(); // Aggiorna lo stato dei pulsanti
-    }
-
-    @FXML
-    private void onTextFieldName(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void onBtnTrigger(ActionEvent event) {
-
-    }
-
-    private void setDatePickerRange(DatePicker datePicker) {
-        // Imposta la data minima come oggi
-        datePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
-            @Override
-            public DateCell call(DatePicker param) {
-                return new DateCell() {
-                    @Override
-                    public void updateItem(LocalDate item, boolean empty) {
-                        super.updateItem(item, empty);
-
-                        // Disabilita le date precedenti a oggi
-                        if (item.isBefore(LocalDate.now())) {
-                            setDisable(true);
-                            setStyle("-fx-background-color: #eeeeee;"); // Puoi personalizzare il colore di sfondo delle date disabilitate
-                        }
-                    }
-                };
-            }
-        });
+        tableView.refresh(); // Update the TableView to show the changes
+        updateButtonState(); // Update the buttons states
     }
 
     @FXML
     private void onBtnTime(ActionEvent event) {
-        //TRIGGERTIME-----
+        //TRIGGERTIME
         triggerTimeFields.setManaged(true);
         triggerTimeFields.setVisible(true);
         numberTriggerH.setManaged(true);
@@ -393,8 +337,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         numberTriggerH.setVisible(true);
         numberTriggerM.setVisible(true);
         separatorSpinner.setVisible(true);
-        //------------
-        //VIKTOR----
+
+        //TRIGGERFILE
         boxFile.setManaged(false);
         boxFile.setVisible(false);
         textTriggerFileCheck.setManaged(false);
@@ -403,14 +347,14 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textTriggerDirectoryCheck.setVisible(false);
         btnChooseDirectoryFileChecker.setManaged(false);
         btnChooseDirectoryFileChecker.setVisible(false);
-        //--------
-        //TRIGGERDATE-----
+
+        //TRIGGERDATE
         menuButtonTriggerDate.setManaged(false);
         menuButtonTriggerDate.setVisible(false);
             //GENERIC DATE
         datePicker.setManaged(false);
         datePicker.setVisible(false);
-        //MONTH & WEEK
+            //MONTH & WEEK
         boxDate.setManaged(false);
         boxDate.setVisible(false);
             //WEEK
@@ -420,14 +364,9 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         spinnerDayOfMonth.setManaged(false);
         spinnerDayOfMonth.setVisible(false);
         
-      
-        btnTrigger.setText("Time"); // Cambia il testo del MenuButton
+        btnTrigger.setText("Time"); // change the MenuButton text
         btnWeekDays.setText("WeekDays");
 
-    }
-
-    @FXML
-    private void onBtnAddTrigger(ActionEvent event) {
     }
 
     @FXML
@@ -462,8 +401,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnChooseDirectory.setVisible(false);
         argLabel.setVisible(false);
         textAction.clear();
-        textAction.setPromptText("Inserisci promemoria"); // Imposta un placeholder o un suggerimento
-        btnAction.setText("Memo"); // Cambia il testo del MenuButton
+        textAction.setPromptText("Insert memo"); // Set a placeholder or suggestion
+        btnAction.setText("Memo");
     }
     @FXML
     private void onBtnAppentTextToFile(ActionEvent event) {
@@ -472,76 +411,17 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textAction.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
+        textActionStringToFile.setDisable(false);
         btnFile.setManaged(true);
         btnFile.setVisible(true);
+        btnChooseDirectory.setManaged(false);
+        btnChooseDirectory.setVisible(false);
         argLabel.setVisible(false);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textAction.clear();
-        textActionStringToFile.setPromptText("Inserisci Testo");
+        textActionStringToFile.setPromptText("Insert text");
         btnAction.setText("Append text to file");
-    }
-    
-    private void reset (){
-        textRuleName.clear();
-        //TRIGGERTIME-----
-        triggerTimeFields.setManaged(false);
-        triggerTimeFields.setVisible(false);
-        numberTriggerH.setManaged(false);
-        numberTriggerH.setVisible(false);
-        numberTriggerM.setManaged(false);
-        numberTriggerM.setVisible(false);
-        numberTriggerH.getValueFactory().setValue(00);
-        numberTriggerM.getValueFactory().setValue(00);
-        separatorSpinner.setManaged(false);
-        separatorSpinner.setVisible(false);
-
-        //--------
-        //TRIGGERDATE----
-        menuButtonTriggerDate.setManaged(false);
-        menuButtonTriggerDate.setVisible(false);
-        menuButtonTriggerDate.setText("Choose a DateType");
-            //GENERIC DATE
-        datePicker.setManaged(false);
-        datePicker.getEditor().clear();
-        datePicker.setVisible(false);
-        //MONTH & WEEK
-        boxDate.setManaged(false);
-        boxDate.setVisible(false);
-            //WEEK
-        btnWeekDays.setManaged(false);
-        btnWeekDays.setVisible(false);
-        btnWeekDays.setText("WeekDays");
-            //MONTH
-        spinnerDayOfMonth.setManaged(false);
-        spinnerDayOfMonth.setVisible(false);
-        spinnerDayOfMonth.getValueFactory().setValue(01);
-        //VIKTOR-----
-        boxFile.setManaged(false);
-        boxFile.setVisible(false);
-        textTriggerFileCheck.setManaged(false);
-        textTriggerFileCheck.setVisible(false);
-        textTriggerFileCheck.clear();
-        textTriggerDirectoryCheck.setManaged(false);
-        textTriggerDirectoryCheck.setVisible(false);
-        textTriggerDirectoryCheck.setDisable(true);
-        textTriggerDirectoryCheck.clear();
-        btnChooseDirectoryFileChecker.setManaged(false);
-        btnChooseDirectoryFileChecker.setVisible(false);
-        
-        //ACTION
-        textAction.setManaged(false);
-        textAction.setVisible(false);
-        textActionStringToFile.setManaged(false);
-        textActionStringToFile.setVisible(false);
-        textAction.clear();
-        textActionStringToFile.clear();
-        btnFile.setManaged(false);
-        btnFile.setVisible(false);
-        argLabel.setManaged(false);
-        argLabel.setVisible(false);
-        
-
-        btnTrigger.setText("Choose a Trigger");
-        btnAction.setText("Choose an Action");
     }
 
     @FXML
@@ -555,20 +435,20 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         numberTriggerM.setVisible(false);
         separatorSpinner.setManaged(false);
         separatorSpinner.setVisible(false);
-        //--------
+
         //ACTION
         textAction.setManaged(false);
         textAction.setVisible(false);
         textActionStringToFile.setManaged(false);
         textActionStringToFile.setVisible(false);
-        //
+
         //TRIGGERDATE----
         menuButtonTriggerDate.setManaged(false);
         menuButtonTriggerDate.setVisible(false);
             //GENERIC DATE
         datePicker.setManaged(false);
         datePicker.setVisible(false);
-        //MONTH & WEEK
+            //MONTH & WEEK
         boxDate.setManaged(false);
         boxDate.setVisible(false);
             //WEEK
@@ -577,7 +457,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             //MONTH
         spinnerDayOfMonth.setManaged(false);
         spinnerDayOfMonth.setVisible(false);
-        //VIKTOR-----
+        
+        //TRIGGERFILE
         boxFile.setManaged(true);
         boxFile.setVisible(true);
         textTriggerFileCheck.setManaged(true);
@@ -587,18 +468,14 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textTriggerDirectoryCheck.setDisable(true);
         btnChooseDirectoryFileChecker.setManaged(true);
         btnChooseDirectoryFileChecker.setVisible(true);
-        //----
         
         btnTrigger.setText("File Check");
-
-    }
-
-    @FXML
-    private void onBtnAction(ActionEvent event) {
     }
 
     @FXML
     private void onBtnDeleteFile(ActionEvent event) {
+        btnChooseDirectory.setManaged(false);
+        btnChooseDirectory.setVisible(false);
         textActionStringToFile.setManaged(false);
         textActionStringToFile.setVisible(false);
         textAction.setManaged(true);
@@ -609,14 +486,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         argLabel.setVisible(false);
         textAction.clear();
         btnAction.setText("Delete file");
-    }
-
-    @FXML
-    private void onBtnAddAction(ActionEvent event) {
-    }
-
-    @FXML
-    private void onTextFieldAction(ActionEvent event) {
     }
 
     @FXML
@@ -635,93 +504,14 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             newRule.setRepetition(newRule.getCreation().plus(newRule.getSleepingTime()));
             repeat = false;
         }
-        newRule.addObserver((o, arg) -> {
-            // Questo metodo viene chiamato quando lo stato di selezione di newRule cambia
-            updateDeleteButtonState();
-        });
         rules.addRule(newRule);
         this.reset();
-        
     }
 
-    private ActionFactory createActionFactory(String userChoice){
-        switch(userChoice){
-            case "Memo":
-                return new ActionMemoFactory(textAction.getText());
-            case "Alarm":
-                return new ActionAlarmFactory(selectedFile);
-            case "Append text to file":
-                return new ActionAppendFileFactory(textActionStringToFile.getText(), selectedFile);
-            case "Delete file":
-                return new ActionDeleteFileFactory(selectedFile);
-            case "Copy file":
-                return new ActionCopyFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
-            case "Move file":
-                return new ActionMoveFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
-            case "Open External Program":
-                return new ActionOpenExternalProgramFactory(textActionStringToFile.getText(), selectedFile);
-            default:
-                throw new IllegalArgumentException("Action type not supported: " + userChoice);
-        }
-    }
-
-    private void setupSpinnerDateWithCustomTextFormatter(Spinner<Integer> spinnerDayOfMonths) {
-        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinnerDayOfMonths.getValue(), change -> {
-            String newText = change.getControlNewText();
-            if (newText.isEmpty()) {
-                return change; // Permette il campo vuoto
-            }
-            try {
-                int newValue = Integer.parseInt(newText);
-                if (newValue >= 1 && newValue <= 31) {
-                    return change;
-                }
-            } catch (NumberFormatException e) {
-                // Non fa nulla se non è un numero valido
-            }
-            return null; // Ignora le modifiche non valide
-        });
-
-        spinnerDayOfMonths.getEditor().setTextFormatter(formatter);
-        spinnerDayOfMonths.setEditable(true); // Rendi lo Spinner modificabile
-
-        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                String text = String.format("%02d", newValue); // Formatta come stringa a due cifre
-                if (!text.equals(spinnerDayOfMonths.getEditor().getText())) {
-                                    spinnerDayOfMonths.getEditor().setText(text);
-                }
-                spinnerDayOfMonths.getValueFactory().setValue(newValue);
-            }
-        });
-
-        spinnerDayOfMonths.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // Quando lo spinner perde il focus
-                Integer currentValue = spinnerDayOfMonths.getValue();
-                if (currentValue != null) {
-                    String text = String.format("%02d", currentValue);
-                    spinnerDayOfMonths.getEditor().setText(text);
-                }
-            }
-        });
-    }
-
-    private TriggerFactory createTriggerFactory(String userChoice){
-        switch (userChoice) {
-            case "Time":
-                return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
-            case "File Check":
-                return new TriggerExistingFileFactory(textTriggerFileCheck.getText(), textTriggerDirectoryCheck.getText());
-            case "Date":
-                return new TriggerDateFactory(btnWeekDays.getText().toUpperCase(),Integer.parseInt(spinnerDayOfMonth.getValue().toString()), datePicker.getValue(), menuButtonTriggerDate.getText());
-            default:
-                throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
-        }
-    }
     @FXML
     private void OnBtnDate(ActionEvent event) {
         btnTrigger.setText("Date");
-        //TRIGGERTIME------
+        //TRIGGERTIME
         triggerTimeFields.setManaged(false);
         triggerTimeFields.setVisible(false);
         numberTriggerH.setManaged(false);
@@ -730,26 +520,22 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         numberTriggerM.setVisible(false);
         separatorSpinner.setManaged(false);
         separatorSpinner.setVisible(false);
-        //---------------
+
         //TRIGGERDATE----
         menuButtonTriggerDate.setManaged(true);
         menuButtonTriggerDate.setVisible(true);
         datePicker.setManaged(false);
         datePicker.setVisible(false);
-        //MONTH & WEEK---
+            //MONTH & WEEK---
         boxDate.setManaged(false);
         boxDate.setVisible(false);
             //WEEK
         btnWeekDays.setManaged(false);
         btnWeekDays.setVisible(false);
-            //
             //MONTH
         spinnerDayOfMonth.setManaged(false);
         spinnerDayOfMonth.setVisible(false);
-            //
-            //---
-        //----
-        //VIKTOR----
+        //TRIGGERFILE
         boxFile.setManaged(false);
         boxFile.setVisible(false);
         textTriggerFileCheck.setManaged(false);
@@ -759,7 +545,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textTriggerDirectoryCheck.setDisable(false);
         btnChooseDirectoryFileChecker.setVisible(false);
         btnChooseDirectoryFileChecker.setManaged(false);
-        //----------
     }
 
     @FXML
@@ -778,7 +563,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnWeekDays.setVisible(true);
         datePicker.setManaged(false);
         datePicker.setVisible(false);
-
     }
 
     @FXML
@@ -845,8 +629,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     @FXML
     private void onBtnDelete(ActionEvent event) {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Conferma Eliminazione");
-        confirmAlert.setHeaderText("Sei sicuro di voler eliminare le regole selezionate?");
+        confirmAlert.setTitle("Confirm elimination");
+        confirmAlert.setHeaderText("Are you sure you want to delete the selected rules?");
 
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -861,21 +645,20 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private void onBtnOnOff(ActionEvent event) {
         ruleList.stream().filter(SingleRule::getIsSelectedValue)
             .forEach(rule -> {
-                rule.setIsShow(false); // Rimetti isShow a false in modo che venga ricontrollata
-                // Cambia lo stato da "Active" a "Inactive" e viceversa
+                rule.setIsShow(false); // Set isShow to false, so it checks the rule again
+                // Change the state from "Active" to "Inactive" e vice versa
                 rule.setState(rule.getState().equals("Active") ? "Deactivated" : "Active");
         });
         tableView.refresh();
         updateButtonState();
     }
 
-
     @FXML
     private void onBtnFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a File");
 
-        // Controlla se il testo del pulsante btnAction è "Alarm"
+        // Check if the btnAction text is "Alarm"
         if ("Alarm".equals(btnAction.getText())) {
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("File Audio (.mp3,.wav, .aac)", "*.mp3", "*.wav", "*.aac");
             fileChooser.getExtensionFilters().add(filter);
@@ -894,99 +677,17 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         }
     }
 
-    private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner, boolean isHour) {
-        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinner.getValue(), change -> {
-            String newText = change.getControlNewText();
-            if (newText.isEmpty()) {
-                return change; // Permette il campo vuoto
-            }
-            try {
-                int newValue = Integer.parseInt(newText);
-                if ((isHour && newValue >= 0 && newValue <= 23) || (!isHour && newValue >= 0 && newValue <= 59)) {
-                    return change;
-                }
-            } catch (NumberFormatException e) {
-                // Non fa nulla se non è un numero valido
-            }
-            return null; // Ignora le modifiche non valide
-        });
-
-        spinner.getEditor().setTextFormatter(formatter);
-        spinner.setEditable(true); // Rendi lo Spinner modificabile
-
-        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue != null) {
-                String text = String.format("%02d", newValue); // Formatta come stringa a due cifre
-                if (!text.equals(spinner.getEditor().getText())) {
-                    spinner.getEditor().setText(text);
-                }
-                spinner.getValueFactory().setValue(newValue);
-            }
-        });
-        spinner.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // Quando lo spinner perde il focus
-                Integer currentValue = spinner.getValue();
-                if (currentValue != null) {
-                    String text = String.format("%02d", currentValue);
-                    spinner.getEditor().setText(text);
-                }
-            }
-        });
-    }
-
-    private void showDetails(SingleRule selectedRule) {
-        if (selectedRule == null) {
-            // Nessuna riga selezionata
-            return;
-        }
-
-        // Crea un Alert per mostrare i dettagli
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Dettagli Regola");
-        alert.setHeaderText("Informazioni sulla Regola Selezionata");
-
-        // Costruisci il messaggio con i dettagli della riga
-        StringBuilder details = new StringBuilder();
-        details.append("Nome: ").append(selectedRule.getName()).append("\n");
-        details.append("Trigger: ").append(selectedRule.getTrigger()).append("\n");
-        details.append("Azione: ").append(selectedRule.getAction()).append("\n");
-        details.append("State: ").append((selectedRule.getState()));
-
-        alert.setContentText(details.toString());
-
-        // Mostra l'Alert
-        alert.showAndWait();
-
-        // Deseleziona la riga nella TableView nel thread dell'interfaccia utente
-        Platform.runLater(() -> {
-            tableView.getSelectionModel().clearSelection();
-
-        });
-    }
-
-    private void updateButtonState() {
-        boolean anySelected = false;
-        for (SingleRule rule : rules.getRules()) {
-            if (rule.getIsSelectedValue()) {
-                anySelected = true;
-                break;
-            }
-        }
-        btnDelete.setDisable(!anySelected);
-        btnOnOff.setDisable(!anySelected);
-    }
-
     @FXML
     private void OnBtnRepetition(ActionEvent event) {
-        // Crea il dialogo
+        // Create the dialog
         Dialog<Object> dialog = new Dialog<>();
         dialog.setTitle("Set Sleeping Time");
 
-        // Imposta il tipo di bottone
+        // Set the button type
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-        // Crea i due campi di testo
+        // Creates the two text field
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -1006,21 +707,21 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         grid.add(new Label("Minutes: "), 0, 2);
         grid.add(textField3, 1, 2);
 
-        // Abilita/Disabilita il bottone OK a seconda se i TextField sono vuoti o meno
+        // Enable/disable the OK button depending on whether the textFields are empty or not 
         Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
         okButton.setDisable(true);
 
-        // Aggiungi un listener per il controllo dei campi di testo
+        // Add a listener to check the textfield
         textField1.textProperty().addListener((observable, oldValue, newValue) -> {
             okButton.setDisable(newValue.trim().isEmpty());
         });
 
         dialog.getDialogPane().setContent(grid);
 
-        // Request focus sul primo campo di testo all'apertura del dialog
+        // Request focus on the first textField at the beginning 
         Platform.runLater(textField1::requestFocus);
 
-        // Converti il risultato al click del bottone OK in una coppia di stringhe
+        // Convert the results at the click of the OK button to a string pair
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
                 sleepingTime = Duration.ofDays(Integer.parseInt(textField1.getText())).plusHours(Integer.parseInt(textField2.getText())).plusMinutes(Integer.parseInt(textField3.getText()));
@@ -1028,7 +729,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             return null;
         });
 
-        // Mostra il dialog e attendi il risultato
+        // Show the dialog and wait for the result
         Optional<Object> result = dialog.showAndWait();
         repeat = true;
     }
@@ -1037,6 +738,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private void onBtnCopyFile(ActionEvent event){
         //Function to show the fields when we choose the copy file action
         textAction.setDisable(true);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textActionStringToFile.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
@@ -1058,6 +761,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private void onBtnMoveFile(ActionEvent event){
         //Function to show the fields when we choose the copy file action
         textAction.setDisable(true);
+        textAction.setManaged(true);
+        textAction.setVisible(true);
         textActionStringToFile.setDisable(true);
         textActionStringToFile.setManaged(true);
         textActionStringToFile.setVisible(true);
@@ -1109,13 +814,40 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnChooseDirectory.setVisible(false);
         argLabel.setVisible(true);
         textAction.clear();
-        textActionStringToFile.setPromptText("Inserisci argomenti*"); // Imposta un placeholder o un suggerimento
-        btnAction.setText("Open External Program"); // Cambia il testo del MenuButton
+        textActionStringToFile.setPromptText("Insert arguments*"); 
+        btnAction.setText("Open External Program"); 
+    }
+    
+    @FXML
+    private void updateDeleteButtonState() {
+    }
+    
+    @FXML
+    private void onTextFieldName(ActionEvent event) {
     }
 
+    @FXML
+    private void onBtnTrigger(ActionEvent event) {
+    }
+    
+    @FXML
+    private void onBtnAddTrigger(ActionEvent event) {
+    }
+     
+    @FXML
+    private void onBtnAction(ActionEvent event) {
+    }
+    
+    @FXML
+    private void onBtnAddAction(ActionEvent event) {
+    }
+
+    @FXML
+    private void onTextFieldAction(ActionEvent event) {
+    }
+    
     @Override
     public void updateUI() {
-        // Implementazione per aggiornare l'UI
         Platform.runLater(() -> {
             tableView.refresh();
         });
@@ -1128,7 +860,260 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         });
     }
 
+    //Method to link ObservableList of SingleRule to setOfRules, every time there is a change the update method is called 
+    @Override
+    public void update(Observable o, Object arg) { //arg is setOfRules when i call notifyObserver into the SetOfRules class
+        if (o instanceof SetOfRules) {
+            Platform.runLater(() -> {
+                ruleList.setAll(((SetOfRules) o).getRules());
+            });
+        }
+    }
+    
+    private void setDatePickerRange(DatePicker datePicker) {
+        // Set the current date
+        datePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
 
+                        // Disable the dates before the current date
+                        if (item.isBefore(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #eeeeee;");
+                        }
+                    }
+                };
+            }
+        });
+    }
+    
+    private void reset (){
+        textRuleName.clear();
+        
+        //TRIGGERTIME-----
+        triggerTimeFields.setManaged(false);
+        triggerTimeFields.setVisible(false);
+        numberTriggerH.setManaged(false);
+        numberTriggerH.setVisible(false);
+        numberTriggerM.setManaged(false);
+        numberTriggerM.setVisible(false);
+        numberTriggerH.getValueFactory().setValue(00);
+        numberTriggerM.getValueFactory().setValue(00);
+        separatorSpinner.setManaged(false);
+        separatorSpinner.setVisible(false);
+
+        //TRIGGERDATE----
+        menuButtonTriggerDate.setManaged(false);
+        menuButtonTriggerDate.setVisible(false);
+        menuButtonTriggerDate.setText("Choose a DateType");
+            //GENERIC DATE
+        datePicker.setManaged(false);
+        datePicker.getEditor().clear();
+        datePicker.setVisible(false);
+            //MONTH & WEEK
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+        btnWeekDays.setText("WeekDays");
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        spinnerDayOfMonth.getValueFactory().setValue(01);
+        
+        //TRIGGERFILE
+        boxFile.setManaged(false);
+        boxFile.setVisible(false);
+        textTriggerFileCheck.setManaged(false);
+        textTriggerFileCheck.setVisible(false);
+        textTriggerFileCheck.clear();
+        textTriggerDirectoryCheck.setManaged(false);
+        textTriggerDirectoryCheck.setVisible(false);
+        textTriggerDirectoryCheck.setDisable(true);
+        textTriggerDirectoryCheck.clear();
+        btnChooseDirectoryFileChecker.setManaged(false);
+        btnChooseDirectoryFileChecker.setVisible(false);
+        
+        //ACTION
+        textAction.setManaged(false);
+        textAction.setVisible(false);
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
+        textAction.clear();
+        textActionStringToFile.clear();
+        btnFile.setManaged(false);
+        btnFile.setVisible(false);
+        argLabel.setManaged(false);
+        argLabel.setVisible(false);
+        
+        btnTrigger.setText("Choose a Trigger");
+        btnAction.setText("Choose an Action");
+    }
+    
+    private ActionFactory createActionFactory(String userChoice){
+        switch(userChoice){
+            case "Memo":
+                return new ActionMemoFactory(textAction.getText());
+            case "Alarm":
+                return new ActionAlarmFactory(selectedFile);
+            case "Append text to file":
+                return new ActionAppendFileFactory(textActionStringToFile.getText(), selectedFile);
+            case "Delete file":
+                return new ActionDeleteFileFactory(selectedFile);
+            case "Copy file":
+                return new ActionCopyFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
+            case "Move file":
+                return new ActionMoveFileFactory(selectedFile.getAbsolutePath(), selectedDirectory.getAbsolutePath());
+            case "Open External Program":
+                return new ActionOpenExternalProgramFactory(textActionStringToFile.getText(), selectedFile);
+            default:
+                throw new IllegalArgumentException("Action type not supported: " + userChoice);
+        }
+    }
+    
+    //Spinner got day of months
+    private void setupSpinnerDateWithCustomTextFormatter(Spinner<Integer> spinnerDayOfMonths) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinnerDayOfMonths.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) {
+                return change; // Allow the empty field
+            }
+            try {
+                int newValue = Integer.parseInt(newText);
+                if (newValue >= 1 && newValue <= 31) {
+                    return change;
+                }
+            } catch (NumberFormatException e) {
+                // If it's not a valid number it doesn't do anything
+            }
+            return null; // Ignore invalid changes
+        });
+
+        spinnerDayOfMonths.getEditor().setTextFormatter(formatter);
+        spinnerDayOfMonths.setEditable(true); // Makes the spinner editable
+
+        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                String text = String.format("%02d", newValue); // Format as a two-digit string
+                if (!text.equals(spinnerDayOfMonths.getEditor().getText())) {
+                                    spinnerDayOfMonths.getEditor().setText(text);
+                }
+                spinnerDayOfMonths.getValueFactory().setValue(newValue);
+            }
+        });
+
+        spinnerDayOfMonths.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // When the spinner loses focus 
+                Integer currentValue = spinnerDayOfMonths.getValue();
+                if (currentValue != null) {
+                    String text = String.format("%02d", currentValue);
+                    spinnerDayOfMonths.getEditor().setText(text);
+                }
+            }
+        });
+    }
+
+    private TriggerFactory createTriggerFactory(String userChoice){
+        switch (userChoice) {
+            case "Time":
+                return new TriggerTimeFactory(numberTriggerH.getValue().toString(), numberTriggerM.getValue().toString());
+            case "File Check":
+                return new TriggerExistingFileFactory(textTriggerFileCheck.getText(), textTriggerDirectoryCheck.getText());
+            case "Date":
+                return new TriggerDateFactory(btnWeekDays.getText().toUpperCase(),Integer.parseInt(spinnerDayOfMonth.getValue().toString()), datePicker.getValue(), menuButtonTriggerDate.getText());
+            default:
+                throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
+        }
+    }
+    
+    //Spinner for the hour
+    private void setupSpinnerWithCustomTextFormatter(Spinner<Integer> spinner, boolean isHour) {
+        TextFormatter<Integer> formatter = new TextFormatter<>(new IntegerStringConverter(), spinner.getValue(), change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) {
+                return change; // Allows the empty field 
+            }
+            try {
+                int newValue = Integer.parseInt(newText);
+                if ((isHour && newValue >= 0 && newValue <= 23) || (!isHour && newValue >= 0 && newValue <= 59)) {
+                    return change;
+                }
+            } catch (NumberFormatException e) {
+                
+            }
+            return null; 
+        });
+
+        spinner.getEditor().setTextFormatter(formatter);
+        spinner.setEditable(true); 
+
+        formatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                String text = String.format("%02d", newValue); 
+                if (!text.equals(spinner.getEditor().getText())) {
+                    spinner.getEditor().setText(text);
+                }
+                spinner.getValueFactory().setValue(newValue);
+            }
+        });
+        spinner.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { 
+                Integer currentValue = spinner.getValue();
+                if (currentValue != null) {
+                    String text = String.format("%02d", currentValue);
+                    spinner.getEditor().setText(text);
+                }
+            }
+        });
+    }
+
+    private void showDetails(SingleRule selectedRule) {
+        if (selectedRule == null) {
+            // None of the lines selected
+            return;
+        }
+
+        // Creates an Alert to show the details
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Dettagli Regola");
+        alert.setHeaderText("Informazioni sulla Regola Selezionata");
+
+        // Build the message with the line informations
+        StringBuilder details = new StringBuilder();
+        details.append("Nome: ").append(selectedRule.getName()).append("\n");
+        details.append("Trigger: ").append(selectedRule.getTrigger()).append("\n");
+        details.append("Azione: ").append(selectedRule.getAction()).append("\n");
+        details.append("State: ").append((selectedRule.getState()));
+
+        alert.setContentText(details.toString());
+
+        // Shows the Alert
+        alert.showAndWait();
+
+        // Deselect the line into the TableView into the UI thread
+        Platform.runLater(() -> {
+            tableView.getSelectionModel().clearSelection();
+
+        });
+    }
+
+    private void updateButtonState() {
+        boolean anySelected = false;
+        for (SingleRule rule : rules.getRules()) {
+            if (rule.getIsSelectedValue()) {
+                anySelected = true;
+                break;
+            }
+        }
+        btnDelete.setDisable(!anySelected);
+        btnOnOff.setDisable(!anySelected);
+    }
+    
     private void handleWindowClose(WindowEvent event) {
         if (ruleCheckerThread != null) {
             ruleCheckerThread.stop();
@@ -1137,7 +1122,7 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     public static void showErrorPopup(String title, String message) {
         Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Errore");
+        alert.setTitle("Error");
         alert.setHeaderText(title);
         alert.setContentText(message);
         Timeline timeline = new Timeline(new KeyFrame(
@@ -1172,14 +1157,4 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         timeline.play();
         alert.showAndWait();
     }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if (o instanceof SetOfRules) {
-            Platform.runLater(() -> {
-                ruleList.setAll(((SetOfRules) o).getRules());
-            });
-        }
-    }
-
 }

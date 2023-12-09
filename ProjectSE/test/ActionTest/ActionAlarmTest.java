@@ -6,8 +6,6 @@ package ActionTest;
 
 import java.io.File;
 import javafx.embed.swing.JFXPanel;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +23,7 @@ public class ActionAlarmTest {
     @BeforeClass
     public static void setUpClass() {
         // Inizializza l'ambiente JavaFX
-        new JFXPanel(); // Questa linea inizializza l'ambiente JavaFX
+        new JFXPanel();
     }
     
     @Before
@@ -87,5 +85,4 @@ public class ActionAlarmTest {
         File file = new File("test.txt");
         assertFalse("Il file non dovrebbe essere un file audio valido", isValidAudioFile(file));
     }
-
 }

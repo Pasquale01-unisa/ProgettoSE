@@ -7,11 +7,10 @@ package projectse.model.trigger;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class TriggerTime implements Trigger, Serializable {
     private String hour;
@@ -38,6 +37,7 @@ public class TriggerTime implements Trigger, Serializable {
         }
     }
 
+    //Check if the hour is between 0 and 23
     private boolean isValidHour(String hour) {
         try {
             int h = Integer.parseInt(hour);
@@ -47,6 +47,7 @@ public class TriggerTime implements Trigger, Serializable {
         }
     }
 
+    //Check if the minutes are between 0 and 59
     private boolean isValidMinutes(String minutes) {
         try {
             int m = Integer.parseInt(minutes);
@@ -56,25 +57,24 @@ public class TriggerTime implements Trigger, Serializable {
         }
     }
     
+    public String getHour() {
+        return hour;
+    }
+
+    public String getMinutes() {
+        return minutes;
+    }
+    
     @Override
     public boolean checkTrigger() {
         LocalTime tempoAttuale = LocalTime.now();
         String orario = this.getHour() + ":" + this.getMinutes();
-        LocalTime tempoTrigger = LocalTime.parse(orario, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime tempoTrigger = LocalTime.parse(orario, DateTimeFormatter.ofPattern("HH:mm")); //Format the time string as LocalTime
         return tempoAttuale.getHour() == tempoTrigger.getHour() && tempoAttuale.getMinute() == tempoTrigger.getMinute();
     }
 
     @Override
     public String getTrigger() {
         return "Time -> " + hour + ":" + minutes;
-    }
-
-    public String getHour() {
-        return hour;
-    }
-
-
-    public String getMinutes() {
-        return minutes;
-    }   
+    }  
 }

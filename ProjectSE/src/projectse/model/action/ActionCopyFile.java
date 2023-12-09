@@ -4,7 +4,6 @@
  */
 package projectse.model.action;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -15,7 +14,7 @@ import projectse.controller.MyProjectSEViewController;
 
 /**
  *
- * @author viki0
+ * @author group07
  */
 public class ActionCopyFile implements Action, Serializable{
     private String sourceFile;
@@ -33,17 +32,15 @@ public class ActionCopyFile implements Action, Serializable{
 
     @Override
     public void executeAction() {
-            Path fromPath = Paths.get(sourceFile);
-            Path toPath = Paths.get(destinationDirectory, fromPath.getFileName().toString());
+        Path fromPath = Paths.get(sourceFile);
+        Path toPath = Paths.get(destinationDirectory, fromPath.getFileName().toString());
 
-            try {
-                Files.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
-                
-                 MyProjectSEViewController.showSuccessPopup("Copia File", "File copiato con successo: " + fromPath.getFileName().toString(), false);
-            } catch (IOException e) {
-            
-                MyProjectSEViewController.showErrorPopup("Errore!", "Si è verificato un errore durante la copia del file: " + e.getMessage());
-            }
+        try {
+            Files.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
+            MyProjectSEViewController.showSuccessPopup("Copy File", "File successfully copied: " + fromPath.getFileName().toString(), false);
+        } catch (IOException e) {
+            MyProjectSEViewController.showErrorPopup("Error!", "An error occurred during the copy of the file: " + e.getMessage());
+        }
     }
 }
     

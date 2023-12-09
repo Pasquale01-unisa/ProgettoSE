@@ -6,10 +6,10 @@ package projectse.model.action;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionMemoFactory extends ActionFactory{
-    String memo;
+    private String memo;
 
     public ActionMemoFactory(String memo) {
         this.memo = memo;

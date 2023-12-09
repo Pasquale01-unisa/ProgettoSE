@@ -19,7 +19,7 @@ import projectse.model.rule.SingleRule;
 
 /**
  *
- * @author pasqualegambino
+ * @author group07
  */
 public class FileManagement implements Observer {
     private static FileManagement instance;
@@ -29,7 +29,8 @@ public class FileManagement implements Observer {
         file = new File("fileRule.txt");
     }
     
-    // Metodo statico per ottenere l'istanza
+    //PATTERN SINGLETON, I want only one file manager
+    // static method to get the instance
     public static FileManagement getInstance() {
         if (instance == null) {
             instance = new FileManagement();
@@ -40,33 +41,31 @@ public class FileManagement implements Observer {
     
     public static void saveRulesToFile(List<SingleRule> rules) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(new ArrayList<SingleRule>(rules)); // Salva l'intera lista
+            oos.writeObject(new ArrayList<SingleRule>(rules)); // Save the intere list
         } catch (IOException e) {
             System.err.println("Errore durante la scrittura nel file: " + e.getMessage());
         }
     }
 
     public static void loadRulesFromFile(SetOfRules setOfRules) {
-        if (!file.exists()) return; // Se il file non esiste, non c'è nulla da caricare
+        if (!file.exists()) return; // If the file doesn't exist, there is nothing to load
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             List<SingleRule> loadedRules = (List<SingleRule>) ois.readObject();
             for (SingleRule rule : loadedRules) {
                 rule.setObserver();
-                setOfRules.addRule(rule); // Usa il metodo addRule per aggiungere la regola
+                setOfRules.addRule(rule); // Use the addRule method to add the rule, so I can add the observer to each observer
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Errore durante la lettura del file: " + e.getMessage());
+            System.err.println("File vuoto: " + e.getMessage());
         }
     }
 
-
+    //Observer method to update the file
     @Override
     public void update(Observable o, Object arg) {
         if (arg instanceof List<?>) {
             saveRulesToFile((List<SingleRule>) arg);
         }
-    }
-
-    
+    }  
 }

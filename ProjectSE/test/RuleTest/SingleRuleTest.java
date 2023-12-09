@@ -4,11 +4,11 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import static org.junit.Assert.*;
-import projectse.model.action.Action; // Assuming you have an Action interface or class with a constructor
+import projectse.model.action.Action; 
 import projectse.model.action.ActionMemo;
 import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
-import projectse.model.trigger.Trigger; // Assuming you have a Trigger interface or class with a constructor
+import projectse.model.trigger.Trigger; 
 import projectse.model.trigger.TriggerTime;
 
 public class SingleRuleTest {
@@ -18,7 +18,6 @@ public class SingleRuleTest {
 
     @Before
     public void setUp() {
-        // Initialize SetOfRules and SingleRule here. Assuming Action and Trigger have proper constructors.
         setOfRules = new SetOfRules();
         singleRule = new SingleRule("RuleName", new TriggerTime("09", "00"), new ActionMemo("Scrum Daily Meeting"), "Deactivated", setOfRules);
     }
@@ -33,14 +32,14 @@ public class SingleRuleTest {
     
     @Test
     public void testSetTrigger() {
-        Trigger newTrigger = new TriggerTime("09", "00"); // Assuming constructor
+        Trigger newTrigger = new TriggerTime("09", "00");
         singleRule.setTrigger(newTrigger);
         assertSame("The trigger should be updated", newTrigger, singleRule.getTriggerObject());
     }
 
     @Test
     public void testSetAction() {
-        Action newAction = new ActionMemo("Scrum Daily Meeting"); // Assuming constructor
+        Action newAction = new ActionMemo("Scrum Daily Meeting");
         singleRule.setAction(newAction);
         assertSame("The action should be updated", newAction, singleRule.getActionObject());
     }
@@ -69,7 +68,5 @@ public class SingleRuleTest {
         LocalDateTime newCreation = LocalDateTime.now();
         singleRule.setCreation(newCreation);
         assertEquals("The creation date should be updated", newCreation, singleRule.getCreation());
-    }
-
-    
+    }    
 }

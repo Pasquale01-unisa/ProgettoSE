@@ -6,12 +6,10 @@ package projectse.model.trigger;
 
 import java.io.File;
 import java.io.Serializable;
-import projectse.controller.MyProjectSEViewController;
-
 
 /**
  *
- * @author viki0
+ * @author group07
  */
 public class TriggerExistingFile implements Trigger, Serializable{
     String fileToCheck;

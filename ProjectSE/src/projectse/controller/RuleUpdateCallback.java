@@ -9,9 +9,9 @@ import projectse.model.rule.SingleRule;
 
 /**
  *
- * @author pasqualegambino
+ * @author group07
  */
 public interface RuleUpdateCallback {
-    void updateUI();
-    void executeAction(SingleRule rule); 
+    public void updateUI();
+    public void executeAction(SingleRule rule); 
 }

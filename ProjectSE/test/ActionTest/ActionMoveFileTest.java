@@ -54,5 +54,4 @@ public class ActionMoveFileTest {
         assertTrue("Il file non è stato spostato correttamente", Files.exists(tempDirectory.resolve(tempFile.getFileName())));
         assertFalse("Il file originale esiste ancora", Files.exists(tempFile));
     }
-
 }

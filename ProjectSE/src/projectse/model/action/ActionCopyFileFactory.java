@@ -6,7 +6,7 @@ package projectse.model.action;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionCopyFileFactory extends ActionFactory{
     private String sourceFile;

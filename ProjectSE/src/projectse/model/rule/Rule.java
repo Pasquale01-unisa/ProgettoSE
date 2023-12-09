@@ -6,10 +6,9 @@ package projectse.model.rule;
 
 /**
  *
- * @author pasqualegambino
+ * @author group07
  */
 public interface Rule {
-    void addRule(SingleRule rule);
-    void deleteRule(SingleRule rule);
-    
+    public void addRule(SingleRule rule);
+    public void deleteRule(SingleRule rule);
 }

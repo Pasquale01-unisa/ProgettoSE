@@ -34,7 +34,6 @@ public class ActionCopyFileTest {
 
     @After
     public void tearDown() throws IOException {
-        // Assicurati di cancellare il file e la directory dopo i test
         Files.deleteIfExists(tempFile);
         Files.deleteIfExists(tempDirectory.resolve(tempFile.getFileName()));
         Files.deleteIfExists(tempDirectory);
@@ -52,8 +51,6 @@ public class ActionCopyFileTest {
         });
         deleteLatch.await(1, TimeUnit.SECONDS);
         
-
         assertTrue("Il file non e' stato spostato correttamente", Files.exists(tempDirectory.resolve(tempFile.getFileName())));
     }
-
 }

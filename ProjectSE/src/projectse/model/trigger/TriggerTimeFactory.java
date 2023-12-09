@@ -6,7 +6,7 @@ package projectse.model.trigger;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
 public class TriggerTimeFactory extends TriggerFactory{
     private String hour;
@@ -21,5 +21,4 @@ public class TriggerTimeFactory extends TriggerFactory{
     public Trigger createTrigger() {
         return new TriggerTime(hour, minutes);
     }
-    
 }

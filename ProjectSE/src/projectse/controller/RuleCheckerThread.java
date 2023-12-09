@@ -1,18 +1,21 @@
-
-
 package projectse.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javafx.collections.ObservableList;
 import projectse.model.rule.SingleRule;
 
-public class RuleCheckerThread implements Runnable {
-    private ObservableList<SingleRule> ruleList;
-    private final AtomicBoolean running = new AtomicBoolean(false);
-    private RuleUpdateCallback callback;
+/**
+ *
+ * @author group07
+ */
 
-    public RuleCheckerThread(ObservableList<SingleRule> ruleList, RuleUpdateCallback callback) {
+public class RuleCheckerThread implements Runnable {
+    private List<SingleRule> ruleList;
+    private final AtomicBoolean running = new AtomicBoolean(false); //check the execution state of the thread  
+    private RuleUpdateCallback callback; 
+
+    public RuleCheckerThread(List<SingleRule> ruleList, RuleUpdateCallback callback) {
         this.ruleList = ruleList;
         this.callback = callback;
     }
@@ -36,13 +39,14 @@ public class RuleCheckerThread implements Runnable {
 
     private void checkRule() {
         for (SingleRule r : ruleList) {
+            //If the rule is deactive and the actual time is after the time i've setted for the reptition i have to activate the rule 
             if (r.isSleeping() && LocalDateTime.now().isAfter(r.getRepetition())) {
                 r.setIsShow(false);
                 r.setSleeping(false);
                 r.setRepeat(false);
                 r.setState("Active");
-
-                // Notifica il controller di aggiornare l'UI
+                
+                // Notify the controller to update the UI
                 callback.updateUI();
             }
 
@@ -53,14 +57,13 @@ public class RuleCheckerThread implements Runnable {
                 }
                 r.setState("Deactivated");
 
-                // Chiamata al callback per eseguire l'azione
+                // Call to the callback to execute the action 
                 callback.executeAction(r);
 
-                // Notifica il controller di aggiornare l'UI dopo l'esecuzione dell'azione
+                // Notify the controller to update the UI after the execution of the action  
                 callback.updateUI();
             }
         }
-        // Un'ulteriore chiamata al callback può essere fatta qui se vuoi aggiornare l'UI dopo aver processato tutte le regole
         callback.updateUI();
     }
 }

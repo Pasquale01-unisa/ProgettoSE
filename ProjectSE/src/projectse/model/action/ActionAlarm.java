@@ -12,8 +12,12 @@ import javafx.scene.control.ButtonType;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Objects;
+import javafx.util.Duration;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionAlarm implements Action, Serializable {
     private File file;
     private transient MediaPlayer mediaPlayer;
@@ -25,44 +29,47 @@ public class ActionAlarm implements Action, Serializable {
 
     private void initializeMediaPlayer() {
         if (file != null) {
-            Media media = new Media(file.toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
+            Media media = new Media(file.toURI().toString()); //Create a Media object using the file URL 
+            mediaPlayer = new MediaPlayer(media); //Inizialize the MediaPlayer object
         }
     }
     
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        initializeMediaPlayer();
+        in.defaultReadObject(); //Manage MediaPlayer reading from file 
+        initializeMediaPlayer(); //Inizialize the MadiaPlayer object
     }
-
+    
     @Override
     public void executeAction() {
         if (mediaPlayer != null) {
             Platform.runLater(() -> {
+                // If the song is over it restarts
+                mediaPlayer.setOnEndOfMedia(() -> {
+                    mediaPlayer.seek(Duration.ZERO);
+                    mediaPlayer.play();
+                });
+
                 mediaPlayer.play();
 
+                //Prompt to stop the alarm
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Allarme");
-                alert.setHeaderText("Riproduzione Allarme");
-                alert.setContentText("Premi Interrompi per fermare l'allarme.");
+                alert.setTitle("Alarm");
+                alert.setHeaderText("Alarm playback");
+                alert.setContentText("Press stop to interrupt the alarm");
 
-                ButtonType buttonTypeInterrompi = new ButtonType("Interrompi");
+                ButtonType buttonTypeInterrompi = new ButtonType("Stop");
                 alert.getButtonTypes().setAll(buttonTypeInterrompi);
 
+                //Check, if the user pressed the button the alarm stops
                 alert.showAndWait().ifPresent(response -> {
                     if (response == buttonTypeInterrompi) {
                         mediaPlayer.stop();
+                        mediaPlayer.setOnEndOfMedia(null); // Remove the listener so it doesn't repeat
                     }
                 });
             });
         } else {
             System.err.println("MediaPlayer non è stato inizializzato.");
-        }
-    }
-
-    public void stopPlaying() {
-        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            mediaPlayer.stop();
         }
     }
 
@@ -88,6 +95,5 @@ public class ActionAlarm implements Action, Serializable {
     @Override
     public String getAction() {
         return "Alarm -> " + file.toString();
-    }
-    
+    } 
 }

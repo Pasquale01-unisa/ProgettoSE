@@ -10,6 +10,10 @@ import projectse.controller.FileManagement;
 import projectse.model.action.Action;
 import projectse.model.trigger.Trigger;
 
+/**
+ *
+ * @author group07
+ */
 public class SingleRule extends Observable implements Rule, Serializable {
     private Trigger trigger;
     private Action action;
@@ -22,7 +26,7 @@ public class SingleRule extends Observable implements Rule, Serializable {
     private boolean repeat = false;
     private boolean sleeping = false;
     private LocalDateTime repetition;
-    private List<SingleRule> list;
+    private List<SingleRule> list; //Reference to the list where the singleRule is found
     
     public SingleRule(String name, Trigger trigger, Action action, String state, SetOfRules list) {
         this.name = name;
@@ -31,21 +35,18 @@ public class SingleRule extends Observable implements Rule, Serializable {
         this.state = state;
         this.isSelectedValue = false;
         this.list = list.getRules();
-        this.addObserver(FileManagement.getInstance());
+        this.addObserver(FileManagement.getInstance()); //add the listener to the instance of FileManagement
     }
-    
-    
 
-    // Metodo setter per 'name'
+    //SET METHODS
     public void setName(String name) {
         if (!Objects.equals(this.name, name)) {
             this.name = name;
             setChanged();
-            notifyObservers(this.list);
+            notifyObservers(this.list); //Notify the fileManagement Observer to say that something is changed in the singleRule
         }
     }
 
-    // Metodo setter per 'trigger'
     public void setTrigger(Trigger trigger) {
         if (this.trigger != trigger) {
             this.trigger = trigger;
@@ -54,7 +55,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'action'
     public void setAction(Action action) {
         if (this.action != action) {
             this.action = action;
@@ -63,7 +63,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'state'
     public void setState(String state) {
         if (!Objects.equals(this.state, state)) {
             this.state = state;
@@ -72,7 +71,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'isSelectedValue'
     public void setIsSelectedValue(boolean isSelectedValue) {
         if (this.isSelectedValue != isSelectedValue) {
             this.isSelectedValue = isSelectedValue;
@@ -81,7 +79,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'isShow'
     public void setIsShow(boolean isShow) {
         if (this.isShow != isShow) {
             this.isShow = isShow;
@@ -90,7 +87,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'creation'
     public void setCreation(LocalDateTime creation) {
         if (!Objects.equals(this.creation, creation)) {
             this.creation = creation;
@@ -99,7 +95,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'sleepingTime'
     public void setSleepingTime(Duration sleepingTime) {
         if (!Objects.equals(this.sleepingTime, sleepingTime)) {
             this.sleepingTime = sleepingTime;
@@ -108,7 +103,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'repeat'
     public void setRepeat(boolean repeat) {
         if (this.repeat != repeat) {
             this.repeat = repeat;
@@ -117,7 +111,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'sleeping'
     public void setSleeping(boolean sleeping) {
         if (this.sleeping != sleeping) {
             this.sleeping = sleeping;
@@ -126,7 +119,6 @@ public class SingleRule extends Observable implements Rule, Serializable {
         }
     }
 
-    // Metodo setter per 'repetition'
     public void setRepetition(LocalDateTime repetition) {
         if (!Objects.equals(this.repetition, repetition)) {
             this.repetition = repetition;
@@ -134,85 +126,71 @@ public class SingleRule extends Observable implements Rule, Serializable {
             notifyObservers(this.list);
         }
     }
+    
+    public void setObserver() {
+        this.addObserver(FileManagement.getInstance());
+    }
 
-    // Metodo getter per 'name'
+    //GET METHODS
     public String getName() {
         return name;
     }
 
-    // Metodo getter per 'state'
     public String getState() {
         return state;
     }
 
-    // Metodo getter per 'isSelectedValue'
     public boolean getIsSelectedValue() {
         return isSelectedValue;
     }
 
-    // Metodo getter per 'isShow'
     public boolean isShow() {
         return isShow;
     }
 
-    // Metodo getter per 'creation'
     public LocalDateTime getCreation() {
         return creation;
     }
 
-    // Metodo getter per 'sleepingTime'
     public Duration getSleepingTime() {
         return sleepingTime;
     }
 
-    // Metodo getter per 'repeat'
     public boolean isRepeat() {
         return repeat;
     }
 
-    // Metodo getter per 'sleeping'
     public boolean isSleeping() {
         return sleeping;
     }
 
-    // Metodo getter per 'repetition'
     public LocalDateTime getRepetition() {
         return repetition;
     }
-
-    @Override
-    public void addRule(SingleRule rule) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void deleteRule(SingleRule rule) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
-       public Trigger getTriggerObject(){
+    public Trigger getTriggerObject(){
         return trigger;
     }
     
-    // Getter e Setter per trigger
     public String getTrigger() {
         return trigger.getTrigger();
     }
-
-    
 
     public Action getActionObject(){
         return action;
     }
     
-    // Getter e Setter per action
     public String getAction() {
         return action.getAction();
     }
 
-    public void setObserver() {
-        this.addObserver(FileManagement.getInstance());
+    @Override
+    public void addRule(SingleRule rule) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
+    @Override
+    public void deleteRule(SingleRule rule) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }    
 }

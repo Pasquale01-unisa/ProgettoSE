@@ -16,7 +16,7 @@ import projectse.controller.MyProjectSEViewController;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionOpenExternalProgram implements Action, Serializable{
     private String args;
@@ -27,7 +27,7 @@ public class ActionOpenExternalProgram implements Action, Serializable{
 
     public ActionOpenExternalProgram(String args, File file) {
         this.args = args;
-        this.token = args.split(";");
+        this.token = args.split(";"); //Spli the arguments when there is a ;
         this.file = file;
     }
     
@@ -52,25 +52,23 @@ public class ActionOpenExternalProgram implements Action, Serializable{
     }
 
     private void executeJavaFile() throws IOException, InterruptedException {
-        // Compila il file Java
+        // Compile the Java file 
         Process compileProcess = new ProcessBuilder("javac", file.getAbsolutePath()).start();
         compileExitCode = compileProcess.waitFor();
 
         if (compileExitCode == 0) {
-            // Calcola il classpath e il nome della classe
-            String classPath = file.getParent(); // Ottieni la directory del file
+            // Calculate the classpath and the class name
+            String classPath = file.getParent(); // Get the directory of the file
             String className = file.getName().replace(".java", "");
                     
-            // Se il file è in un package, aggiungi il nome del package al className qui
-
             List<String> command = new ArrayList<>();
             command.add("java");
             command.add("-cp");
-            command.add(classPath); // Imposta il classpath
+            command.add(classPath); // Set the classpath
             command.add(className);
             command.addAll(Arrays.asList(token));
 
-            // Esegui il file Java
+            // Execute the Java file
             Process runProcess = new ProcessBuilder(command).start();
 
             String msg = printProcessOutput(runProcess);
@@ -78,7 +76,7 @@ public class ActionOpenExternalProgram implements Action, Serializable{
 
             runExitCode = runProcess.waitFor();
             System.out.println("Processo Java terminato con codice di uscita: " + runExitCode);
-            MyProjectSEViewController.showSuccessPopup("Processo Java terminato con codice di uscita: " + runExitCode, msg, false);
+            MyProjectSEViewController.showSuccessPopup("Java process ended with exit code: " + runExitCode, msg, false);
         } else {
             System.out.println("Error during the compilation of the Java file");
         }
