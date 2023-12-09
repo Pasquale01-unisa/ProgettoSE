@@ -1,0 +1,94 @@
+.root {
+    -fx-font-family: 'Segoe UI'; 
+    -fx-base: #607D8B; 
+    -fx-background: #FAFAFA; 
+    -fx-background-color: #ECEFF1;
+}
+
+
+.vbox, .hbox {
+    -fx-spacing: 8px;
+    -fx-padding: 10px;
+}
+
+.table-view {
+    -fx-table-cell-border-color: #B0BEC5;
+    -fx-table-header-border-color: #B0BEC5;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: #CFD8DC;
+}
+
+.table-column {
+    -fx-alignment: center;
+}
+
+
+.button {
+    -fx-background-color: #546E7A;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #78909C;
+    -fx-cursor: hand;
+}
+
+
+#btnDelete, #btnOnOff { 
+    -fx-background-color: #EF5350; 
+    -fx-text-fill: white;
+}
+
+#btnDelete:hover, #btnOnOff:hover {
+    -fx-background-color: #D32F2F;
+}
+
+.menu-button {
+    -fx-background-color: #78909C;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+
+
+.menu-item:hover {
+    -fx-background-color: darkred;
+}
+
+.text-field, .spinner {
+    -fx-background-color: white;
+    -fx-border-color: #B0BEC5;
+    -fx-border-width: 1px;
+}
+
+
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #B0BEC5;
+}
+
+.check-box {
+    -fx-border-radius: 15; 
+    -fx-background-radius: 15; 
+}
+
+.check-box .box {
+    -fx-background-radius: 15; 
+    -fx-padding: 5; 
+}
+
+.check-box:selected .box,
+.check-box:armed .box {
+    
+    -fx-background-radius: 15;
+    -fx-padding: 5;
+}
+
+.check-box:selected .mark,
+.check-box:armed .mark {
+    -fx-background-color: white;
+}
