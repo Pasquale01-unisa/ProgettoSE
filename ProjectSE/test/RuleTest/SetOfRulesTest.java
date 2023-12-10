@@ -12,8 +12,10 @@ import projectse.model.rule.SetOfRules;
 import projectse.model.rule.SingleRule;
 import projectse.model.trigger.TriggerTime;
 
-
-
+/**
+ *
+ * @author group07
+ */
 public class SetOfRulesTest {
     private SetOfRules setOfRules;
 

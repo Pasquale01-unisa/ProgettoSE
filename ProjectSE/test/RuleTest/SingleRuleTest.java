@@ -11,6 +11,10 @@ import projectse.model.rule.SingleRule;
 import projectse.model.trigger.Trigger; 
 import projectse.model.trigger.TriggerTime;
 
+/**
+ *
+ * @author group07
+ */
 public class SingleRuleTest {
 
     private SingleRule singleRule;

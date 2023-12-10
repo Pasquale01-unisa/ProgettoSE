@@ -18,6 +18,10 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import projectse.model.action.ActionCopyFile;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionCopyFileTest {
 
     private Path tempFile;

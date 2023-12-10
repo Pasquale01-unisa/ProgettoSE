@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author sroup07
+ * @author group07
  */
 public class TriggerSizeFile implements Trigger, Serializable{
-    String size;
-    String fileToCheck;
-    String typeSize;
+    private String size;
+    private String fileToCheck;
+    private String typeSize;
 
     public TriggerSizeFile(String size, String fileToCheck, String typeSize) {
         this.size = size;

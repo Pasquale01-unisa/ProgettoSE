@@ -11,6 +11,10 @@ import javafx.embed.swing.JFXPanel;
 import javafx.application.Platform;
 import projectse.model.action.ActionDeleteFile;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionDeleteFileTest {
     private File tempFile;
 

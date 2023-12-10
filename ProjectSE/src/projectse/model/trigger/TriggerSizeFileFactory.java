@@ -9,9 +9,9 @@ package projectse.model.trigger;
  * @author group07
  */
 public class TriggerSizeFileFactory extends TriggerFactory{
-    String size;
-    String fileToCheck;
-    String typeSize;
+    private String size;
+    private String fileToCheck;
+    private String typeSize;
 
     public TriggerSizeFileFactory(String size, String fileToCheck, String typeSize) {
         this.size = size;

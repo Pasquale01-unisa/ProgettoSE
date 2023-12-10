@@ -14,7 +14,7 @@ import projectse.model.action.ActionAlarm;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionAlarmTest {
     File testFile, result;

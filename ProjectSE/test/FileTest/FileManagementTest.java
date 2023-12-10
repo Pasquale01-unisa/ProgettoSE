@@ -16,7 +16,7 @@ import projectse.model.trigger.TriggerTime;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
 public class FileManagementTest {
 

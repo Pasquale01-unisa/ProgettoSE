@@ -12,9 +12,8 @@ import projectse.model.trigger.TriggerDate;
 
 /**
  *
- * @author Utente
+ * @author group07
  */
-
 public class TriggerDateTest {
 
     @Test

@@ -16,7 +16,7 @@ import projectse.model.action.ActionOpenExternalProgram;
 
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionOpenExternalProgramTest {
     private ActionOpenExternalProgram action;

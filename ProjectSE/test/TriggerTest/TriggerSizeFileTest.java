@@ -13,6 +13,10 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 import projectse.model.trigger.TriggerSizeFile;
 
+/**
+ *
+ * @author group07
+ */
 public class TriggerSizeFileTest {
 
     private TriggerSizeFile trigger;

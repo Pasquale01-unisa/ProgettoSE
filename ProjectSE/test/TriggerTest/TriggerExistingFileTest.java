@@ -6,13 +6,15 @@ package TriggerTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
 import java.io.File;
 import java.io.IOException;
-
 import static org.junit.Assert.*;
 import projectse.model.trigger.TriggerExistingFile;
 
+/**
+ *
+ * @author group07
+ */
 public class TriggerExistingFileTest {
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();

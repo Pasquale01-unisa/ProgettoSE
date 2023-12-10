@@ -15,6 +15,10 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import projectse.model.action.ActionAppendFile;
 
+/**
+ *
+ * @author group07
+ */
 public class ActionAppendFileTest {
     private File tempFile;
     private final String testString = "Test String";

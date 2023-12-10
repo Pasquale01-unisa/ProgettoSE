@@ -9,6 +9,10 @@ import org.junit.Test;
 import projectse.model.trigger.Trigger;
 import projectse.model.trigger.TriggerTime;
 
+/**
+ *
+ * @author group07
+ */
 public class TriggerTimeTest {
     private TriggerTime trigger;
 

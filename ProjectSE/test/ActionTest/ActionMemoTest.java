@@ -4,18 +4,14 @@
  */
 package ActionTest;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import projectse.model.action.ActionMemo;
 
-
 /**
  *
- * @author sara
+ * @author group07
  */
 public class ActionMemoTest {
     private ActionMemo action;
