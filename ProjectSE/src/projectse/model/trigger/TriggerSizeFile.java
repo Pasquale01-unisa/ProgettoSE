@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author viki0
+ * @author sroup07
  */
 public class TriggerSizeFile implements Trigger, Serializable{
     String size;

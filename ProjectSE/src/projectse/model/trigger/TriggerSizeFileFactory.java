@@ -6,7 +6,7 @@ package projectse.model.trigger;
 
 /**
  *
- * @author viki0
+ * @author group07
  */
 public class TriggerSizeFileFactory extends TriggerFactory{
     String size;

@@ -190,9 +190,11 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private SetOfRules rules = new SetOfRules();
     private RuleCheckerThread ruleCheckerThread;
     private File selectedFile = null;
+    private File selectedFileCheck = null;
     private Duration sleepingTime;
     private boolean repeat = false;
     private File selectedDirectory = null;
+    private File selectedDirectoryCheck = null;
     private DayOfWeek dayOfWeek;
     private Integer dayOfMonth;
     private LocalDate specificDate;
@@ -449,6 +451,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
     @FXML
     private void onBtnFileCheck(ActionEvent event){
+        textTriggerFileCheck.clear();
+        textTriggerDirectoryCheck.clear();
         //TRIGGERTIME-----
         triggerTimeFields.setManaged(false);
         triggerTimeFields.setVisible(false);
@@ -458,12 +462,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         numberTriggerM.setVisible(false);
         separatorSpinner.setManaged(false);
         separatorSpinner.setVisible(false);
-
-        //ACTION
-        textAction.setManaged(false);
-        textAction.setVisible(false);
-        textActionStringToFile.setManaged(false);
-        textActionStringToFile.setVisible(false);
 
         //TRIGGERDATE----
         menuButtonTriggerDate.setManaged(false);
@@ -493,12 +491,16 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textTriggerDirectoryCheck.setDisable(true);
         btnChooseDirectoryFileChecker.setManaged(true);
         btnChooseDirectoryFileChecker.setVisible(true);
+        btnChooseFileSize.setManaged(false);
+        btnChooseFileSize.setVisible(false);
         
         btnTrigger.setText("File Check");
     }
     
      @FXML
     private void onBtnFileSize(ActionEvent action){
+        textTriggerFileCheck.clear();
+        textTriggerDirectoryCheck.clear();
         //TRIGGERTIME-----
         triggerTimeFields.setManaged(false);
         triggerTimeFields.setVisible(false);
@@ -508,13 +510,6 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         numberTriggerM.setVisible(false);
         separatorSpinner.setManaged(false);
         separatorSpinner.setVisible(false);
-        //--------
-        //ACTION
-        textAction.setManaged(false);
-        textAction.setVisible(false);
-        textActionStringToFile.setManaged(false);
-        textActionStringToFile.setVisible(false);
-        //
         //TRIGGERDATE----
         menuButtonTriggerDate.setManaged(false);
         menuButtonTriggerDate.setVisible(false);
@@ -542,6 +537,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textTriggerDirectoryCheck.setDisable(true);
         btnChooseFileSize.setManaged(true);
         btnChooseFileSize.setVisible(true);
+        btnChooseDirectoryFileChecker.setManaged(false);
+        btnChooseDirectoryFileChecker.setVisible(false);
         btnTrigger.setText("File Size");
     }
     
@@ -745,7 +742,18 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         tableView.refresh();
         updateButtonState();
     }
-
+    
+    @FXML
+    private void onBtnFileTrigger(ActionEvent event){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose a File");
+        selectedFileCheck = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
+        if(selectedFileCheck != null){
+            textTriggerDirectoryCheck.setText(selectedFileCheck.getAbsolutePath());
+        }
+    }
+    
+    
     @FXML
     private void onBtnFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -764,11 +772,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         }
 
         selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
-
-         if (selectedFile != null && btnTrigger.getText() != "File Size") {
+        if(selectedFile != null){
             textAction.setText(selectedFile.getName());
-        }else{
-            textTriggerDirectoryCheck.setText(selectedFile.getAbsolutePath());
         }
     }
 
@@ -885,10 +890,18 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.setPromptText("");
 
         selectedDirectory = directoryChooser.showDialog(((Node)event.getSource()).getScene().getWindow());
-        if (selectedDirectory != null && btnTrigger.getText().equals("File Check")) {
-            textTriggerDirectoryCheck.setText(selectedDirectory.getAbsolutePath());
-        }else{
+        if(selectedDirectory != null){
             textActionStringToFile.setText(selectedDirectory.getAbsolutePath());
+        }
+    }
+    
+    @FXML
+    private void onBtnChooseDirectoryTrigger(ActionEvent event){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choose a Directory");
+        selectedDirectoryCheck = directoryChooser.showDialog(((Node)event.getSource()).getScene().getWindow());
+        if(selectedDirectoryCheck != null){
+            textTriggerDirectoryCheck.setText(selectedDirectoryCheck.getAbsolutePath());
         }
     }
 
@@ -1045,9 +1058,12 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         textActionStringToFile.clear();
         btnFile.setManaged(false);
         btnFile.setVisible(false);
+        btnChooseDirectory.setManaged(false);
+        btnChooseDirectory.setVisible(false);
         argLabel.setManaged(false);
         argLabel.setVisible(false);
         
+
         btnTrigger.setText("Choose a Trigger");
         btnAction.setText("Choose an Action");
     }
