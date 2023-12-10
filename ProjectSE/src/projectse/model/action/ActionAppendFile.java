@@ -73,7 +73,7 @@ public class ActionAppendFile implements Action, Serializable {
             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
             printWriter.println(stringToWriteInFile);
             if (!isTestMode) {
-                MyProjectSEViewController.showSuccessPopup("Text Iserted in File", "Text successfully inserted into the file: " + fileToAppend, false);
+                MyProjectSEViewController.showSuccessPopup("Text Inserted in File", "Text successfully inserted into the file: " + fileToAppend, false);
             }
         } catch (IOException e) {
             e.printStackTrace();

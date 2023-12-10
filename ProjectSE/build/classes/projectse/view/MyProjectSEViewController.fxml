@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="631.0" prefWidth="853.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController" stylesheets="@style.css">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="631.0" prefWidth="853.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projectse.controller.MyProjectSEViewController">
    <children>
       <TableView fx:id="tableView" layoutX="14.0" layoutY="32.0" prefHeight="498.0" prefWidth="577.0">
         <columns>
@@ -45,6 +45,7 @@
                       <MenuItem fx:id="btnTime" mnemonicParsing="false" onAction="#onBtnTime" text="Time" />
                       <MenuItem fx:id="btnFileCheck" mnemonicParsing="false" onAction="#onBtnFileCheck" text="File Check" />
                         <MenuItem fx:id="btnDate" mnemonicParsing="false" onAction="#OnBtnDate" text="Date" />
+                        <MenuItem fx:id="btnFileSize" mnemonicParsing="false" onAction="#onBtnFileSize" text="File Size" />
                     </items>
                   </MenuButton>
                   <Button fx:id="btnAddTrigger" disable="true" mnemonicParsing="false" onAction="#onBtnAddTrigger" prefHeight="27.0" prefWidth="46.0" text="+" textFill="#a46d05" />
@@ -83,10 +84,27 @@
             </HBox>
             <VBox fx:id="boxFile" alignment="TOP_CENTER" prefHeight="96.0" prefWidth="247.0" spacing="10.0">
                <children>
-                  <TextField fx:id="textTriggerFileCheck" alignment="CENTER" prefHeight="27.0" prefWidth="212.0" visible="false" />
+                  <HBox prefHeight="25.0" prefWidth="187.0">
+                     <children>
+                        <TextField fx:id="textTriggerFileCheck" alignment="CENTER" prefHeight="25.0" prefWidth="187.0" visible="false" />
+                        <MenuButton fx:id="btnSize" mnemonicParsing="false" prefHeight="23.0" prefWidth="60.0" text="Byte" visible="false">
+                          <items>
+                            <MenuItem fx:id="btnByte" mnemonicParsing="false" onAction="#onBtnByte" text="Byte" />
+                            <MenuItem fx:id="btnKB" mnemonicParsing="false" onAction="#onBtnKB" text="KB" />
+                              <MenuItem fx:id="btnMB" mnemonicParsing="false" onAction="#onBtnMB" text="MB" />
+                              <MenuItem fx:id="btnGB" mnemonicParsing="false" onAction="#onBtnGB" text="GB" />
+                          </items>
+                        </MenuButton>
+                     </children>
+                  </HBox>
                   <TextField fx:id="textTriggerDirectoryCheck" alignment="CENTER" prefHeight="27.0" prefWidth="212.0" visible="false" />
                   <Button fx:id="btnChooseDirectoryFileChecker" mnemonicParsing="false" onAction="#onBtnChooseDirectory" prefHeight="27.0" prefWidth="144.0" text="Choose directory" textFill="#092beb" visible="false"> 
                       <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="btnChooseFileSize" alignment="CENTER" mnemonicParsing="false" onAction="#onBtnFile" prefHeight="27.0" prefWidth="144.0" text="Choose file" textFill="#092beb" visible="false">
+                     <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>

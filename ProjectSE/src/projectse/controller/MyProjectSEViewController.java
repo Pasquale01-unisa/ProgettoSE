@@ -171,6 +171,20 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
     private VBox boxFile;
     @FXML
     private VBox boxCommit;
+    @FXML
+    private MenuItem btnFileSize;
+    @FXML
+    private Button btnChooseFileSize;
+    @FXML
+    private MenuButton btnSize;
+    @FXML
+    private MenuItem btnByte;
+    @FXML
+    private MenuItem btnKB;
+    @FXML
+    private MenuItem btnMB;
+    @FXML
+    private MenuItem btnGB;
 
     private ObservableList<SingleRule> ruleList = FXCollections.observableArrayList();
     private SetOfRules rules = new SetOfRules();
@@ -224,6 +238,15 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
             .or(btnTrigger.textProperty().isEqualTo("File Check")
                 .and(textTriggerFileCheck.textProperty().isEmpty()
                     .or(textTriggerDirectoryCheck.textProperty().isEmpty())))
+                .or(btnTrigger.textProperty().isEqualTo("File Size")
+            .and(textTriggerFileCheck.textProperty().isEmpty()
+                .or(btnSize.textProperty().isNotEqualTo("Byte")
+                    .and(btnSize.textProperty().isNotEqualTo("KB"))
+                    .and(btnSize.textProperty().isNotEqualTo("MB"))
+                    .and(btnSize.textProperty().isNotEqualTo("GB"))
+                .or(textTriggerDirectoryCheck.textProperty().isEmpty())))
+        )
+
         );
         
         btnFile.setManaged(false);
@@ -461,6 +484,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         //TRIGGERFILE
         boxFile.setManaged(true);
         boxFile.setVisible(true);
+        btnSize.setManaged(false);
+        btnSize.setVisible(false);
         textTriggerFileCheck.setManaged(true);
         textTriggerFileCheck.setVisible(true);
         textTriggerDirectoryCheck.setManaged(true);
@@ -470,6 +495,74 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         btnChooseDirectoryFileChecker.setVisible(true);
         
         btnTrigger.setText("File Check");
+    }
+    
+     @FXML
+    private void onBtnFileSize(ActionEvent action){
+        //TRIGGERTIME-----
+        triggerTimeFields.setManaged(false);
+        triggerTimeFields.setVisible(false);
+        numberTriggerH.setManaged(false);
+        numberTriggerH.setVisible(false);
+        numberTriggerM.setManaged(false);
+        numberTriggerM.setVisible(false);
+        separatorSpinner.setManaged(false);
+        separatorSpinner.setVisible(false);
+        //--------
+        //ACTION
+        textAction.setManaged(false);
+        textAction.setVisible(false);
+        textActionStringToFile.setManaged(false);
+        textActionStringToFile.setVisible(false);
+        //
+        //TRIGGERDATE----
+        menuButtonTriggerDate.setManaged(false);
+        menuButtonTriggerDate.setVisible(false);
+            //GENERIC DATE
+        datePicker.setManaged(false);
+        datePicker.setVisible(false);
+        //MONTH & WEEK
+        boxDate.setManaged(false);
+        boxDate.setVisible(false);
+            //WEEK
+        btnWeekDays.setManaged(false);
+        btnWeekDays.setVisible(false);
+            //MONTH
+        spinnerDayOfMonth.setManaged(false);
+        spinnerDayOfMonth.setVisible(false);
+        
+        boxFile.setManaged(true);
+        boxFile.setVisible(true);
+        btnSize.setManaged(true);
+        btnSize.setVisible(true);
+        textTriggerFileCheck.setManaged(true);
+        textTriggerFileCheck.setVisible(true);
+        textTriggerDirectoryCheck.setManaged(true);
+        textTriggerDirectoryCheck.setVisible(true);
+        textTriggerDirectoryCheck.setDisable(true);
+        btnChooseFileSize.setManaged(true);
+        btnChooseFileSize.setVisible(true);
+        btnTrigger.setText("File Size");
+    }
+    
+     @FXML
+    private void onBtnByte(ActionEvent action){
+        btnSize.setText("Byte");
+    }
+    
+    @FXML
+    private void onBtnKB(ActionEvent action){
+        btnSize.setText("KB");
+    }
+    
+    @FXML
+    private void onBtnMB(ActionEvent action){
+        btnSize.setText("MB");
+    }
+    
+    @FXML
+    private void onBtnGB(ActionEvent action){
+        btnSize.setText("GB");
     }
 
     @FXML
@@ -672,8 +765,10 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
 
         selectedFile = fileChooser.showOpenDialog(((Node)event.getSource()).getScene().getWindow());
 
-        if (selectedFile != null) {
+         if (selectedFile != null && btnTrigger.getText() != "File Size") {
             textAction.setText(selectedFile.getName());
+        }else{
+            textTriggerDirectoryCheck.setText(selectedFile.getAbsolutePath());
         }
     }
 
@@ -929,6 +1024,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
         //TRIGGERFILE
         boxFile.setManaged(false);
         boxFile.setVisible(false);
+        btnSize.setManaged(false);
+        btnSize.setVisible(false);
         textTriggerFileCheck.setManaged(false);
         textTriggerFileCheck.setVisible(false);
         textTriggerFileCheck.clear();
@@ -1026,6 +1123,8 @@ public class MyProjectSEViewController implements Initializable, RuleUpdateCallb
                 return new TriggerExistingFileFactory(textTriggerFileCheck.getText(), textTriggerDirectoryCheck.getText());
             case "Date":
                 return new TriggerDateFactory(btnWeekDays.getText().toUpperCase(),Integer.parseInt(spinnerDayOfMonth.getValue().toString()), datePicker.getValue(), menuButtonTriggerDate.getText());
+            case "File Size":
+                return new TriggerSizeFileFactory(textTriggerFileCheck.getText(),textTriggerDirectoryCheck.getText(),btnSize.getText());    
             default:
                 throw new IllegalArgumentException("Trigger type not supported: " + userChoice);
         }
